@@ -10,7 +10,7 @@ I want to run the game and know what I am doing
 ===============================================
 1. Install a recent version of `Python 3`_. Version 3.6.0 should work fine.
 2. Open a terminal and change to the directory where you downloaded the game.
-3. Install the requirements in *base.txt* using the following command:
+3. Install the requirements in *base.txt* using the following command::
 
        pip3 install -r requirements/base.txt
 
@@ -20,15 +20,15 @@ I want to work on the game and know what I am doing
 ===================================================
 1. Install a recent version of `Python 3`_. Version 3.6.0 should work fine.
 2. Open a terminal and change to the directory where you downloaded the game
-3. [Optional] Create a new virtual environment.
+3. [Optional] Create a new virtual environment::
 
        python3 -m venv venv
 
-4. Activate the virtual environment
+4. Activate the virtual environment::
 
        source venv/bin/activate
 
-5. Install the requirements in *devel.txt* using the following command:
+5. Install the requirements in *devel.txt* using the following command::
 
        pip install -r requirements/devel.txt
 

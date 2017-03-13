@@ -53,8 +53,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Energy Transition Game'
-copyright = '2017, René Mellema'
-author = 'René Mellema'
+copyright = '2017, Energy Transitions UCG'
+author = 'Energy Transitions UCG'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -79,6 +79,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
+
+# Make sure that the `__init__` documentation is appended to the class 
+# documentation
+autoclass_content = 'both'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
@@ -158,6 +162,3 @@ texinfo_documents = [
      author, 'EnergyTransitionGame', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
