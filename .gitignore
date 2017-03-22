@@ -96,3 +96,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Trial tests
+_trial_temp

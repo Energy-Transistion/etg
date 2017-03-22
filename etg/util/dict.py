@@ -29,4 +29,3 @@ def difference(dict, other, epsilon = 0.005):
             if dict[key] != other[key]:
                 ret[key] = other[key]
     return ret
-
