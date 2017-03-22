@@ -1,5 +1,5 @@
 """
-A generic superclass for all entities in the Energy Transistion Game, like 
+A generic superclass for all entities in the Energy Transistion Game, like
 agents and companies.
 """
 
