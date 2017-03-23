@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+GIT_ROOT=`git rev-parse --show-toplevel`
+pushd $GIT_ROOT
+sphinx-apidoc -f -T -M -e -o docs etg
+sphinx-apidoc -f -T -M -e -o docs tests
+cd docs/
+make html
+popd
