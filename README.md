@@ -1,6 +1,7 @@
 etg
 ===
-A game for 
+A game for exploring the difficulties in transitioning away from brown energy
+towards green energy fuelled by an artificial population.
 
 Install
 =======
