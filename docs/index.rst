@@ -5,9 +5,9 @@
 
 Welcome to Energy Transition Game's documentation!
 ==================================================
-This is the documentation for the Energy Transition Game, a product of the 
-Energy Transition Project at the University College Groningen. Here you will 
-be able to find all the information needed to install, run, and work on the 
+This is the documentation for the Energy Transition Game, a product of the
+Energy Transition Project at the University College Groningen. Here you will
+be able to find all the information needed to install, run, and work on the
 game. It also holds all of the documentation for the :mod:`etg` package.
 
 .. toctree::
@@ -16,6 +16,7 @@ game. It also holds all of the documentation for the :mod:`etg` package.
 
    install
    Code documentation <etg>
+   Test documentation <tests>
 
 Indices and tables
 ==================
