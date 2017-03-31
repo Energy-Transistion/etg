@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 GIT_ROOT=`git rev-parse --show-toplevel`
 pushd $GIT_ROOT
+rm docs/etg.*rst
+rm docs/tests.*rst
 sphinx-apidoc -f -T -M -e -o docs etg
 sphinx-apidoc -f -T -M -e -o docs tests
 cd docs/
