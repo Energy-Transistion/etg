@@ -2,7 +2,7 @@
 A testing suite for the `etg.simulation.agentset` module
 """
 from twisted.trial import unittest
-from etg.simulation.agentset import AgentSet
+from etg.util.agentset import AgentSet
 
 class AgentSetTestCase(unittest.TestCase):
     """

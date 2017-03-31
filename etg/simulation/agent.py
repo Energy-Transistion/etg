@@ -2,7 +2,7 @@
 All classes and methods having to do with agents
 """
 from random import randrange
-from .agentset import AgentSet
+from ..util.agentset import AgentSet
 from .entity import Entity
 
 class Agent(Entity):

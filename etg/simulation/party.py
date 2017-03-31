@@ -35,7 +35,7 @@ class Party(Entity):
     @property
     def voters(self):
         """
-        All the voters for this party, as an `~.agentset.AgentSet`.
+        All the voters for this party, as an :class:`~etg.util.agentset.AgentSet`.
         """
         return self.simulation.agents.filter(lambda a: a.party == self)
 

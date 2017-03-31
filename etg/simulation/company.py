@@ -38,7 +38,7 @@ class Company(Entity):
     @property
     def users(self):
         """
-        All the users of this comapny, as an `~.agentset.AgentSet`.
+        All the users of this comapny, as an :class:`~etg.util.agentset.AgentSet`.
         """
         return self.simulation.agents.filter(lambda a: a.company == self)
 
