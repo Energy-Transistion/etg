@@ -1,11 +1,4 @@
-attrs==16.3.0
 autobahn==0.17.2
-Automat==0.5.0
-constantly==15.1.0
-incremental==16.10.1
 Jinja2==2.9.5
-MarkupSafe==0.23
-six==1.10.0
 Twisted==17.1.0
-txaio==2.6.1
-zope.interface==4.3.3
+libsass==0.12.3
