@@ -76,4 +76,5 @@ class HandlerTestCase(unittest.TestCase):
         self.assertEqual(packet['count'], 6)
         for key in ['g', 'c', 'a']:
             with self.assertRaises(KeyError):
+                # pylint: disable=pointless-statement
                 packet[key]

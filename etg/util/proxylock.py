@@ -72,7 +72,9 @@ class ProxyLock:
     def _create_class_proxy(cls, theclass):
         """creates a proxy for the given class"""
 
+        # pylint: disable=missing-docstring
         def make_method(name):
+            # pylint: disable=missing-docstring
             def method(self, *args, **kw):
                 return getattr(object.__getattribute__(self, "_proxy"), name)(*args, **kw)
             return method
