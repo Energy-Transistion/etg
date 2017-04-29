@@ -100,3 +100,6 @@ ENV/
 
 # Trial tests
 _trial_temp
+
+# Ignore the files that the server generates
+_site
