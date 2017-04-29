@@ -64,12 +64,44 @@ class Assets:
                     continue
                 file_name, _ = os.path.splitext(file_path)
                 with open(os.path.join(dirpath, file_path), 'r') as file:
-                    opts = yaml.load(file)
-                try:
-                    template_name = opts['template']
-                except KeyError:
-                    template_name = file_name
-                template = templates.get_template(template_name + '.html')
+                    content = render_file(file, templates, file_name, **kwargs)
                 with open(os.path.join(out_path, file_name + '.html'), 'w') as file:
-                    file.write(template.render(**{**kwargs, **opts}))
+                    file.write(content)
         return static.File(self._html_path)
+
+def get_yaml_frontmatter(file):
+    """
+    Get the yaml front matter and the contents of the given file-like object.
+    """
+    line = file.readline()
+    if line != "---\n":
+        return (None, line + file.read())
+    frontmatter = []
+    for line in file:
+        if line == "---\n":
+            break
+        else:
+            frontmatter.append(line)
+    return (yaml.load('\n'.join(frontmatter)), file.read())
+
+def render_file(file, templates, fall_back_template, **kwargs):
+    """
+    Render a given file-like object in the corresponding template. All the extra options are passed
+    on to the template as well.
+
+    :param file: The file to render.
+    :param templates: The Jinja2 environment to get the template from.
+    :param fall_back_template: The name of the template to use if no template is specified in the
+                                file.
+    """
+    opts, content = get_yaml_frontmatter(file)
+    if not opts:
+        opts = yaml.load(content)
+    else:
+        opts['text'] = content
+    try:
+        template_name = opts['template']
+    except KeyError:
+        template_name = fall_back_template
+    template = templates.get_template(template_name + '.html')
+    return template.render(**{**kwargs, **opts})
