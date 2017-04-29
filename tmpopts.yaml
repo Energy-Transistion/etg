@@ -1,0 +1,6 @@
+assets: _site
+styles: assets/styles
+images: assets/images
+javascript: js
+templates: templates
+html_info: assets/intro
