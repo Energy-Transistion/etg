@@ -1,0 +1,28 @@
+#content {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	margin: 10px;
+	height: calc(100% - 20px);
+	width: calc(100% - 20px);
+}
+#text {
+	width: 100%;
+	flex: 1 1 auto;
+}
+#links {
+	display: flex;
+	flex-direction: row;
+}
+#filler {
+	flex-grow: 1;
+}
+div.link {
+	flex: 0 1 auto;
+}
+
+a {
+	background-color: rgb(240, 240, 240);
+	margin: 5px;
+	border-radius: 15px;
+}

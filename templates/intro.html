@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} ETG - {{ title }} {% endblock %}
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="/styles/intro.css"/>
+{% endblock %}
+{% block content %}
+  <h1>{{ title }}</h1>
+  <div id="text">
+    {{ text }}
+  </div>
+  <div id="links">
+    <div class="link">
+      {% if prev %}
+        <a href="{{ prev }}">Previous</a>
+      {% endif %}
+    </div>
+    <div id="filler"></div>
+    <div class="link">
+      {% if next %}
+        <a href="{{ next }}">Next</a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}
+
+
+
