@@ -1,0 +1,60 @@
+{% extends "interface.html" %}
+
+{% block plot %}
+<div class="rowcontainer">
+  {{ super() }}
+  <div class="columncontainer">
+    <etg-monitor monitor="election_time">Days till election</etg-monitor>
+    <etg-monitor monitor="approval_rate">Approval</etg-monitor>
+    <etg-monitor monitor="non_voters">Non voters</etg-monitor>
+  </div>
+</div>
+{% endblock plot %}
+
+{% block monitors %}
+  <div class="rowcontainer">
+    <div class="columncontainer">
+      <etg-monitor monitor="income">Income</etg-monitor>
+      <etg-monitor monitor="income_change">Change</etg-monitor>
+    </div>
+    <div class="columncontainer">
+      <etg-monitor monitor="budget">Budget</etg-monitor>
+      <etg-monitor monitor="budget_change">Change</etg-monitor>
+    </div>
+    <div class="columncontainer">
+      <etg-monitor monitor="green">Green</etg-monitor>
+      <etg-monitor monitor="green_change">Change</etg-monitor>
+    </div>
+  </div>
+{% endblock monitors %}
+
+{% block controls %}
+  {% call tabs.content('Inputs') %}
+    <table style="width: 100%;">
+      <tr>
+        <th></th>
+        <th>Bruto Price</th>
+        <th>Average Price</th>
+        <th>Tax</th>
+        <th>Increase</th>
+        <th>Decrease</th>
+      </tr>
+      {% for type in energy_types %}
+        <tr>
+          <th>{{ type|capitalize }}</th>
+          <td>[[ {{ type }}.price_bruto ]]</td>
+          <td>[[ {{ type }}.price_average ]]</td>
+          <td>[[ {{ type }}.tax ]]</td>
+          <td><button class="tax_button">+</button></td>
+          <td><button class="tax_button">-</button></td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endcall %}
+  {{ super() }}
+{% endblock controls %}
+
+{% block tablisting %}
+  {{ tabs.link('Inputs', faicon='percent') }}
+  {{ super() }}
+{% endblock %}
