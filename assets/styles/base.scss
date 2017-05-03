@@ -41,3 +41,13 @@ body {
 h1, h2, h3, h4, h5, h6 {
 	font-family: 'Trebuchet MS', Helvetica, sans-serif;
 }
+
+.rowcontainer {
+	display: flex;
+	flex-direction: row;
+}
+.columncontainer {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
