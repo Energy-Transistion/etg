@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% import 'tabs.html' as tabs %}
+{% block head %}
+  {{ super() }}
+  {% block scripts %}
+    <script src="https://use.fontawesome.com/db3220912c.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js/interface.js"></script>
+  {% endblock %}
+{% endblock head%}
+{% block title %}ETG - {{ name }}{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="/styles/interface.css">
+{% endblock styles %}
+
+{% block content %}
+  {% block header %}
+  <div id="header">
+    <span id="name">{{ name }}</span>
+    <span class="filler"></span>
+    <span id="weather">[[ weather ]]</span>
+    <span class="divider"></span>
+    <span id="date">[[ date ]]</span>
+  </div>
+  {% endblock header %}
+  <div id="interface">
+  {% block interface %}
+    <div class="splits columncontainer" id="information-view">
+      {% block information %}
+        <div id="newsfeed">
+          <h2>Newsfeed</h2>
+          <ul>
+            <transition-group name="newnews">
+              <li v-for="news in newsfeed" v-bind:key="news">
+                [[ news ]]
+              </li>
+            </transition-group>
+          </ul>
+        </div>
+        {% block plot %}
+          <plot></plot>
+        {% endblock plot %}
+        {% block monitors %}
+        {% endblock monitors %}
+      {% endblock information %}
+    </div>
+    <div class="splits rowcontainer" id="tabs">
+      {% block tabs %}
+        {% block controls %}
+        {% endblock controls %}
+        {% block chat %}
+          {% call tabs.content('Chat') %}
+            <ol id="chatlist">
+              <li>Lol, test</li>
+              <li>This is nice</li>
+            </ol>
+            <form id="chatinput" action="" onsubmit="Submit(); return false;">
+              <input type="text" id="chatmsg" placeholder="type here">
+              <input type="submit" value="Send">
+              <label> <input type="checkbox" id="autoscroll" checked="checked">
+              autoscroll
+              </label>
+            </form>
+          {% endcall %}
+        {% endblock chat %}
+        <div class="tablisting">
+          {% block tablisting %}
+            {{ tabs.link('Chat', faicon='envelope') }}
+          {% endblock tablisting %}
+        </div>
+      {% endblock tabs %}
+    </div>
+  {% endblock interface %}
+  </div>
+{% endblock content %}

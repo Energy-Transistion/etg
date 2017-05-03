@@ -1,0 +1,20 @@
+{% macro link(id, image='', faicon='') -%}
+<button class="tablinks" onclick="openTab(event, '{{ id }}')" id="button-{{ id
+}}">
+  {% if caller %}
+    {{ caller() }}
+  {% elif image != '' %}
+    <img src="{{ image }}" alt="{{ id }}">
+  {% elif faicon != '' %}
+    <span class="fa fa-{{ faicon }}"></span>
+  {% else %}
+    {{ id }}
+  {% endif %}
+</button>
+{%- endmacro %}
+
+{% macro content(name) %}
+<div class="tabcontent" id="{{ name }}">
+  {{ caller() }}
+</div>
+{%- endmacro %}
