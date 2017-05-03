@@ -1,0 +1,48 @@
+{% extends "interface.html" %}
+
+{% block plot %}
+  <div class="columncontainer">
+    {{ super() }}
+    <select>
+      <option>Market Share</option>
+      <option>Greenness</option>
+      <option>Income</option>
+    </select>
+  </div>
+{% endblock plot %}
+
+{% block monitors %}
+  <div class="rowcontainer">
+    <etg-monitor monitor="budget">Budget</etg-monitor>
+    <etg-monitor monitor="income">Income</etg-monitor>
+  </div>
+{% endblock monitors %}
+
+{% block controls %}
+  {% call tabs.content('Inputs') %}
+    {% for type in energy_types %}
+      <div>
+        <h3>{{ type|capitalize }}</h3>
+        <table>
+          <tr>
+            <td>Tier level</td><td>[[ {{ type }}.level ]]</td>
+          </tr>
+          <tr>
+            <td><button>Upgrade</button></td>
+            <td>[[ {{ type }}.upgrade_price ]]</td>
+          </tr>
+          <tr>
+            <td><button>Sell</button></td>
+            <td>[[ {{ type }}.sell_price ]]</td>
+          </tr>
+        </table>
+      </div>
+    {% endfor %}
+  {% endcall %}
+  {{ super() }}
+{% endblock controls %}
+
+{% block tablisting %}
+  {{ tabs.link('Inputs', faicon='percent') }}
+  {{ super() }}
+{% endblock %}
