@@ -185,3 +185,32 @@ button.tablinks.active {
 		margin: 0px;
 	}
 }
+.slider {
+	h4 {
+		margin: 0px;
+		padding: 0px;
+	}
+	input {
+		margin: 2px;
+		width: calc(80% - 4px);
+	}
+	span {
+		width: 20%;
+		display: inline-block;
+		text-align: right;
+	}
+	.rowcontainer {
+		justify-content: space-between;
+		align-items: center;
+	}
+	&:first-of-type {
+		margin-left: 0px;
+	}
+	&:last-of-type {
+		margin-right: 0px;
+	}
+	background-color: $background-color;
+	margin: $margin-size;
+	padding: $margin-size;
+	width: 50%;
+}

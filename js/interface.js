@@ -14,6 +14,51 @@ Vue.component('etg-monitor', {
   }
 })
 
+Vue.component('etg-slider', {
+  template: `
+  <div class="slider">
+    <h4><slot>{{ ident }}</slot></h4>
+    <div class="rowcontainer">
+      <input v-model="value" type="range"
+          :min="min" :max="max" :step="step">
+      </input>
+      <span>{{ value }} {{ unit }}</span>
+    </div>
+  </div>`,
+  props: {
+    ident: {
+      type: String,
+      required: true
+    },
+    init: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    unit: {
+      type: String,
+      default: '%'
+    },
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Number,
+      default: 100
+    },
+    step: {
+      type: Number,
+      default: 1
+    },
+  },
+  data: function() {
+    return {
+      value: this.init
+    }
+  },
+})
+
 Vue.component('plot', {
   template: '<div class = "plot"></div>',
 })
