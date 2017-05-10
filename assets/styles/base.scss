@@ -49,8 +49,10 @@ h1, h2, h3, h4, h5, h6 {
 	flex-direction: row;
 	justify-content: space-between;
 }
+
 .columncontainer {
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	flex-grow: 1;
 }

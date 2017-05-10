@@ -105,12 +105,6 @@ div.splits {
 		width: 100%;
 		align-self: flex-end;
 	}
-	&:first-of-type {
-		margin-left: 0px;
-	}
-	&:last-of-type {
-		margin-right: 0px;
-	}
 	margin: $margin-size;
 	padding: $margin-size;
 	display: flex;
@@ -218,17 +212,40 @@ table {
 		justify-content: space-between;
 		align-items: center;
 	}
-	&:first-of-type {
-		margin-left: 0px;
-	}
-	&:last-of-type {
-		margin-right: 0px;
-	}
 	background-color: $background-color;
 	margin: $margin-size;
 	padding: $margin-size;
 	width: 50%;
 }
+
+#govmonitors {
+	margin: -$margin-size;
+	margin-top: $margin-size;
+	margin-bottom: $margin-size;
+}
+
+.rowcontainer > {
+	.monitor, .slider {
+		&:first-of-type {
+			margin-left: 0px;
+		}
+		&:last-of-type {
+			margin-right: 0px;
+		}
+	}
+}
+
+.columncontainer > {
+	.monitor, .slider {
+		&:first-of-type {
+			margin-top: 0px;
+		}
+		&:last-of-type {
+			margin-bottom: 0px;
+		}
+	}
+}
+
 
 .extra {
 	input {
