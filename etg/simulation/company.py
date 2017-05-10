@@ -14,9 +14,9 @@ class Company(Entity):
 
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, simulation, name):
-        super(Company, self).__init__(self, simulation)
-        self.set_values(self.simulation.config['Companies'])
+    def __init__(self, simulation, options, name):
+        super(Company, self).__init__(simulation)
+        self.set_values(options)
         self.name = name
 
     def set_values(self, config):
@@ -26,8 +26,6 @@ class Company(Entity):
         """
         self.money = config['starting_money']
         self.margin = config['margin']
-        self.investment = config['investment']
-        self.income = 0
         self.supplier_solar = config['supplier_solar']
         self.supplier_wind = config['supplier_wind']
         self.supplier_gas = config['supplier_gas']
@@ -97,3 +95,12 @@ class Company(Entity):
         How much the product of the company costs the company itself.
         """
         pass
+
+    def tick(self):
+        """
+        In a tick, the companies do their marketing, by updating the needs of the agents to mimic
+        their product.
+        """
+        for agent in self.simulation.agents:
+            agent.need_green = (agent.need_green * 100 + self.product_green * self.marketing)/100
+            agent.need_safety = (agent.need_safety * 100 + self.product_safety * self.marketing)/100
