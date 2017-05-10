@@ -48,6 +48,22 @@
   {{ super() }}
 {% endblock controls %}
 
+{% block extracontrols %}
+<div class="extra">
+  <h3>Parties</h3>
+  <h4>Ruling Party</h4>
+  [[ ruling_party ]]
+  <h4>Donations</h4>
+  <select v-model="donate_party">
+    {% for party in parties %}
+      <option>{{ party }}</option>
+    {% endfor %}
+  </select>
+  <input v-model.number="donate_amount" type="number">
+  <button>Donate</button>
+</div>
+{% endblock %}
+
 {% block tablisting %}
   {{ tabs.link('Inputs', faicon='percent') }}
   {{ super() }}

@@ -80,7 +80,6 @@ function openTab(event, name) {
   event.currentTarget.className += " active";
 }
 
-
 /* Setting up everything */
 window.onload = function() {
   window.vm = new Vue({
@@ -89,6 +88,9 @@ window.onload = function() {
     data: {
       date: 'Today',
       weather: 'Quite Sunny',
+      ruling_party: 'The Green Party',
+      donate_party: 'The Green Party',
+      donate_amount: 10000,
       newsfeed: [
         'Nuclear reactor exploded',
         'More bullshit news',
