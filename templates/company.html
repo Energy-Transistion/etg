@@ -7,6 +7,7 @@
       <option>Market Share</option>
       <option>Greenness</option>
       <option>Income</option>
+      <option>Energy consumption and production</option>
     </select>
   </div>
 {% endblock plot %}
@@ -69,6 +70,35 @@
       </div>
     {% endfor %}
   {% endcall %}
+
+  {% call tabs.content('Market') %}
+    <h3>Open Energy Market</h3>
+    {% for type in energy_types %}
+      <h4>{{ type | capitalize }}</h4>
+      <input v-model.number="{{ type }}.market" type="number"><span>kWh</span>
+    {% endfor %}
+  {% endcall %}
+  <!-- Een tab waar energie van vrije markt staat, die koop je in kwh -->
+
+  {% call tabs.content('Taxes') %}
+    <h3>Taxes</h3>
+    <table>
+      <tr>
+        <th></th>
+        {% for type in energy_types %}
+        <th>{{ type | capitalize }}</th>
+        {% endfor %}
+      </tr>
+      {% for party in parties %}
+        <tr>
+          <th>{{ party }}</th>
+          {% for type in energy_types %}
+            <td>0 %</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+  {% endcall %}
   {{ super() }}
 {% endblock controls %}
 
@@ -91,5 +121,7 @@
 {% block tablisting %}
   {{ tabs.link('Owned', faicon='plug') }}
   {{ tabs.link('Buyable', faicon='credit-card') }}
+  {{ tabs.link('Market', faicon='eur') }}
+  {{ tabs.link('Taxes', faicon='percent') }}
   {{ super() }}
 {% endblock %}
