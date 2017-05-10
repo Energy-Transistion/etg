@@ -229,3 +229,10 @@ table {
 	padding: $margin-size;
 	width: 50%;
 }
+
+.extra {
+	background-color: $background-color;
+	padding: $margin-size;
+	margin-top: $margin-size;
+	width: calc(90% - #{2 * $margin-size});
+}
