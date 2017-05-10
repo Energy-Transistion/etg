@@ -55,6 +55,25 @@ class AgentSet:
         """
         self._list.remove(agent)
 
+    def n_of(self, number):
+        """
+        Return number of agents from the set, as an :class:`~etg.util.agentset.AgentSet`.
+        """
+        ret = AgentSet()
+        for agent in self:
+            ret.add_agent(agent)
+            if len(ret) >= number:
+                break
+        return ret
+
+    def one_of(self):
+        """
+        Return a random agent from the set.
+        """
+        # pylint: disable=protected-access
+        for agent in self.n_of(1):
+            return agent
+
     def filter(self, predicate):
         """
         A more efficient filter that works directly on the underlaying
