@@ -79,6 +79,8 @@ class Agent(Entity):
         self.energy_consumed = energy_consumed
         self.friends = AgentSet()
         self.refraction = randrange(self.simulation.refraction_ticks)
+        self._satis = 0
+        self._last_satis = self.simulation.current_tick
         self.company = None
         self.party = None
 
@@ -112,18 +114,106 @@ class Agent(Entity):
         """
         If this agent is uncertain
         """
-        pass
+        same = self.friends.filter(lambda a: self.company == a.company)
+        return (len(same)/len(self.friends) * 100) < self.certainty
 
     @property
     def unsatisfied(self):
         """
         If this agent is unsatisfied
         """
-        pass
+        return self.satisfaction < self.ambition
 
     @property
     def satisfaction(self):
         """
         How satisfied this agent is as a percentage
         """
+        if self._last_satis == self.simulation.current_tick:
+            return self._satis
+        dist_money = self.company.product_cost
+        if dist_money > self.need_money:
+            dist_money *= 2
+        dist_green = self.need_green - self.company.product_green
+        if dist_green < 0:
+            dist_green /= 2
+        dist_safety = self.need_safety - self.company.product_safety
+        if dist_safety < 0:
+            dist_safety /= 2
+        company_dist = dist_money + dist_green + dist_safety
+        if company_dist < 0:
+            company_dist = 0
+        self._satis += (100 - company_dist - self._satis) / 20
+        if self._satis < 1:
+            self._satis = 1
+        self._last_satis = self.simulation.current_tick
+        return self._satis
+
+    def make_friend(self, other):
+        """
+        Give this agent a new friend.
+        """
+        self.friends.add_agent(other)
+        other.friends.add_agent(self)
+
+    def tick(self):
+        """
+        Make a turn for this agent. In a turn, the agent will see if it has to make a decision
+        about its energy provider and if so, pick a new one.
+        """
+        if not self.company:
+            self.company = choice(self.simulation.companies)
+        # If the agent needs to make a decision, make that decision
+        self.refraction -= 1
+        if self.refraction < 0:
+            self.refraction = self.simulation.refraction_ticks
+            if self.unsatisfied:
+                if self.uncertain:
+                    self.use_deliberation()
+                else:
+                    self.use_comparison()
+            else:
+                if self.uncertain:
+                    self.use_imitation()
+                else:
+                    self.use_repetition()
+
+    def use_deliberation(self):
+        """
+        If the agent is certain about itself, but unsatisfied, it will find the best company and
+        join that.
+        """
+        self.company = min(self.simulation.companies, key=lambda c: dist(self, c))
+
+    def use_comparison(self):
+        """
+        If the agent is unsatisfied and the agent is uncertain, then it will find the company that
+        most of its friends are clients of.
+        """
+        friends_companies = set(friend.company for friend in self.friends)
+        self.company = min(filter(self.simulation.companies, lambda c: c in friends_companies),
+                           key=lambda c: dist(self, c))
+
+    def use_imitation(self):
+        """
+        If the agent is satisfied, but uncertain, it will pick the most common company among its
+        friends.
+        """
+        users = {}
+        for company in self.simulation.companies:
+            users[company] = 0
+        for friend in self.friends:
+            users[friend.company] += 1
+        self.company = max(self.simulation.companies, key=lambda c: users[c])
+
+    def use_repetition(self):
+        """
+        If the agent is satisfied and certain, it will just stay with its current provider.
+        """
         pass
+
+def dist(agent, company):
+    "Calculate the distance between an agent and a company."
+    return math.sqrt((agent.need_money - company.product_cost) ** 2 +
+                     (agent.need_green - company.product_green) ** 2 +
+                     (agent.need_safety - company.product_safety) ** 2)
