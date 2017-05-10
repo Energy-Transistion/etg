@@ -102,4 +102,5 @@ ENV/
 _trial_temp
 
 # Ignore the files that the server generates
+twistd.pid
 _site
