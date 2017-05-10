@@ -37,14 +37,17 @@ body {
 	margin: 0px;
 	height: 100%;
 	width: 100%;
+	overflow: auto;
 }
 h1, h2, h3, h4, h5, h6 {
 	font-family: 'Trebuchet MS', Helvetica, sans-serif;
+	margin: 0px;
 }
 
 .rowcontainer {
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 }
 .columncontainer {
 	display: flex;

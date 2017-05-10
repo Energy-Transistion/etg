@@ -46,14 +46,15 @@
         {% endblock monitors %}
       {% endblock information %}
     </div>
-    <div class="splits rowcontainer" id="tabs">
+    <div class="splits columncontainer" id="tabs">
+      <div class="rowcontainer" id="tabs">
       {% block tabs %}
         {% block controls %}
         {% endblock controls %}
         {% block chat %}
           {% call tabs.content('Chat') %}
             <ol id="chatlist">
-              <li>Lol, test</li>
+              <li>Testing the messaging layout</li>
               <li>This is nice</li>
             </ol>
             <form id="chatinput" action="" onsubmit="Submit(); return false;">
@@ -67,10 +68,11 @@
         {% endblock chat %}
         <div class="tablisting">
           {% block tablisting %}
-            {{ tabs.link('Chat', faicon='envelope') }}
+            {{ tabs.link('Chat', faicon='envelope-o') }}
           {% endblock tablisting %}
         </div>
       {% endblock tabs %}
+      </div>
     </div>
   {% endblock interface %}
   </div>

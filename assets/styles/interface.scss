@@ -14,6 +14,10 @@ $new-news-color: rgb(230, 249, 255);
 	font-family: 'Trebuchet MS', Helvetica, sans-serif;
 }
 
+#weather {
+	color: white;
+}
+
 .filler {
 	flex-grow: 1;
 }
@@ -101,7 +105,13 @@ div.splits {
 		width: 100%;
 		align-self: flex-end;
 	}
-	margin: 10px;
+	&:first-of-type {
+		margin-left: 0px;
+	}
+	&:last-of-type {
+		margin-right: 0px;
+	}
+	margin: $margin-size;
 	padding: $margin-size;
 	display: flex;
 	flex-direction: column;
@@ -185,6 +195,11 @@ button.tablinks.active {
 		margin: 0px;
 	}
 }
+
+table {
+	min-width: 60%;
+}
+
 .slider {
 	h4 {
 		margin: 0px;
