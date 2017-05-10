@@ -1,7 +1,8 @@
 """
 All classes and methods having to do with agents
 """
-from random import randrange
+from random import choice, randrange, normalvariate, uniform
+import math
 from ..util.agentset import AgentSet
 from .entity import Entity
 
@@ -67,7 +68,7 @@ class Agent(Entity):
                  need_government_money,
                  energy_consumed):
         # pylint: disable=too-many-arguments
-        super(Agent, self).__init__(self, simulation)
+        super(Agent, self).__init__(simulation)
         self.income = income
         self.ambition = ambition
         self.certainty = certainty
@@ -77,19 +78,44 @@ class Agent(Entity):
         self.need_government_money = need_government_money
         self.energy_consumed = energy_consumed
         self.friends = AgentSet()
-        self.refraction = randrange(self.simulation.agent_refraction)
+        self.refraction = randrange(self.simulation.refraction_ticks)
         self.company = None
         self.party = None
 
+    @classmethod
+    def generate_random(cls, simulation, avg_income, std_income, avg_energy_use, std_energy_use):
+        """
+        This generates a random agent from a set of settings and returns it.
+
+        :param avg_income: The average income wanted for the population.
+        :param std_income: The standard deviation for the income.
+        """
+        # pylint: disable=too-many-arguments
+        income = -1
+        while income < 1000:
+            income = normalvariate(avg_income, std_income)
+        energy_use = -1
+        while energy_use < 500:
+            energy_use = normalvariate(avg_energy_use, std_energy_use)
+        return cls(simulation,
+                   income=income,
+                   energy_consumed=energy_use,
+                   ambition=uniform(0, 100),
+                   certainty=uniform(0, 100),
+                   need_money=uniform(0, 100),
+                   need_green=uniform(0, 100),
+                   need_safety=uniform(0, 100),
+                   need_government_money=uniform(0, 100))
+
     @property
-    def is_uncertain(self):
+    def uncertain(self):
         """
         If this agent is uncertain
         """
         pass
 
     @property
-    def is_unsatisfied(self):
+    def unsatisfied(self):
         """
         If this agent is unsatisfied
         """
