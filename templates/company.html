@@ -25,23 +25,47 @@
 {% endblock monitors %}
 
 {% block controls %}
-  {% call tabs.content('Inputs') %}
+  {% call tabs.content('Owned') %}
     {% for type in energy_types %}
-      <div>
+    <div v-if="{{ type }}.level > 0">
         <h3>{{ type|capitalize }}</h3>
         <table>
           <tr>
-            <td>Tier level</td><td>[[ {{ type }}.level ]]</td>
+            <td>Tier level</td>
+            <td>[[ {{ type }}.level ]]</td>
+            <td>Output</td>
+            <td>[[ {{ type }}.output ]] kWh</td>
+            <td>Tax level</td>
+            <td></td>
           </tr>
           <tr>
             <td><button>Upgrade</button></td>
             <td>[[ {{ type }}.upgrade_price ]]</td>
-          </tr>
-          <tr>
+            <td>Output after update</td>
+            <td>[[ {{ type }}.next_output ]]</td>
             <td><button>Sell</button></td>
             <td>[[ {{ type }}.sell_price ]]</td>
           </tr>
         </table>
+      </div>
+    {% endfor %}
+  {% endcall %}
+
+  {% call tabs.content('Buyable') %}
+    {% for type in energy_types %}
+      <div v-if="{{ type }}.level === 0">
+        <h3>{{ type | capitalize }}</h3>
+        <div class="rowcontainer">
+          <div>
+            <h4>Output</h4>
+            [[ {{ type }}.next_output ]]
+          </div>
+          <div>
+            <h4>Price</h4>
+            [[ {{ type }}.upgrade_price ]]
+          </div>
+          <button>Buy</button>
+        </div>
       </div>
     {% endfor %}
   {% endcall %}
@@ -65,6 +89,7 @@
 {% endblock %}
 
 {% block tablisting %}
-  {{ tabs.link('Inputs', faicon='percent') }}
+  {{ tabs.link('Owned', faicon='plug') }}
+  {{ tabs.link('Buyable', faicon='credit-card') }}
   {{ super() }}
 {% endblock %}
