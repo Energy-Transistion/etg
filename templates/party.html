@@ -51,10 +51,19 @@
       {% endfor %}
     </table>
   {% endcall %}
+  {% call tabs.content('Campaign') %}
+  <div class="rowcontainer">
+    <etg-monitor monitor="party_budget">Party Budget</etg-monitor>
+    <etg-monitor monitor="compaign_reach">Campaign Reach</etg-monitor>
+  </div>
+  <button class="tax_button">Spend money on campaign</button>
+  {% endcall %}
+
   {{ super() }}
 {% endblock controls %}
 
 {% block tablisting %}
   {{ tabs.link('Inputs', faicon='percent') }}
+  {{ tabs.link('Campaign') }}
   {{ super() }}
 {% endblock %}
