@@ -231,6 +231,9 @@ table {
 }
 
 .extra {
+	input {
+		flex-grow: 1;
+	}
 	background-color: $background-color;
 	padding: $margin-size;
 	margin-top: $margin-size;
