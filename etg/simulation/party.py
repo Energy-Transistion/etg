@@ -37,16 +37,21 @@ class Party(Entity):
         """
         return self.simulation.agents.filter(lambda a: a.party == self)
 
-    @property
     def campaign(self):
         """
-        How much is spend on campaigning in this tick.
+        The party can campaign in order to get more voters to vote for them. It then does need the
+        required amount of money before it can start.
         """
         pass
 
-    @property
-    def income(self):
+    def receive_donation(self, amount):
         """
-        How much money the company earned this tick.
+        The party received a donation.
         """
-        pass
+        self.money += amount
+
+    def tick(self):
+        """
+        In a turn, the party campaigns to get more voters.
+        """
+        self.campaign()
