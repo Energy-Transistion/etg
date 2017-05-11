@@ -116,7 +116,8 @@ class Simulation(object):
         for party in self.parties:
             party.tick()
         if self.current_date == self.next_election:
-            pass
+            self.next_election += self.one_round
+            self.election()
         self.update_government_budget()
         self.current_tick += 1
         self.current_date += self.one_day
@@ -128,3 +129,41 @@ class Simulation(object):
         self.government_income = sum(agent.energy_consumed * agent.company.taxes
                                      for agent in self.agents)
         self.government_budget += self.government_income
+
+    def poll(self):
+        """
+        Poll the population and return the results of the poll.
+        """
+        voters = {}
+        non_voters = 0
+        for party in self.parties:
+            voters[party] = 0
+        sample = self.agents.n_of(100)
+        for agent in sample:
+            agent.choose_best_party()
+            if agent.party:
+                voters[agent.party] += 1
+            else:
+                non_voters += 1
+        self.votes = voters
+        self.non_voters = non_voters
+        return (voters, non_voters)
+
+    def election(self):
+        """
+        Hold an election and put the party with most voters in power.
+        """
+        votes = {}
+        non_voters = 0
+        for party in self.parties:
+            votes[party] = 0
+        for agent in self.agents:
+            agent.choose_best_party()
+            if agent.party:
+                votes[agent.party] += 1
+            else:
+                non_voters += 1
+        self.active_party = max(self.parties, key=lambda p: votes[p])
+        self.votes = votes
+        self.non_voters = non_voters
+        return (votes, non_voters)
