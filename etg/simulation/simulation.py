@@ -86,11 +86,12 @@ class Simulation(object):
             self.energy_types.append(EnergyType(**data))
 
     @property
-    def non_voters(self):
+    def approval(self):
         """
-        All the agents that are not planning to vote in the upcoming election.
+        The approval for the party that is currently in power. This is the percantage of voters that
+        would vote for that party.
         """
-        return self.agents.filter(lambda a: a.party)
+        return self.votes[self.active_party]/len(self.agents)
 
     def add_party(self, party):
         """
@@ -116,5 +117,14 @@ class Simulation(object):
             party.tick()
         if self.current_date == self.next_election:
             pass
+        self.update_government_budget()
         self.current_tick += 1
         self.current_date += self.one_day
+
+    def update_government_budget(self):
+        """
+        Update the government budget by inning taxes.
+        """
+        self.government_income = sum(agent.energy_consumed * agent.company.taxes
+                                     for agent in self.agents)
+        self.government_budget += self.government_income
