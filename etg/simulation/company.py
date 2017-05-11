@@ -2,6 +2,7 @@
 All the classes and methods having to do with the companies in the game.
 """
 from .entity import Entity
+from .energy import Producer
 
 class Company(Entity):
     """
@@ -24,14 +25,14 @@ class Company(Entity):
         Set all the values on this company by coping them from the config dict
         from the simulation.
         """
-        self.money = config['starting_money']
-        self.margin = config['margin']
-        self.supplier_solar = config['supplier_solar']
-        self.supplier_wind = config['supplier_wind']
-        self.supplier_gas = config['supplier_gas']
-        self.supplier_oil = config['supplier_oil']
-        self.supplier_nuclear = config['supplier_nuclear']
-        self.supplier_coal = config['supplier_coal']
+        self.budget = config['starting_money']
+        self.producers = {}
+        self.market = {}
+        for etype in self.simulation.energy_types:
+            self.producers[etype.name] = Producer(etype)
+            self.market[etype.name] = 0
+        self.marketing = 0
+        self.price = 0
 
     @property
     def users(self):

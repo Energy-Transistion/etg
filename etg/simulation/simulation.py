@@ -3,7 +3,9 @@ This module contains the simulation and all otherwise related functions.
 """
 import datetime
 from random import randrange
+import yaml
 from etg.simulation.agent import Agent
+from etg.simulation.energy import EnergyType
 from etg.util.agentset import AgentSet
 
 class Simulation(object):
@@ -15,9 +17,7 @@ class Simulation(object):
     one_round = datetime.timedelta(days=1461)
 
     def __init__(self,
-                 tick_rate,
-                 refraction_ticks,
-                 agent_options):
+                 options):
         """
         :param tick_rate: The number of seconds in a tick.
         :param refraction_ticks: The number of ticks between the decisions that an agent makes.
@@ -26,12 +26,18 @@ class Simulation(object):
         self.agents = AgentSet()
         self.parties = []
         self.companies = []
-        self.tick_rate = tick_rate
-        self.refraction_ticks = refraction_ticks
-        self._generate_agents(agent_options)
+        self.tick_rate = options['tick_rate']
+        self.refraction_ticks = options['refraction_ticks']
+        self._generate_agents(options['agents'])
+        self._setup_energy_types(options['energy_types'])
         self.current_tick = 1
         self.current_date = datetime.date.today()
         self.next_election = self.current_date + self.one_round
+        self.active_party = None
+        self.government_budget = options['government_budget']
+        self.government_income = 0
+        self.votes = {}
+        self.non_voters = 0
 
     def _generate_agents(self, agent_options):
         """
@@ -68,6 +74,16 @@ class Simulation(object):
             for friend in other.friends.n_of(num_friends):
                 agent.friends.add_agent(friend)
                 friend.friends.add_agent(agent)
+
+    def _setup_energy_types(self, path):
+        """
+        This method sets up all the necessary information for the different energy types.
+        """
+        self.energy_types = []
+        with open(path, 'r') as file:
+            energy_types_data = yaml.load_all(file)
+        for data in energy_types_data:
+            self.energy_types.append(EnergyType(**data))
 
     @property
     def non_voters(self):

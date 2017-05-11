@@ -1,0 +1,78 @@
+---
+name: solar # The name of the energy type
+greenness: 90 # How green the energy is, from 0 to 100
+safety: 100 # How safe the energy is, from 0 to 100
+market_price: 0.12 # The price for one kWh on the open market
+initial_output: 5 # percent of needed kWh
+tiers_unlocks: # how expensive it is to unlock a new tier of this type of energy
+  - 9000000
+  - 7500000
+  - 7000000
+  - 6500000
+  - 6000000
+  - 5500000
+---
+name: wind
+greenness: 80
+safety: 80
+initial_output: 5
+market_price: 0.11
+tiers_unlocks:
+  - 7750000
+  - 6250000
+  - 5750000
+  - 5250000
+  - 4750000
+  - 4250000
+---
+name: nuclear
+greenness: 55
+safety: 20
+initial_output: 5
+market_price: 0.07
+tiers_unlocks:
+  - 6500000
+  - 5000000
+  - 4500000
+  - 3500000
+  - 3000000
+  - 2500000
+---
+name: oil
+greenness: 10
+safety: 20
+initial_output: 5
+market_price: 0.02
+tiers_unlocks:
+  - 5500000
+  - 4000000
+  - 3500000
+  - 3000000
+  - 2500000
+  - 2000000
+---
+name: gas
+greenness: 30
+safety: 40
+initial_output: 5
+market_price: 0.06
+tiers_unlocks:
+  - 5500000
+  - 4000000
+  - 3500000
+  - 3000000
+  - 2500000
+  - 2000000
+---
+name: coal
+greenness: 5
+safety: 25
+initial_output: 5
+market_price: 0.06
+tiers_unlocks:
+  - 5500000
+  - 4000000
+  - 3500000
+  - 3000000
+  - 2500000
+  - 2000000

@@ -14,9 +14,9 @@ class Party(Entity):
 
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, simulation, name):
-        super(Party, self).__init__(self, simulation)
-        self.set_values(self.simulation.config['Parties'])
+    def __init__(self, simulation, options, name):
+        super(Party, self).__init__(simulation)
+        self.set_values(options)
         self.name = name
 
     def set_values(self, config):
@@ -24,13 +24,11 @@ class Party(Entity):
         Set all the values on this party by coping them from the config dict
         from the simulation.
         """
-        self.money = config['starting_money']
-        self.tax_solar = config['tax_solar']
-        self.tax_wind = config['tax_wind']
-        self.tax_gas = config['tax_gas']
-        self.tax_oil = config['tax_oil']
-        self.tax_nuclear = config['tax_nuclear']
-        self.tax_coal = config['tax_coal']
+        self.money = config['parties']['starting_money']
+        self.taxes = {}
+        for energy_type in self.simulation.energy_types:
+            self.taxes[energy_type.name] = 0
+        self.campaign_budget = 0
 
     @property
     def voters(self):
