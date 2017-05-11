@@ -53,49 +53,65 @@ class Company(Entity):
         """
         How much profit the company makes each tick.
         """
-        pass
-
-    @property
-    def marketing(self):
-        """
-        How much is spend on marketing in this tick.
-        """
-        pass
+        return sum(agent.energy_consumed * self.price for agent in self.users) - self.rawcost
 
     @property
     def income(self):
         """
         How much money the company earned this tick.
         """
-        pass
-
-    @property
-    def product_green(self):
-        """
-        How green the product of this company is.
-        """
-        pass
-
-    @property
-    def product_safety(self):
-        """
-        How safe the product of this company is.
-        """
-        pass
-
-    @property
-    def product_cost(self):
-        """
-        How much the product from this company costs.
-        """
-        pass
+        return self.profit - self.marketing
 
     @property
     def rawcost(self):
         """
         How much the product of the company costs the company itself.
         """
-        pass
+        return sum(self.market[etype.name] * etype.market_price
+                   for etype in self.simulation.energy_types)
+
+    @property
+    def output(self):
+        """
+        The output of this company on the current tick.
+        """
+        return sum(self.producers[etype.name].output + self.market[etype.name]
+                   for etype in self.simulation.energy_types)
+
+    @property
+    def product_green(self):
+        """
+        How green the product of this company is.
+        """
+        return sum(etype.greenness / self.output *
+                   (self.producers[etype.name].output + self.market[etype.name])
+                   for etype in self.simulation.energy_types)
+
+    @property
+    def product_safety(self):
+        """
+        How safe the product of this company is.
+        """
+        return sum(etype.greenness / self.output *
+                   (self.producers[etype.name].output + self.market[etype.name])
+                   for etype in self.simulation.energy_types)
+
+    @property
+    def taxes(self):
+        """
+        The amount of taxation that goes over this product, calculated by taking the proportions for
+        all the energy types in the output.
+        """
+        return sum((self.simulation.parties.taxes[etype]/100) / self.output *
+                   (self.producers[etype.name].output + self.market[etype.name])
+                   for etype in self.simulation.energy_types)
+
+    @property
+    def product_cost(self):
+        """
+        How much the product from this company costs.
+        """
+        return self.price * self.taxes
 
     def tick(self):
         """
