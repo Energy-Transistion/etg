@@ -1,0 +1,32 @@
+# Settings that are only relevant for the simulation
+simulation:
+  tick_rate: 0.33 # Number of seconds between two ticks
+  government_budget: 100000 # The initial government budget
+  agents:
+    refraction_ticks: 250 # Number of ticks between agent decisions
+    number_agents: 500 # Number of agents in the game
+    agent_seed: 30 # Size of fully linked initial agent network
+    max_friends: 8 # Number of friends an agent has
+    chance_snd_friend: 0.05 # The chance that the agent gets a second friend from a friend
+    avg_income: 20000 # The average income for the population of agents
+    std_income: 15000
+    avg_energy_use: 7000 # The average energy use in kWh
+    std_energy_use: 500  # The standard deviation on energy use
+
+  party: # Settings for the political parties
+    starting_money: 10000
+
+  companies:
+    starting_money: 10000
+
+  energy_types: assets/energy_types.yaml
+
+# Settings that are only relevant for the site
+site:
+  assets: _site
+  styles: assets/styles
+  images: assets/images
+  javascript: js
+  templates: templates
+  html_info: assets/intro
+  port: 8080
