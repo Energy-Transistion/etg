@@ -1,9 +1,10 @@
 """
 All classes and methods having to do with agents
 """
-from random import choice, randrange, normalvariate, uniform
+from random import choice, random, randrange, normalvariate, uniform
 import math
 from ..util.agentset import AgentSet
+from ..util.math import mean
 from .entity import Entity
 
 class Agent(Entity):
@@ -177,6 +178,24 @@ class Agent(Entity):
                     self.use_imitation()
                 else:
                     self.use_repetition()
+
+    def choose_best_party(self):
+        """
+        Find the best party for this agent.
+        """
+        def party_satisfaction(party):
+            "Calculate how satisfied this agent is with a party."
+            return abs(mean(energy.greenness + energy.greenness * party.taxes[energy] / 100
+                            for energy in self.simulation.energy_types) - self.need_green) + \
+                   abs(mean(energy.safety + energy.safety * party.taxes[energy] / 100
+                            for energy in self.simulation.energy_types) - self.need_safety) + \
+                   abs(mean(energy.price + energy.price * party.taxes[energy] / 100
+                            for energy in self.simulation.energy_types) - self.need_money) + \
+                   random() * 5 - 10
+                   #TODO: calculation if the party gets positive income
+        self.party = min(self.simulation.parties, key=party_satisfaction)
+        if party_satisfaction(self.party) < 0.20: # Non-voter
+            self.party = None
 
     def use_deliberation(self):
         """
