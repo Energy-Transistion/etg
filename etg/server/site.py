@@ -108,7 +108,8 @@ class PartyResource(resource.Resource):
         state = get_session_state(request)
         print(request.args)
         state.name = html.escape(request.args[b'partyname'][0].decode('utf-8'))
-        self.service.simulation.add_party(state.name, state.taxes)
+        with self.service.simulation as sim:
+            sim.add_party(state.name, state.taxes)
         return self.render_interface(request)
 
     def render_GET(self, request):
@@ -186,7 +187,8 @@ class CompanyResource(resource.Resource):
         # pylint: disable=invalid-name
         state = get_session_state(request)
         state.name = html.escape(request.args[b'companyname'][0].decode('utf-8'))
-        self.service.simulation.add_company(state.name, state.tiers)
+        with self.service.simulation as sim:
+            sim.add_company(state.name, state.tiers)
         return self.render_interface(request)
 
     def render_GET(self, request):

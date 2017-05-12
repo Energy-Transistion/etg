@@ -7,6 +7,7 @@ import sys
 
 from etg.simulation.simulation import Simulation
 from etg.server.server import make_application
+from etg.util.proxylock import ProxyLock
 import yaml
 
 with open('options.yaml', 'r') as f:
@@ -20,4 +21,4 @@ except KeyError as e:
     print("Configuration key {} is missing!".format(e.args[0]))
     sys.exit(-1)
 
-application = make_application(simulation, options)
+application = make_application(ProxyLock(simulation), options)
