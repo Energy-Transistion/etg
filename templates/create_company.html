@@ -1,0 +1,14 @@
+{% extends "intro.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<div id="text">
+  Your company starts with {{ plants }} of tier {{ tier }}.
+  <br/>
+  What do you want to name your party?
+  <form action="/company.html" method="POST">
+    <input type="text" name="companyname" placeholder="Some awesome company name">
+    <input type="submit" value="Submit">
+  </form>
+</div>
+{% endblock %}

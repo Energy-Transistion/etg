@@ -5,6 +5,7 @@ import datetime
 from random import randrange
 import yaml
 from etg.simulation.agent import Agent
+from etg.simulation.company import Company
 from etg.simulation.party import Party
 from etg.simulation.energy import EnergyType
 from etg.util.agentset import AgentSet
@@ -107,10 +108,16 @@ class Simulation(object):
             party.taxes[tax['name']] = tax['taxes']
         self.parties.append(party)
 
-    def add_company(self, company):
+    def add_company(self, name, unlocked_tiers):
         """
         Add a new company to the simulation.
         """
+        company = Company(self, self._options['companies'], name)
+        for tiers in unlocked_tiers:
+            tier = tiers['tier']
+            while tier > 0:
+                tier -= 1
+                company.producers[tiers['name']].upgrade()
         self.companies.append(company)
 
     def tick(self):

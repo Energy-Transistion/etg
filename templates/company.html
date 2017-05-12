@@ -28,24 +28,24 @@
 {% block controls %}
   {% call tabs.content('Owned') %}
     {% for type in energy_types %}
-    <div v-if="{{ type }}.level > 0">
-        <h3>{{ type|capitalize }}</h3>
+    <div v-if="{{ type.name }}.level > 0">
+        <h3>{{ type.name|capitalize }}</h3>
         <table>
           <tr>
             <td>Tier level</td>
-            <td>[[ {{ type }}.level ]]</td>
+            <td>[[ {{ type.name }}.level ]]</td>
             <td>Output</td>
-            <td>[[ {{ type }}.output ]] kWh</td>
+            <td>[[ {{ type.name }}.output ]] kWh</td>
             <td>Tax level</td>
             <td></td>
           </tr>
           <tr>
             <td><button>Upgrade</button></td>
-            <td>[[ {{ type }}.upgrade_price ]]</td>
+            <td>[[ {{ type.name }}.upgrade_price ]]</td>
             <td>Output after update</td>
-            <td>[[ {{ type }}.next_output ]]</td>
+            <td>[[ {{ type.name }}.next_output ]]</td>
             <td><button>Sell</button></td>
-            <td>[[ {{ type }}.sell_price ]]</td>
+            <td>[[ {{ type.name }}.sell_price ]]</td>
           </tr>
         </table>
       </div>
@@ -54,16 +54,16 @@
 
   {% call tabs.content('Buyable') %}
     {% for type in energy_types %}
-      <div v-if="{{ type }}.level === 0">
-        <h3>{{ type | capitalize }}</h3>
+      <div v-if="{{ type.name }}.level === 0">
+        <h3>{{ type.name | capitalize }}</h3>
         <div class="rowcontainer">
           <div>
             <h4>Output</h4>
-            [[ {{ type }}.next_output ]]
+            [[ {{ type.name }}.next_output ]]
           </div>
           <div>
             <h4>Price</h4>
-            [[ {{ type }}.upgrade_price ]]
+            [[ {{ type.name }}.upgrade_price ]]
           </div>
           <button>Buy</button>
         </div>
@@ -74,8 +74,8 @@
   {% call tabs.content('Market') %}
     <h3>Open Energy Market</h3>
     {% for type in energy_types %}
-      <h4>{{ type | capitalize }}</h4>
-      <input v-model.number="{{ type }}.market" type="number"><span>kWh</span>
+      <h4>{{ type.name | capitalize }}</h4>
+      <input v-model.number="{{ type.name }}.market" type="number"><span>kWh</span>
     {% endfor %}
   {% endcall %}
   <!-- Een tab waar energie van vrije markt staat, die koop je in kwh -->
@@ -86,12 +86,12 @@
       <tr>
         <th></th>
         {% for type in energy_types %}
-        <th>{{ type | capitalize }}</th>
+        <th>{{ type.name | capitalize }}</th>
         {% endfor %}
       </tr>
       {% for party in parties %}
         <tr>
-          <th>{{ party }}</th>
+          <th>{{ party.name }}</th>
           {% for type in energy_types %}
             <td>0 %</td>
           {% endfor %}
@@ -111,7 +111,7 @@
   <div class="rowcontainer">
     <select v-model="donate_party">
       {% for party in parties %}
-        <option>{{ party }}</option>
+        <option>{{ party.name }}</option>
       {% endfor %}
     </select>
     <input v-model.number="donate_amount" type="number">

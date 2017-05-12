@@ -15,6 +15,7 @@ simulation:
 
   party: # Settings for the political parties
     starting_money: 10000
+    campaign_budget: 50000
 
   companies:
     starting_money: 10000
