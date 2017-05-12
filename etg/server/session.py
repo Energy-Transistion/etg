@@ -12,6 +12,7 @@ class ISessionState(Interface):
     name = Attribute("The name of the 'entity' (company/party) that is playing")
     short_name = Attribute("A shorthand for the 'entity'")
     player_name = Attribute("The name of the player")
+    taxes = Attribute("The taxes that the party starts out with")
 
 @implementer(ISessionState)
 class SessionState(object):

@@ -28,7 +28,7 @@ class Party(Entity):
         self.taxes = {}
         for energy_type in self.simulation.energy_types:
             self.taxes[energy_type.name] = 0
-        self.campaign_budget = config['compaign_budget']
+        self.campaign_budget = config['campaign_budget']
 
     @property
     def voters(self):

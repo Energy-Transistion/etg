@@ -102,7 +102,7 @@ class Simulation(object):
         """
         Add a new political party to the simulation.
         """
-        party = Party(self, self._options, name)
+        party = Party(self, self._options['party'], name)
         for tax in taxes:
             party.taxes[tax['name']] = tax['taxes']
         self.parties.append(party)

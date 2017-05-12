@@ -90,7 +90,6 @@ class PartyResource(resource.Resource):
     """
     The class that builds the party interface.
     """
-
     isLeaf = True
 
     def __init__(self, service, env, template_name="party"):
@@ -107,6 +106,7 @@ class PartyResource(resource.Resource):
         state = get_session_state(request)
         print(request.args)
         state.name = html.escape(request.args[b'partyname'][0].decode('utf-8'))
+        self.service.simulation.add_party(state.name, state.taxes)
         return self.render_interface(request)
 
     def render_GET(self, request):
