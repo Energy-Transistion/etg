@@ -1,17 +1,23 @@
 #!/usr/bin/env python
-from etg.server.server import SimulationService
-from etg.server.site import ETGSite
-from twisted.application import service, strports
-from twisted.web.server import Site
+"""
+The file to start and stop the whole server. Necessary for working with twistd.
+"""
+# pylint: disable=invalid-name
+import sys
+
+from etg.simulation.simulation import Simulation
+from etg.server.server import make_application
 import yaml
 
-with open('tmpopts.yaml', 'r') as f:
+with open('options.yaml', 'r') as f:
     options = yaml.load(f)
 
-simulation = None
-application = service.Application('etg')
-service_collection = service.IServiceCollection(application)
-server = SimulationService(simulation)
-server.setServiceParent(service_collection)
-site = ETGSite(options, server)
-strports.service("tcp:8080", Site(site)).setServiceParent(service_collection)
+print(options)
+
+try:
+    simulation = Simulation(options['simulation'])
+except KeyError as e:
+    print("Configuration key {} is missing!".format(e.args[0]))
+    sys.exit(-1)
+
+application = make_application(simulation, options)
