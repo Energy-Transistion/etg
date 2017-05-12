@@ -8,14 +8,15 @@ class EnergyType:
     This class represents a specific energy type, that is read in from a yaml file.
     """
     # pylint: disable=too-few-public-methods
-    def __init__(self, simulation, name, greenness, safety, initial_output, tiers, market_price):
+    def __init__(self, simulation, name, greenness, safety, initial_output, tiers_unlocks,
+                 market_price):
         # pylint: disable=too-many-arguments
         self.simulation = simulation
         self.name = name
         self.greenness = greenness
         self.safety = safety
         self.initial_output = initial_output
-        self.tier_costs = tiers
+        self.tier_costs = tiers_unlocks
         self.market_price = market_price
 
     @property

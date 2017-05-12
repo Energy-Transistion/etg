@@ -38,6 +38,9 @@ class Simulation(object):
         self.government_income = 0
         self.votes = {}
         self.non_voters = 0
+        self._generate_agents(options['agents'])
+        self._setup_energy_types(options['energy_types'], options['agents']['avg_energy_use'])
+        self._options = options
 
     def _generate_agents(self, agent_options):
         """
@@ -75,15 +78,18 @@ class Simulation(object):
                 agent.friends.add_agent(friend)
                 friend.friends.add_agent(agent)
 
-    def _setup_energy_types(self, path):
+    def _setup_energy_types(self, path, avg_energy_use):
         """
         This method sets up all the necessary information for the different energy types.
         """
         self.energy_types = []
         with open(path, 'r') as file:
             energy_types_data = yaml.load_all(file)
-        for data in energy_types_data:
-            self.energy_types.append(EnergyType(**data))
+            for data in energy_types_data:
+                initial_energy = data['initial_output'] /100 * len(self.agents) * avg_energy_use
+                del data['initial_output']
+                self.energy_types.append(EnergyType(simulation=self,
+                                                    initial_output=initial_energy, **data))
 
     @property
     def approval(self):
