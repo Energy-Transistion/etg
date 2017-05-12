@@ -41,10 +41,10 @@
       </tr>
       {% for type in energy_types %}
         <tr>
-          <th>{{ type|capitalize }}</th>
-          <td>[[ {{ type }}.price_bruto ]]</td>
-          <td>[[ {{ type }}.price_average ]]</td>
-          <td>[[ {{ type }}.tax ]]</td>
+          <th>{{ type.name|capitalize }}</th>
+          <td>[[ {{ type.name }}.price_bruto ]]</td>
+          <td>[[ {{ type.name }}.price_average ]]</td>
+          <td>[[ {{ type.name }}.tax ]]</td>
           <td><button class="tax_button">+</button></td>
           <td><button class="tax_button">-</button></td>
         </tr>

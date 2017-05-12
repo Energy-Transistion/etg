@@ -2,10 +2,10 @@
 simulation:
   tick_rate: 0.33 # Number of seconds between two ticks
   government_budget: 100000 # The initial government budget
+  refraction_ticks: 250 # Number of ticks between agent decisions
   agents:
-    refraction_ticks: 250 # Number of ticks between agent decisions
     number_agents: 500 # Number of agents in the game
-    agent_seed: 30 # Size of fully linked initial agent network
+    seed_size: 30 # Size of fully linked initial agent network
     max_friends: 8 # Number of friends an agent has
     chance_snd_friend: 0.05 # The chance that the agent gets a second friend from a friend
     avg_income: 20000 # The average income for the population of agents
