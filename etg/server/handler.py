@@ -40,6 +40,7 @@ class Handler():
         :param list view_wrapee: A list of attributes that are viewable on the wrapee
         :param list control_wrapee: A list with attributes that can be set on the wrapee
         """
+        # pylint: disable=too-many-arguments
         self.simulation = simulation
         self.wrapee = wrapee
         self.name = wrapee.name
@@ -49,9 +50,10 @@ class Handler():
         self._controlables_wrapee = control_wrapee
         for key in self._viewables_wrapee:
             self._state[key] = None
+        for key in self._controlables_wrapee:
+            self._state[key] = None
         for key in self._viewables_simulation:
             self._state[key] = None
-        self.prepare_packet()
 
     def _update_state(self, new):
         """
@@ -71,10 +73,14 @@ class Handler():
         with self.wrapee as wrapee:
             for key in self._viewables_wrapee:
                 curstate[key] = getattr(wrapee, key)
+            for key in self._controlables_wrapee:
+                curstate[key] = getattr(wrapee, key)
         with self.simulation as simulation:
             for key in self._viewables_simulation:
                 curstate[key] = getattr(simulation, key)
         diff = difference(self._state, curstate)
+        print(curstate)
+        print(diff)
         return self._update_state(diff)
 
     def process_packet(self, packet):
@@ -87,7 +93,11 @@ class Handler():
             for key, val in packet.items():
                 try:
                     if key in self._controlables_wrapee:
-                        setattr(wrapee, key, val)
+                        attr = getattr(wrapee, key)
+                        try:
+                            attr.update(val)
+                        except AttributeError:
+                            setattr(wrapee, key, val)
                 except AttributeError as ex:
                     self._log.error("Trying to set a value that is not on the wrapee",
                                     exception=ex)

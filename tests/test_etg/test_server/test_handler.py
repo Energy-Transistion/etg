@@ -68,6 +68,7 @@ class HandlerTestCase(unittest.TestCase):
         """
         A test to make sure that the handler collects the right information.
         """
+        self.handler.prepare_packet()
         self.foo.c = "World"
         self.foo.b = 21
         self.simulation.tick()
