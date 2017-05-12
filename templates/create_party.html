@@ -1,0 +1,26 @@
+{% extends "intro.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<div id="text">
+  This is what your party's policy looks like:
+  <table>
+    <tr>
+      {% for energy in energy_types %}
+      <th>{{ energy.name }}</th>
+      {% endfor %}
+    </tr>
+    <tr>
+      {% for energy in energy_types %}
+      <td>{{ energy.taxes }}</td>
+      {% endfor %}
+    </tr>
+  </table>
+  <br/>
+  What do you want to name your party?
+  <form action="/party.html" method="POST">
+    <input type="text" name="partyname" placeholder="Some awesome party name">
+    <input type="submit" value="Submit">
+  </form>
+</div>
+{% endblock %}

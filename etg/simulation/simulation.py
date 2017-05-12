@@ -5,6 +5,7 @@ import datetime
 from random import randrange
 import yaml
 from etg.simulation.agent import Agent
+from etg.simulation.party import Party
 from etg.simulation.energy import EnergyType
 from etg.util.agentset import AgentSet
 
@@ -28,8 +29,6 @@ class Simulation(object):
         self.companies = []
         self.tick_rate = options['tick_rate']
         self.refraction_ticks = options['refraction_ticks']
-        self._generate_agents(options['agents'])
-        self._setup_energy_types(options['energy_types'])
         self.current_tick = 1
         self.current_date = datetime.date.today()
         self.next_election = self.current_date + self.one_round
@@ -99,10 +98,13 @@ class Simulation(object):
         """
         return self.votes[self.active_party]/len(self.agents)
 
-    def add_party(self, party):
+    def add_party(self, name, taxes):
         """
         Add a new political party to the simulation.
         """
+        party = Party(self, self._options, name)
+        for tax in taxes:
+            party.taxes[tax['name']] = tax['taxes']
         self.parties.append(party)
 
     def add_company(self, company):

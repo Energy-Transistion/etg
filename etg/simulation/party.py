@@ -24,11 +24,11 @@ class Party(Entity):
         Set all the values on this party by coping them from the config dict
         from the simulation.
         """
-        self.money = config['parties']['starting_money']
+        self.money = config['starting_money']
         self.taxes = {}
         for energy_type in self.simulation.energy_types:
             self.taxes[energy_type.name] = 0
-        self.campaign_budget = 0
+        self.campaign_budget = config['compaign_budget']
 
     @property
     def voters(self):
