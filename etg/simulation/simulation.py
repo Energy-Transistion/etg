@@ -32,6 +32,7 @@ class Simulation(object):
         self.refraction_ticks = options['refraction_ticks']
         self.current_tick = 1
         self.current_date = datetime.date.today()
+        self.weather = "sunny"
         self.next_election = self.current_date + self.one_round
         self.active_party = None
         self.government_budget = options['government_budget']
@@ -62,8 +63,7 @@ class Simulation(object):
             other = agent
             while other == agent:
                 other = self.agents.one_of()
-            agent.friends.add_agent(other)
-            other.friends.add_agent(agent)
+            agent.make_friend(other)
         def income_difference(agent, other):
             "Calculate the income difference between two agents, with randomness"
             return abs(other.income - agent.income + randrange(8000) - 4000)
@@ -71,12 +71,11 @@ class Simulation(object):
             agent = Agent.generate_random(self, avg_income, std_income,
                                           avg_energy_use, std_energy_use)
             other = max(self.agents, key=lambda x: income_difference(agent, x))
-            agent.friends.add_agent(other)
-            other.friends.add_agent(agent)
+            agent.make_friend(other)
             num_friends = min(agent_options['max_friends'], len(other.friends))
             for friend in other.friends.n_of(num_friends):
-                agent.friends.add_agent(friend)
-                friend.friends.add_agent(agent)
+                agent.make_friend(friend)
+            self.agents.add_agent(agent)
 
     def _setup_energy_types(self, path, avg_energy_use):
         """
@@ -124,6 +123,7 @@ class Simulation(object):
         """
         Iterate the simulation by one tick.
         """
+        news = []
         for agent in self.agents:
             agent.tick()
         for company in self.companies:
@@ -133,9 +133,11 @@ class Simulation(object):
         if self.current_date == self.next_election:
             self.next_election += self.one_round
             self.election()
+            news.append("{} just got elected as the major party!".format(self.active_party.name))
         self.update_government_budget()
         self.current_tick += 1
         self.current_date += self.one_day
+        return news
 
     def update_government_budget(self):
         """

@@ -60,7 +60,7 @@ class Company(Entity):
         """
         How much money the company earned this tick.
         """
-        return self.profit - self.marketing
+        return self.profit * (1 - self.marketing)
 
     @property
     def rawcost(self):
@@ -92,7 +92,7 @@ class Company(Entity):
         """
         How safe the product of this company is.
         """
-        return sum(etype.greenness / self.output *
+        return sum(etype.safety / self.output *
                    (self.producers[etype.name].output + self.market[etype.name])
                    for etype in self.simulation.energy_types)
 
@@ -102,7 +102,7 @@ class Company(Entity):
         The amount of taxation that goes over this product, calculated by taking the proportions for
         all the energy types in the output.
         """
-        return sum((self.simulation.parties.taxes[etype]/100) / self.output *
+        return sum((self.simulation.active_party.taxes[etype.name]/100) / self.output *
                    (self.producers[etype.name].output + self.market[etype.name])
                    for etype in self.simulation.energy_types)
 

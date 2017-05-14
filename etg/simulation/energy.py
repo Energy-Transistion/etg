@@ -20,13 +20,20 @@ class EnergyType:
         self.market_price = market_price
 
     @property
-    def price(self):
+    def raw_price(self):
         """
         The average price for this energy type.
         """
-        return mean(company.producers[self.name].output * company.product_cost /
+        return mean(company.producers[self.name].output * company.price /
                     sum(producer.output for _, producer in company.producers.items())
                     for company in self.simulation.companies)
+
+    @property
+    def price(self):
+        """
+        The average price for this energy type including taxes.
+        """
+        return self.raw_price * self.simulation.active_party.taxes[self.name]
 
 class Producer:
     """

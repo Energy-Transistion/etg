@@ -116,7 +116,11 @@ class Agent(Entity):
         If this agent is uncertain
         """
         same = self.friends.filter(lambda a: self.company == a.company)
-        return (len(same)/len(self.friends) * 100) < self.certainty
+        try:
+            return (len(same)/len(self.friends) * 100) < self.certainty
+        except ZeroDivisionError:
+            print("Found an agent without friends!" + str(len(self.friends)))
+            return False
 
     @property
     def unsatisfied(self):
@@ -185,11 +189,11 @@ class Agent(Entity):
         """
         def party_satisfaction(party):
             "Calculate how satisfied this agent is with a party."
-            return abs(mean(energy.greenness + energy.greenness * party.taxes[energy] / 100
+            return abs(mean(energy.greenness + energy.greenness * party.taxes[energy.name] / 100
                             for energy in self.simulation.energy_types) - self.need_green) + \
-                   abs(mean(energy.safety + energy.safety * party.taxes[energy] / 100
+                   abs(mean(energy.safety + energy.safety * party.taxes[energy.name] / 100
                             for energy in self.simulation.energy_types) - self.need_safety) + \
-                   abs(mean(energy.price + energy.price * party.taxes[energy] / 100
+                   abs(mean(energy.raw_price + energy.raw_price * party.taxes[energy.name] / 100
                             for energy in self.simulation.energy_types) - self.need_money) + \
                    random() * 5 - 10
                    #TODO: calculation if the party gets positive income
@@ -210,7 +214,7 @@ class Agent(Entity):
         most of its friends are clients of.
         """
         friends_companies = set(friend.company for friend in self.friends)
-        self.company = min(filter(self.simulation.companies, lambda c: c in friends_companies),
+        self.company = min(filter(lambda c: c in friends_companies, self.simulation.companies),
                            key=lambda c: dist(self, c))
 
     def use_imitation(self):
