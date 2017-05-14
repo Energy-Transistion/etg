@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}ETG - Admin Panel{% endblock %}
+{% block content %}
+{% block scripts %}
+    <script src="https://use.fontawesome.com/db3220912c.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js/interface.js"></script>
+  <script>
+  var socket = new WebSocket('ws://' + location.hostname + ':8080/ws');
+  socket.onopen = function() {
+    socket.send("admin")
+    console.log("made connection")
+  }
+
+  socket.onclose = function() {
+    alert("Server closed connection")
+  }
+
+window.start = function() {
+  socket.send(JSON.stringify({'type': 'admin', 'value': 'start'}))
+  console.log("Send start")
+}
+
+window.pause = function() {
+  socket.send(JSON.stringify({'type': 'admin', 'value': 'pause'}))
+  console.log("Send pause")
+}
+
+window.setup = function() {
+  socket.send(JSON.stringify({'type': 'admin', 'value': 'setup'}))
+  console.log("Send setup")
+}
+  </script>
+{% endblock %}
+
+<button onclick="start()">Start</button>
+<button onclick="pause()">Pause</button>
+<button onclick="setup()">Setup</button>
+{% endblock %}
+

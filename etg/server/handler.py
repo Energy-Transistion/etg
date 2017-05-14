@@ -99,3 +99,18 @@ class Handler():
                 except AttributeError as ex:
                     self._log.error("Trying to set a value that is not on the wrapee",
                                     exception=ex)
+
+class AdminHandler(Handler):
+    """
+    The handler that is used for the connection to the admin screen.
+    """
+    def __init__(self, service, simulation):
+        self.service = service
+        self.simulation = simulation
+        self._state = {}
+
+    def process_packet(self, _):
+        pass
+
+    def prepare_packet(self):
+        pass

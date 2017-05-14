@@ -6,7 +6,7 @@ connections.
 import html
 from twisted.logger import Logger
 from etg.util.proxylock import ProxyLock
-from .handler import Handler
+from .handler import Handler, AdminHandler
 
 # pylint: disable=invalid-name
 log = Logger()
@@ -42,6 +42,10 @@ class ETGProtocol:
         This method should be called whenever a new connection is made, and it should then be passed
         the name of the client, which the client should send on its first connection.
         """
+        if name == "admin":
+            self.name = "admin"
+            self.handler = AdminHandler(self.service, self.simulation)
+            return True
         parties = list(filter(lambda p: p.name == name, self.simulation.parties))
         if len(parties) == 1:
             self.handler = Handler(self.simulation, ProxyLock(parties[0]), self.party_watchers[0],
@@ -72,6 +76,18 @@ class ETGProtocol:
             self.on_chat_message(message)
         elif message['type'] == "action":
             self.on_action(message)
+        elif message['type'] == "admin":
+            if message['value'] == 'start':
+                self.service.start()
+                print("Starting server")
+            elif message['value'] == 'setup':
+                with self.simulation as simulation:
+                    simulation.election()
+                    for agent in simulation.agents:
+                        agent.use_deliberation()
+            else:
+                self.service.pause()
+                print("pausing server")
         else:
             log.warn("Unrecognized message type {type}", type=message['type'])
 

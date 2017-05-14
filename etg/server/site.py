@@ -43,6 +43,7 @@ class ETGSite(resource.Resource):
         self.putChild(b'create_party.html', PartyCreationResource(self.service, self.env))
         self.putChild(b'company.html', CompanyResource(self.service, self.env))
         self.putChild(b'create_company.html', CompanyCreationResource(self.service, self.env))
+        self.putChild(b'admin.html', AdminResource(self.service, self.env))
         with open(os.path.join(self.html_info, 'index.html'), 'r') as html_content:
             content = render_file(html_content, self.env, 'index')
         self.content = content.encode('utf-8')
@@ -213,3 +214,21 @@ class CompanyResource(resource.Resource):
                                     parties=self.service.simulation.parties,
                                     energy_types=self.service.simulation.energy_types) \
                                             .encode('utf-8')
+
+class AdminResource(resource.Resource):
+    """
+    A resource to render the Admin panel with start/stop buttons.
+    """
+    isLeaf = True
+
+    def __init__(self, service, env, template_name="admin"):
+        super().__init__()
+        self.service = service
+        self.template = env.get_template(template_name + ".html")
+
+    def render_GET(self, _):
+        """
+        Render the actual Admin Interface.
+        """
+        # pylint: disable=invalid-name
+        return self.template.render().encode('utf-8')
