@@ -25,8 +25,7 @@ class AgentSet:
         """
         Return an iterator that goes over the agents in a random order.
         """
-        random.shuffle(self._list)
-        return iter(self._list)
+        return iter(random.sample(self._list, len(self._list)))
 
     def __len__(self):
         """
