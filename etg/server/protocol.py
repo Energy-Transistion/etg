@@ -17,10 +17,10 @@ class ETGProtocol:
     communication logic.
     """
     party_watchers = (["current_date", "next_election", "active_party", "government_budget",
-                       "government_income", "non_voters"],
+                       "government_income", "non_voters", "weather"],
                       ["money"],
                       ["taxes"])
-    company_watchers = (["current_date", "next_election", "active_party", "parties"],
+    company_watchers = (["current_date", "next_election", "active_party", "parties", "weather"],
                         ["budget", "producers"],
                         ["marketing", "price", "market"])
     def __init__(self, service, simulation, connection):
@@ -64,6 +64,7 @@ class ETGProtocol:
         This method should be called whenever a message is received. this methods will then make
         sure that the message is handled properly.
         """
+        log.info("Got message {message}", message=message)
         if message['type'] == "change":
             self.handler.process_packet(message['packet'])
             self.send_packet()
@@ -82,14 +83,14 @@ class ETGProtocol:
             self.service.chat_all(message['text'], self.name)
         else:
             for target in self.service.protocols.filter(lambda p: p.name in message['target']):
-                target.send_chat(message['text'])
-            self.send_chat(message['text'])
+                target.send_chat(message['text'], self.name)
+            self.send_chat(message['text'], self.name)
 
-    def send_chat(self, text):
+    def send_chat(self, text, sender):
         """
         Send a chat message to this client.
         """
-        self.connection.send({'type': 'chat', 'text': html.escape(text)})
+        self.connection.send({'type': 'chat', 'sender': sender, 'text': html.escape(text)})
 
     def on_action(self, message):
         """
@@ -103,6 +104,12 @@ class ETGProtocol:
                 self.send_packet()
         except AttributeError as e:
             log.warn("Trying to call a method {method} that does not exsist!", method=e.args[0])
+
+    def send_news(self, msg):
+        """
+        Send a news message to the accompanying client.
+        """
+        self.connection.send({'type': 'news', 'news': str(msg)})
 
     def send_packet(self, msg_type='change'):
         """

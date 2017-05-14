@@ -6,6 +6,7 @@ from etg.server.websocket import WebSocketConnection
 from autobahn.twisted.websocket import WebSocketServerFactory
 from autobahn.twisted.resource import WebSocketResource
 from twisted.application import service, strports
+from twisted.internet import task
 from twisted.web.server import Site
 
 class SimulationService(service.Service):
@@ -16,7 +17,7 @@ class SimulationService(service.Service):
     def __init__(self, simulation, options):
         self._simulation = simulation
         self.options = options
-        self.pauzed = True
+        self.paused = True
         self.protocols = []
 
     @property
@@ -76,23 +77,53 @@ class SimulationService(service.Service):
         site.putChild(b"ws", WebSocketResource(self.get_websocket_factory()))
         return site
 
+    def chat_all(self, message, source):
+        """
+        Send a chat message to all connected clients.
+        """
+        for prot in self.protocols:
+            prot.send_chat(message, source)
+
     def start(self):
         """
         Unpauze the server.
         """
-        self.pauzed = False
+        self.paused = False
+        print("Started server")
 
-    def pauze(self):
+    def pause(self):
         """
         Pauze the server.
         """
-        self.pauzed = True
+        self.paused = True
 
-    def toggle_pauze(self):
+    def toggle_pause(self):
         """
-        This methods toggles wether the simulation, and thus the server, is pauzed.
+        This methods toggles wether the simulation, and thus the server, is paused.
         """
-        self.pauzed = not self.pauzed
+        self.paused = not self.paused
+
+    def loop(self):
+        """
+        Run every step for the server once. Meant to be called repeatedly.
+        """
+        if not self.paused:
+            with self.simulation as simulation:
+                if simulation.active_party is None:
+                    simulation.election()
+                news = simulation.tick()
+                if simulation.current_date.weekday() == 0:
+                    simulation.poll()
+            for protocol in self.protocols:
+                protocol.send_packet()
+                for new in news:
+                    protocol.send_news(new)
+
+def errback(failure):
+    """
+    The function that gets called on errors.
+    """
+    print(failure.getTraceback())
 
 def make_application(simulation, options):
     """
@@ -104,4 +135,8 @@ def make_application(simulation, options):
     server.setServiceParent(service_collection)
     site = server.make_site()
     strports.service("tcp:8080", Site(site)).setServiceParent(service_collection)
+    loop = task.LoopingCall(server.loop)
+    loop_deferred = loop.start(simulation.tick_rate)
+
+    loop_deferred.addErrback(errback)
     return application

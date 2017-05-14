@@ -61,6 +61,7 @@ class Sender:
         Send an object over the underlying connection.
         """
         string = json_dump(message)
+        log.info("Sending message {message}", message=message)
         self.connection.sendMessage(string.encode('utf-8'), isBinary=False)
 
     def error(self, message):

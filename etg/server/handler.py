@@ -79,8 +79,6 @@ class Handler():
             for key in self._viewables_simulation:
                 curstate[key] = getattr(simulation, key)
         diff = difference(self._state, curstate)
-        print(curstate)
-        print(diff)
         return self._update_state(diff)
 
     def process_packet(self, packet):
