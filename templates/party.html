@@ -14,12 +14,12 @@
 {% block monitors %}
   <div id="govmonitors" class="rowcontainer">
     <div class="columncontainer">
-      <etg-monitor monitor="income">Income</etg-monitor>
-      <etg-monitor monitor="income_change">Change</etg-monitor>
+      <etg-monitor monitor="government_income">Income</etg-monitor>
+      <etg-monitor monitor="government_income_change">Change</etg-monitor>
     </div>
     <div class="columncontainer">
-      <etg-monitor monitor="budget">Budget</etg-monitor>
-      <etg-monitor monitor="budget_change">Change</etg-monitor>
+      <etg-monitor monitor="government_budget">Budget</etg-monitor>
+      <etg-monitor monitor="government_budget_change">Change</etg-monitor>
     </div>
     <div class="columncontainer">
       <etg-monitor monitor="green">Green</etg-monitor>
@@ -42,9 +42,9 @@
       {% for type in energy_types %}
         <tr>
           <th>{{ type.name|capitalize }}</th>
-          <td>[[ {{ type.name }}.price_bruto ]]</td>
-          <td>[[ {{ type.name }}.price_average ]]</td>
-          <td>[[ {{ type.name }}.tax ]]</td>
+          <!--<td>[[ {{ type.name }}.price_bruto ]]</td>
+          <td>[[ {{ type.name }}.price_average ]]</td>-->
+          <td>[[ taxes.{{ type.name }} ]]</td>
           <td><button class="tax_button">+</button></td>
           <td><button class="tax_button">-</button></td>
         </tr>
@@ -53,7 +53,7 @@
   {% endcall %}
   {% call tabs.content('Campaign') %}
   <div class="rowcontainer">
-    <etg-monitor monitor="party_budget">Party Budget</etg-monitor>
+    <etg-monitor monitor="money">Party Budget</etg-monitor>
     <etg-monitor monitor="compaign_reach">Campaign Reach</etg-monitor>
   </div>
   <button class="tax_button">Spend money on campaign</button>
@@ -62,6 +62,7 @@
   {{ super() }}
 {% endblock controls %}
 
+{% block starttab %}Inputs{% endblock %}
 {% block tablisting %}
   {{ tabs.link('Inputs', faicon='percent') }}
   {{ tabs.link('Campaign') }}

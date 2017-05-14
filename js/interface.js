@@ -1,67 +1,106 @@
-/* Vue components */
-Vue.component('etg-monitor', {
-  template: '<div class="monitor"><h4><slot>{{ monitor }}</slot></h4><span>{{ value }}</span></div>',
-  props: {
-    monitor: {
-      type: String,
-      required: true
-    }
-  },
-  data: function() {
-    return {
-      value: 0
-    }
+/* WebSockets */
+function make_connection (name) {
+  var socket = new WebSocket('ws://' + location.hostname + ':8080/ws');
+  socket.onopen = function() {
+    socket.send(name)
   }
-})
 
-Vue.component('etg-slider', {
-  template: `
-  <div class="slider">
+  socket.onclose = function() {
+    alert("Server closed connection")
+  }
+
+  socket.onmessage = function(evt) {
+    var message = JSON.parse(evt.data)
+    socket.dispatchEvent(new CustomEvent(message.type, {'detail': message}))
+  }
+  return socket;
+}
+
+function define_components(connection) {
+  /* Vue components */
+  Vue.component('etg-monitor', {
+    template: '<div class="monitor"><h4><slot>{{ monitor }}</slot></h4><span>{{ value }}</span></div>',
+    props: {
+      monitor: {
+        type: String,
+        required: true
+      }
+    },
+    data: function() {
+      return {
+        value: 0
+      }
+    },
+    created: function() {
+      var mon = this
+      connection.addEventListener('change', function(e) {
+        console.log("updating value for " + mon.monitor);
+        data = e.detail.packet;
+        if (data[mon.monitor]) {
+          mon.value = data[mon.monitor]
+        }
+      })
+    }
+  })
+
+  Vue.component('etg-slider', {
+    template: `
+    <div class="slider">
     <h4><slot>{{ ident }}</slot></h4>
     <div class="rowcontainer">
-      <input v-model="value" type="range"
-          :min="min" :max="max" :step="step">
-      </input>
-      <span>{{ value }} {{ unit }}</span>
+    <input v-model.number="value" type="range"
+    :min="min" :max="max" :step="step"
+    v-on:input="update($event.target.value)">
+    </input>
+    <span>{{ value }} {{ unit }}</span>
     </div>
-  </div>`,
-  props: {
-    ident: {
-      type: String,
-      required: true
+    </div>`,
+    props: {
+      ident: {
+        type: String,
+        required: true
+      },
+      init: {
+        type: Number,
+        required: false,
+        default: 0
+      },
+      unit: {
+        type: String,
+        default: '%'
+      },
+      min: {
+        type: Number,
+        default: 0
+      },
+      max: {
+        type: Number,
+        default: 100
+      },
+      step: {
+        type: Number,
+        default: 1
+      },
     },
-    init: {
-      type: Number,
-      required: false,
-      default: 0
+    data: function() {
+      return {
+        value: this.init
+      }
     },
-    unit: {
-      type: String,
-      default: '%'
+    methods: {
+      update: function(value) {
+        this.value = parseFloat(value);
+        socket.send(JSON.stringify({'type': 'change', 'packet':
+                                              {[this.ident]: this.value}}));
+        console.log("Send new value for " + this.ident);
+      },
     },
-    min: {
-      type: Number,
-      default: 0
-    },
-    max: {
-      type: Number,
-      default: 100
-    },
-    step: {
-      type: Number,
-      default: 1
-    },
-  },
-  data: function() {
-    return {
-      value: this.init
-    }
-  },
-})
+  })
 
-Vue.component('plot', {
-  template: '<div class = "plot"></div>',
-})
+  Vue.component('plot', {
+    template: '<div class = "plot"></div>',
+  })
+}
 
 /* Tab functionality */
 function openTab(event, name) {
@@ -80,93 +119,22 @@ function openTab(event, name) {
   event.currentTarget.className += " active";
 }
 
-/* Setting up everything */
-window.onload = function() {
+function setup_vue(data, socket) {
   window.vm = new Vue({
-    el: '#content',
+    el: "#content",
     delimiters: ['[[', ']]'],
-    data: {
-      date: 'Today',
-      weather: 'Quite Sunny',
-      ruling_party: 'The Green Party',
-      donate_party: 'The Green Party',
-      donate_amount: 10000,
-      newsfeed: [
-        'Nuclear reactor exploded',
-        'More bullshit news',
-        'Clown elected president on Mars',
-        'djkajflkdasfdalkjfdkl',
-        'A puppy got lost',
-        'We have no more icecream',
-        'The moon exploded',
-        'The summer is actually not coming',
-      ],
-      solar: {
-        price_bruto: 0,
-        price_average: 0,
-        tax: 0,
-        level: 1,
-        upgrade_price: 10000,
-        sell_price: 5000,
-        output: 0,
-        market: 0,
-      },
-      wind: {
-        price_bruto: 0,
-        price_average: 0,
-        tax: 0,
-        level: 0,
-        upgrade_price: 10000,
-        upgrade_price: 10000,
-        sell_price: 5000,
-        output: 0,
-        market: 0,
-      },
-      nuclear: {
-        price_bruto: 0,
-        price_average: 0,
-        tax: 0,
-        level: 0,
-        upgrade_price: 10000,
-        upgrade_price: 10000,
-        sell_price: 5000,
-        output: 0,
-        market: 0,
-      },
-      oil: {
-        price_bruto: 0,
-        price_average: 0,
-        tax: 0,
-        level: 1,
-        upgrade_price: 10000,
-        upgrade_price: 10000,
-        sell_price: 5000,
-        output: 0,
-        market: 0,
-      },
-      gas: {
-        price_bruto: 0,
-        price_average: 0,
-        tax: 0,
-        level: 0,
-        upgrade_price: 10000,
-        upgrade_price: 10000,
-        sell_price: 5000,
-        output: 0,
-        market: 0,
-      },
-      coal: {
-        price_bruto: 0,
-        price_average: 0,
-        tax: 0,
-        level: 0,
-        upgrade_price: 10000,
-        upgrade_price: 10000,
-        sell_price: 5000,
-        output: 0,
-        market: 0,
-      },
+    data: data,
+    methods: {
+      updateMarket: function(name, value) {
+        if (value < 0) {
+          value = 0;
+          vm.market[name] = 0;
+        }
+        socket.send(JSON.stringify({'type': 'change', 'packet':
+          {'market': {name: value}}}))
+      }
+
     }
   })
-  openTab({currentTarget: document.getElementById('button-Owned')}, 'Owned');
+  socket.dispatchEvent(new CustomEvent('change', {'detail': {'packet': data}}))
 }

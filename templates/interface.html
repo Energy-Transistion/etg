@@ -6,6 +6,57 @@
     <script src="https://use.fontawesome.com/db3220912c.js"></script>
     <script src="/js/vue.js"></script>
     <script src="/js/interface.js"></script>
+  <script>
+window.onload = function() {
+  window.socket = make_connection("{{ name }}");
+  define_components(socket)
+  openTab({currentTarget:
+    document.getElementById('button-{{ starttab }}')},
+    '{{ starttab }}');
+  console.log("Adding event listener")
+  socket.addEventListener("initial", function(e) {
+    var data = e.detail.packet;
+    data.newsfeed = [];
+    data.chatmessages = [];
+    data.active_party = "";
+    data.donate_party = "";
+    data.donate_amount = 0;
+    console.log(data)
+    setup_vue(data, socket);
+  })
+
+  socket.addEventListener("change", function(e) {
+    var data = e.detail.packet;
+    console.log(data)
+    for (var key in data) {
+      if (key in vm.$data) {
+        vm.$data[key] = data[key];
+      }
+    }
+  })
+
+  socket.addEventListener("news", function(e) {
+    var news = e.detail.news;
+    vm.newsfeed.unshift(news.news);
+  })
+
+  window.send_chat = function () {
+    var chatmsg = document.getElementById('chatmsg');
+    socket.send(JSON.stringify({'type': 'chat',
+                                'text': chatmsg.value,
+                                'target': []}));
+    chatmsg.value = '';
+    return false;
+  }
+
+  var chatlist = document.getElementById("chatlist")
+  socket.addEventListener("chat", function(e) {
+    console.log("Got a chat message");
+    vm.chatmessages.push(e.detail);
+    console.log("Appended child");
+  })
+}
+  </script>
   {% endblock %}
 {% endblock head%}
 {% block title %}ETG - {{ name }}{% endblock %}
@@ -22,7 +73,7 @@
     <span class="filler"></span>
     <span id="weather">[[ weather ]]</span>
     <span class="divider"></span>
-    <span id="date">[[ date ]]</span>
+    <span id="date">[[ current_date ]]</span>
   </div>
   {% endblock header %}
   <div id="interface">
@@ -54,10 +105,11 @@
         {% block chat %}
           {% call tabs.content('Chat') %}
             <ol id="chatlist">
-              <li>Testing the messaging layout</li>
-              <li>This is nice</li>
+              <li v-for="chats in chatmessages" v-bind:key="chats">
+                <span>&lt;[[ chats.sender ]]&gt;</span> [[ chats.text ]]
+              </li>
             </ol>
-            <form id="chatinput" action="" onsubmit="Submit(); return false;">
+            <form id="chatinput" action="" onsubmit="return send_chat();alert('done')">
               <input type="text" id="chatmsg" placeholder="type here">
               <input type="submit" value="Send">
               <label> <input type="checkbox" id="autoscroll" checked="checked">
