@@ -1,5 +1,16 @@
 {% extends "interface.html" %}
 
+{% block scripts %}
+  {{ super() }}
+  <script>
+window.changeTax = function(energy_type, amount) {
+  var data = vm.taxes;
+  data[energy_type] += amount;
+  sendJSON(socket, {'type': 'change', 'packet': {'taxes': data}})
+}
+  </script>
+{% endblock %}
+
 {% block plot %}
 <div class="rowcontainer">
   {{ super() }}
@@ -33,8 +44,8 @@
     <table style="width: 100%;">
       <tr>
         <th></th>
-        <th>Bruto Price</th>
-        <th>Average Price</th>
+        <!--<th>Bruto Price</th>
+        <th>Average Price</th>-->
         <th>Tax</th>
         <th>Increase</th>
         <th>Decrease</th>
@@ -45,8 +56,10 @@
           <!--<td>[[ {{ type.name }}.price_bruto ]]</td>
           <td>[[ {{ type.name }}.price_average ]]</td>-->
           <td>[[ taxes.{{ type.name }} ]]</td>
-          <td><button class="tax_button">+</button></td>
-          <td><button class="tax_button">-</button></td>
+          <td><button onclick="changeTax('{{ type.name }}', 1)"
+              class="tax_button">+</button></td>
+          <td><button onclick="changeTax('{{ type.name }}', -1)"
+              class="tax_button">-</button></td>
         </tr>
       {% endfor %}
     </table>
