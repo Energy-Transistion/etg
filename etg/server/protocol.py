@@ -18,10 +18,10 @@ class ETGProtocol:
     """
     party_watchers = (["current_date", "next_election", "active_party", "government_budget",
                        "government_income", "non_voters", "weather"],
-                      ["money"],
+                      ["money", "campaign_cost"],
                       ["taxes"])
     company_watchers = (["current_date", "next_election", "active_party", "parties", "weather"],
-                        ["budget", "producers"],
+                        ["budget", "producers", "income"],
                         ["marketing", "price", "market"])
     def __init__(self, service, simulation, connection):
         """
