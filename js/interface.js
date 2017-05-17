@@ -13,6 +13,9 @@ function make_connection (name) {
     var message = JSON.parse(evt.data)
     socket.dispatchEvent(new CustomEvent(message.type, {'detail': message}))
   }
+  socket.sendJSON = function(obj) {
+    this.send(JSON.stringify(obj));
+  }
   return socket;
 }
 
@@ -34,7 +37,6 @@ function define_components(connection) {
     created: function() {
       var mon = this
       connection.addEventListener('change', function(e) {
-        console.log("updating value for " + mon.monitor);
         data = e.detail.packet;
         if (data[mon.monitor]) {
           mon.value = data[mon.monitor]
@@ -90,9 +92,8 @@ function define_components(connection) {
     methods: {
       update: function(value) {
         this.value = parseFloat(value);
-        socket.send(JSON.stringify({'type': 'change', 'packet':
-                                              {[this.ident]: this.value}}));
-        console.log("Send new value for " + this.ident);
+        socket.sendJSON({'type': 'change',
+                         'packet': {[this.ident]: this.value}});
       },
     },
   })
