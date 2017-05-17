@@ -113,11 +113,27 @@ class Company(Entity):
         """
         return self.price * self.taxes
 
+    def donate(self, party_name, amount):
+        """
+        Donate the `amount` to the party with `party_name`. Returns `True` if succesful, `False`
+        with an error message otherwise.
+        """
+        parties = list(filter(lambda p: p.name == party_name, self.simulation.parties))
+        if len(parties) != 1:
+            return False, "No or multiple parties with name {}".format(party_name)
+        party = parties[0]
+        if self.budget < amount:
+            return False, "Not enough budget"
+        self.budget -= amount
+        party.money += amount
+        return True, ""
+
     def tick(self):
         """
         In a tick, the companies do their marketing, by updating the needs of the agents to mimic
         their product.
         """
+        self.budget += self.income
         for agent in self.simulation.agents:
             agent.need_green = (agent.need_green * 100 + self.product_green * self.marketing)/100
             agent.need_safety = (agent.need_safety * 100 + self.product_safety * self.marketing)/100
