@@ -128,6 +128,21 @@ class Company(Entity):
         party.money += amount
         return True, ""
 
+    def upgrade(self, producer_name):
+        """
+        Upgrade the producer with `producer_name`, if the budget for that is available. Return
+        `True` on success, `False` with an error message otherwise.
+        """
+        producer = self.producers[producer_name]
+        if not producer.upgrade_price: # Already at highest tier
+            return False, "Already at highest tier"
+        if self.budget >= producer.upgrade_price:
+            self.budget -= producer.upgrade_price
+            producer.upgrade()
+        else:
+            return False, "Not enough budget"
+        return True
+
     def tick(self):
         """
         In a tick, the companies do their marketing, by updating the needs of the agents to mimic

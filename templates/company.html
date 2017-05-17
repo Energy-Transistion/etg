@@ -3,11 +3,16 @@
 {% block scripts %}
   {{ super() }}
   <script>
-window.donate = function(e) {
+window.donate = function() {
   var data = {'type': 'action', 'action': 'donate',
               'args': [vm.donate_party, vm.donate_amount]};
-  console.log(data)
   sendJSON(socket, data);
+}
+
+window.update = function(energy_type) {
+  var data = {'type': 'action', 'action': 'upgrade', 'args': [energy_type]}
+  console.log(data)
+  sendJSON(socket, data)
 }
   </script>
 {% endblock %}
@@ -52,12 +57,14 @@ window.donate = function(e) {
             <td></td>
           </tr>
           <tr>
-            <td><button>Upgrade</button></td>
+            <td><button v-if="producers.{{ type.name }}.upgrade_price <= budget"
+                onclick="update('{{type.name}}')">Buy</button>
+              <button v-else disabled>Buy</button></td>
             <td>[[ producers.{{ type.name }}.upgrade_price ]]</td>
             <td>Output after update</td>
             <td>[[ producers.{{ type.name }}.next_output ]]</td>
-            <td><button>Sell</button></td>
-            <td>[[ producers.{{ type.name }}.sell_price ]]</td>
+            <!--<td><button>Sell</button></td>
+            <td>[[ producers.{{ type.name }}.sell_price ]]</td>-->
           </tr>
         </table>
       </div>
@@ -77,7 +84,9 @@ window.donate = function(e) {
             <h4>Price</h4>
             [[ producers.{{ type.name }}.upgrade_price ]]
           </div>
-          <button>Buy</button>
+          <button v-if="producers.{{ type.name }}.upgrade_price <= budget"
+            onclick="update('{{type.name}}')">Buy</button>
+          <button v-else disabled>Buy</button>
         </div>
       </div>
     {% endfor %}
