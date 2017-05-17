@@ -27,7 +27,6 @@ window.onload = function() {
 
   socket.addEventListener("change", function(e) {
     var data = e.detail.packet;
-    console.log(data)
     for (var key in data) {
       if (key in vm.$data) {
         vm.$data[key] = data[key];
@@ -37,7 +36,7 @@ window.onload = function() {
 
   socket.addEventListener("news", function(e) {
     var news = e.detail.news;
-    vm.newsfeed.unshift(news.news);
+    vm.newsfeed.unshift(news);
   })
 
   window.send_chat = function () {
@@ -53,7 +52,6 @@ window.onload = function() {
   socket.addEventListener("chat", function(e) {
     console.log("Got a chat message");
     vm.chatmessages.push(e.detail);
-    console.log("Appended child");
   })
 }
   </script>

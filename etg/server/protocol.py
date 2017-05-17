@@ -46,16 +46,19 @@ class ETGProtocol:
             self.name = "admin"
             self.handler = AdminHandler(self.service, self.simulation)
             return True
+        entity_type = ''
         parties = list(filter(lambda p: p.name == name, self.simulation.parties))
         if len(parties) == 1:
             self.handler = Handler(self.simulation, ProxyLock(parties[0]), self.party_watchers[0],
                                    self.party_watchers[1], self.party_watchers[2])
+            entity_type = 'party'
         else:
             companies = list(filter(lambda c: c.name == name, self.simulation.companies))
             if len(companies) == 1:
                 self.handler = Handler(self.simulation, ProxyLock(companies[0]),
                                        self.company_watchers[0], self.company_watchers[1],
                                        self.company_watchers[2])
+                entity_type = 'company'
             else:
                 self.connection.error("No company/party with name {}!".format(name))
                 return False
@@ -63,6 +66,8 @@ class ETGProtocol:
         self.send_packet(msg_type="initial")
         for protocol in self.service.protocols:
             protocol.send_packet()
+            protocol.send_news("New {type} named {name} created!"\
+                    .format(type=entity_type, name=name))
         return True
 
     def on_message(self, message):
