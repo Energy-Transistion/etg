@@ -116,11 +116,7 @@ class Agent(Entity):
         If this agent is uncertain
         """
         same = self.friends.filter(lambda a: self.company == a.company)
-        try:
-            return (len(same)/len(self.friends) * 100) < self.certainty
-        except ZeroDivisionError:
-            print("Found an agent without friends!" + str(len(self.friends)))
-            return False
+        return (len(same)/len(self.friends) * 100) < self.certainty
 
     @property
     def unsatisfied(self):

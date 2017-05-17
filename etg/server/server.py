@@ -7,7 +7,11 @@ from autobahn.twisted.websocket import WebSocketServerFactory
 from autobahn.twisted.resource import WebSocketResource
 from twisted.application import service, strports
 from twisted.internet import task
+from twisted.logger import Logger
 from twisted.web.server import Site
+
+# pylint: disable=invalid-name
+log = Logger("etg.service")
 
 class SimulationService(service.Service):
     """
@@ -89,19 +93,21 @@ class SimulationService(service.Service):
         Unpauze the server.
         """
         self.paused = False
-        print("Started server")
+        log.info("Started the simulation")
 
     def pause(self):
         """
         Pauze the server.
         """
         self.paused = True
+        log.info("Paused the simulation")
 
     def toggle_pause(self):
         """
         This methods toggles wether the simulation, and thus the server, is paused.
         """
         self.paused = not self.paused
+        log.info("Toggled the running state")
 
     def loop(self):
         """
@@ -119,11 +125,18 @@ class SimulationService(service.Service):
                 for new in news:
                     protocol.send_news(new)
 
-def errback(failure):
+def make_errback(server, _log=log):
     """
-    The function that gets called on errors.
+    Define an errback function to use for this service.
     """
-    print(failure.getTraceback())
+    def errback(failure):
+        """
+        The function that gets called on errors.
+        """
+        server.pause()
+        _log.error("Got a failure of type {type}.\n{traceback}",
+                   type=failure.type, traceback=failure.getTraceback())
+    return errback
 
 def make_application(simulation, options):
     """
@@ -138,5 +151,5 @@ def make_application(simulation, options):
     loop = task.LoopingCall(server.loop)
     loop_deferred = loop.start(simulation.tick_rate)
 
-    loop_deferred.addErrback(errback)
+    loop_deferred.addErrback(make_errback(server, log))
     return application

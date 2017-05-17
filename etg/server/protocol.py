@@ -79,7 +79,6 @@ class ETGProtocol:
         elif message['type'] == "admin":
             if message['value'] == 'start':
                 self.service.start()
-                print("Starting server")
             elif message['value'] == 'setup':
                 with self.simulation as simulation:
                     simulation.election()
@@ -87,7 +86,6 @@ class ETGProtocol:
                         agent.use_deliberation()
             else:
                 self.service.pause()
-                print("pausing server")
         else:
             log.warn("Unrecognized message type {type}", type=message['type'])
 

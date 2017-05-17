@@ -13,8 +13,6 @@ import yaml
 with open('options.yaml', 'r') as f:
     options = yaml.load(f)
 
-print(options)
-
 try:
     simulation = Simulation(options['simulation'])
 except KeyError as e:
