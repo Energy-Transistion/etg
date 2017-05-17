@@ -1,6 +1,7 @@
 """
 A set of utility functions for working with dictionaries
 """
+import copy
 
 def difference(first, other, epsilon=0.005):
     """
@@ -27,5 +28,5 @@ def difference(first, other, epsilon=0.005):
                 ret[key] = other[key]
         except TypeError:
             if first[key] != other[key]:
-                ret[key] = other[key]
+                ret[key] = copy.copy(other[key])
     return ret
