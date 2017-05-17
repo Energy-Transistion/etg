@@ -1,4 +1,8 @@
 /* WebSockets */
+function sendJSON(socket, obj) {
+  socket.send(JSON.stringify(obj));
+}
+
 function make_connection (name) {
   var socket = new WebSocket('ws://' + location.hostname + ':8080/ws');
   socket.onopen = function() {
@@ -12,9 +16,6 @@ function make_connection (name) {
   socket.onmessage = function(evt) {
     var message = JSON.parse(evt.data)
     socket.dispatchEvent(new CustomEvent(message.type, {'detail': message}))
-  }
-  socket.sendJSON = function(obj) {
-    this.send(JSON.stringify(obj));
   }
   return socket;
 }
@@ -92,8 +93,8 @@ function define_components(connection) {
     methods: {
       update: function(value) {
         this.value = parseFloat(value);
-        socket.sendJSON({'type': 'change',
-                         'packet': {[this.ident]: this.value}});
+        sendJSON(socket, {'type': 'change',
+                           'packet': {[this.ident]: this.value}});
       },
     },
   })
