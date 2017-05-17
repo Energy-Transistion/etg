@@ -1,6 +1,7 @@
 """
 All the classes and methods having to do with the political parties in the game.
 """
+import math
 from .entity import Entity
 
 class Party(Entity):
@@ -14,21 +15,15 @@ class Party(Entity):
 
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, simulation, options, name):
+    def __init__(self, simulation, config, name):
         super(Party, self).__init__(simulation)
-        self.set_values(options)
         self.name = name
-
-    def set_values(self, config):
-        """
-        Set all the values on this party by coping them from the config dict
-        from the simulation.
-        """
         self.money = config['starting_money']
         self.taxes = {}
         for energy_type in self.simulation.energy_types:
             self.taxes[energy_type.name] = 0
-        self.campaign_budget = config['campaign_budget']
+        self.campaign_cost = config['campaign_cost']
+        self._last_campaign = self.simulation.current_tick
 
     @property
     def voters(self):
@@ -37,12 +32,35 @@ class Party(Entity):
         """
         return self.simulation.agents.filter(lambda a: a.party == self)
 
+    @property
+    def greenness(self):
+        """
+        The greenness of the policies of this party.
+        """
+        total_taxes = sum(self.taxes[k] for k in self.taxes)
+        return sum(etype.greenness * self.taxes[etype.name] / total_taxes
+                   for etype in self.simulation.energy_types)
+
+    @property
+    def safety(self):
+        """
+        The safeness of the policies of this party.
+        """
+        total_taxes = sum(self.taxes[k] for k in self.taxes)
+        return sum(etype.safety * self.taxes[etype.name] / total_taxes
+                   for etype in self.simulation.energy_types)
+
     def campaign(self):
         """
         The party can campaign in order to get more voters to vote for them. It then does need the
         required amount of money before it can start.
         """
-        pass
+        if self.money >= self.campaign_cost:
+            self.money -= self.campaign_cost
+            self._last_campaign = self.simulation.current_tick
+            return True, ''
+        else:
+            return False, "Not enough money"
 
     def receive_donation(self, amount):
         """
@@ -54,4 +72,7 @@ class Party(Entity):
         """
         In a turn, the party campaigns to get more voters.
         """
-        self.campaign()
+        percentage = 83 * math.exp((self._last_campaign - self.simulation.current_tick)/30)
+        for agent in self.simulation.agents.n_of(percentage * len(self.simulation.agents)):
+            agent.need_green = (agent.need_green * 100 + self.greenness * 0.05)/100
+            agent.need_safety = (agent.need_safety * 100 + self.safety * 0.05)/100

@@ -14,11 +14,11 @@ simulation:
     std_energy_use: 500  # The standard deviation on energy use
 
   party: # Settings for the political parties
-    starting_money: 10000
-    campaign_budget: 50000
+    starting_money: 100000 # The starting money for the parties
+    campaign_cost:   50000 # The money needed to campaign
 
-  companies:
-    starting_money: 10000
+  companies: # Settings for the companies
+    starting_money: 10000000 # The amount of money that a company starts of with
 
   energy_types: assets/energy_types.yaml
 

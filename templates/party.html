@@ -8,6 +8,10 @@ window.changeTax = function(energy_type, amount) {
   data[energy_type] += amount;
   sendJSON(socket, {'type': 'change', 'packet': {'taxes': data}})
 }
+
+window.campaign = function() {
+  sendJSON(socket, {'type': 'action', 'action': 'campaign', 'args': []});
+}
   </script>
 {% endblock %}
 
@@ -69,7 +73,9 @@ window.changeTax = function(energy_type, amount) {
     <etg-monitor monitor="money">Party Budget</etg-monitor>
     <etg-monitor monitor="compaign_reach">Campaign Reach</etg-monitor>
   </div>
-  <button class="tax_button">Spend money on campaign</button>
+  <button v-if="money >= campaign_cost" onclick="campaign()"
+    class="tax_button">Spend money on campaign</button>
+  <button v-else disabled>Spend money on campaign</button>
   {% endcall %}
 
   {{ super() }}
