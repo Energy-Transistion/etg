@@ -4,12 +4,16 @@ The code for generating the site.
 import html
 import os
 from random import randrange
+from twisted.logger import Logger
 from twisted.web import resource, static
 from twisted.web.util import redirectTo
 from jinja2 import Environment, FileSystemLoader
 
 from .resources import Assets, render_file
 from .session import get_session_state
+
+# pylint: disable=invalid-name
+log = Logger("etg.site")
 
 # pylint: disable=too-many-instance-attributes
 class ETGSite(resource.Resource):
@@ -107,7 +111,14 @@ class PartyResource(resource.Resource):
         """
         # pylint: disable=invalid-name
         state = get_session_state(request)
-        state.name = html.escape(request.args[b'partyname'][0].decode('utf-8'))
+        name = request.args[b'partyname'][0].decode('utf-8')
+        parties = list(filter(lambda p: p.name == name, self.service.simulation.parties))
+        companies = list(filter(lambda p: p.name == name, self.service.simulation.companies))
+        if len(parties) != 0 or len(companies) != 0:
+            log.warn("Player tried to name party {name}, but this entity already exists!",
+                     name=name)
+            return redirectTo(b"/create_party.html", request)
+        state.name = html.escape(name)
         with self.service.simulation as sim:
             sim.add_party(state.name, state.taxes)
         return self.render_interface(request)
@@ -187,7 +198,14 @@ class CompanyResource(resource.Resource):
         """
         # pylint: disable=invalid-name
         state = get_session_state(request)
-        state.name = html.escape(request.args[b'companyname'][0].decode('utf-8'))
+        name = request.args[b'companyname'][0].decode('utf-8')
+        parties = list(filter(lambda p: p.name == name, self.service.simulation.parties))
+        companies = list(filter(lambda p: p.name == name, self.service.simulation.companies))
+        if len(parties) != 0 or len(companies) != 0:
+            log.warn("Player tried to name company {name}, but this entity already exists!",
+                     name=name)
+            return redirectTo(b"/create_company.html", request)
+        state.name = html.escape(name)
         with self.service.simulation as sim:
             sim.add_company(state.name, state.tiers)
         return self.render_interface(request)
