@@ -40,6 +40,7 @@ class Producer:
     This class represents an energy producer in the game. It is used by the companies to keep track
     of their energy production.
     """
+    # pylint: disable=too-few-public-methods
     def __init__(self, energy_type):
         """
         :param energy_type: The energy type that this is a producer for.
@@ -48,17 +49,7 @@ class Producer:
         self.type = energy_type
         self.output = 0
         self.next_output = energy_type.initial_output
-
-    @property
-    def upgrade_price(self):
-        """
-        The upgrade price that needs to be payed to upgrade this producer a tier, or None if already
-        at the highest tier.
-        """
-        try:
-            return self.type.tier_costs[self.tier]
-        except IndexError:
-            return None
+        self.upgrade_price = self.type.tier_costs[self.tier]
 
     def upgrade(self):
         """
@@ -66,4 +57,5 @@ class Producer:
         """
         self.tier += 1
         self.output = self.next_output
+        self.upgrade_price = self.type.tier_costs[self.tier]
         self.next_output += self.next_output / self.tier
