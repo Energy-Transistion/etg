@@ -61,6 +61,8 @@ class ETGProtocol:
                 return False
         self.name = name
         self.send_packet(msg_type="initial")
+        for protocol in self.service.protocols:
+            protocol.send_packet()
         return True
 
     def on_message(self, message):
@@ -96,7 +98,7 @@ class ETGProtocol:
         if message['target'] == []:
             self.service.chat_all(message['text'], self.name)
         else:
-            for target in self.service.protocols.filter(lambda p: p.name in message['target']):
+            for target in filter(lambda p: p.name in message['target'], self.service.protocols):
                 target.send_chat(message['text'], self.name)
             self.send_chat(message['text'], self.name)
 
@@ -113,9 +115,15 @@ class ETGProtocol:
         """
         try:
             with self.handler.wrapee as wrapee:
+                log.debug("Calling {method} on {name}", method=message['action'], name=self.name)
                 func = getattr(wrapee, message['action'])
-                func(*message['args'])
-                self.send_packet()
+                res, msg = func(*message['args'])
+                if not res:
+                    log.warn("Error while calling {method}: {msg}", msg=msg,
+                             method=message['action'])
+            for protocol in self.service.protocols:
+                protocol.send_packet()
+            log.debug("Called method succesfully")
         except AttributeError as e:
             log.warn("Trying to call a method {method} that does not exsist!", method=e.args[0])
 
@@ -130,4 +138,5 @@ class ETGProtocol:
         Prepare and send a packet to the client.
         """
         packet = self.handler.prepare_packet()
-        self.connection.send({'type': msg_type, 'packet': packet})
+        if packet != {}:
+            self.connection.send({'type': msg_type, 'packet': packet})
