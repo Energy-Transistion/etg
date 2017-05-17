@@ -68,7 +68,7 @@ class ETGProtocol:
         This method should be called whenever a message is received. this methods will then make
         sure that the message is handled properly.
         """
-        log.info("Got message {message}", message=message)
+        log.debug("Protocol got message {message}", message=message)
         if message['type'] == "change":
             self.handler.process_packet(message['packet'])
             self.send_packet()

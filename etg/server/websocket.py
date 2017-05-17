@@ -33,11 +33,11 @@ class WebSocketConnection(WebSocketServerProtocol):
             if self.protocol.on_connection(line):
                 log.info("Player {name} connected", name=self.protocol.name)
             else:
-                log.info("Player tried to connect with name {name}, but this name does not exist",
+                log.warn("Player connected with name {name}, but this name does not exist",
                          name=line)
         else:
-            self.protocol.on_message(json.loads(line))
             log.debug("Got message {message}", message=line)
+            self.protocol.on_message(json.loads(line))
 
     def onClose(self, wasClean, code, reason):
         # pylint: disable=no-member
