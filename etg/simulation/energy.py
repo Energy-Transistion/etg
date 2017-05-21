@@ -25,16 +25,22 @@ class EnergyType:
         """
         The average price for this energy type.
         """
-        return mean(company.producers[self.name].output * company.price /
-                    sum(producer.output for _, producer in company.producers.items())
-                    for company in self.simulation.companies)
+        try:
+            return mean(company.producers[self.name].output * company.price /
+                        sum(producer.output for _, producer in company.producers.items())
+                        for company in self.simulation.companies)
+        except AttributeError:
+            return 0
 
     @property
     def price(self):
         """
         The average price for this energy type including taxes.
         """
-        return self.raw_price * self.simulation.active_party.taxes[self.name]
+        try:
+            return self.raw_price * self.simulation.active_party.taxes[self.name]
+        except AttributeError:
+            return 0
 
 class Producer:
     """
