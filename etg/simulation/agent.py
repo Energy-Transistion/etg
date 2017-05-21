@@ -194,7 +194,7 @@ class Agent(Entity):
                    random() * 5 - 10
                    #TODO: calculation if the party gets positive income
         self.party = min(self.simulation.parties, key=party_satisfaction)
-        if party_satisfaction(self.party) < 0.20: # Non-voter
+        if party_satisfaction(self.party) < 20: # Non-voter
             self.party = None
 
     def use_deliberation(self):
