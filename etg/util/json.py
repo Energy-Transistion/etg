@@ -1,7 +1,6 @@
 """
 A module for serializing different Python objects to JSON.
 """
-import copy
 import datetime
 import json
 from etg.simulation.energy import EnergyType, Producer
@@ -13,18 +12,21 @@ def default(obj):
     """
     if isinstance(obj, datetime.date):
         return obj.isoformat()
-    elif isinstance(obj, EnergyType) or isinstance(obj, Entity):
+    elif isinstance(obj, Entity) or isinstance(obj, EnergyType):
         _dict = {}
-        for key, value in obj.__dict__.items():
-            if key == "simulation":
+        for key in dir(obj):
+            if key == "simulation" or key.startswith('__'):
                 pass
             else:
-                _dict[key] = value
+                value = getattr(obj, key)
+                if not callable(value):
+                    _dict[key] = value
         return _dict
     elif isinstance(obj, Producer):
         return obj.__dict__
     else:
-        raise TypeError("Object of type " + str(type(obj)) + " is not JSON serializable!")
+        print("Object of type " + str(type(obj)) + " is not JSON serializable!")
+        return None
 
 def dumps(obj):
     """
