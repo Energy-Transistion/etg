@@ -38,6 +38,8 @@ class Party(Entity):
         The greenness of the policies of this party.
         """
         total_taxes = sum(self.taxes[k] for k in self.taxes)
+        if total_taxes == 0:
+            total_taxes = 1
         return sum(etype.greenness * self.taxes[etype.name] / total_taxes
                    for etype in self.simulation.energy_types)
 
@@ -47,6 +49,8 @@ class Party(Entity):
         The safeness of the policies of this party.
         """
         total_taxes = sum(self.taxes[k] for k in self.taxes)
+        if total_taxes == 0:
+            total_taxes = 1
         return sum(etype.safety * self.taxes[etype.name] / total_taxes
                    for etype in self.simulation.energy_types)
 
@@ -73,6 +77,6 @@ class Party(Entity):
         In a turn, the party campaigns to get more voters.
         """
         percentage = 83 * math.exp((self._last_campaign - self.simulation.current_tick)/30)
-        for agent in self.simulation.agents.n_of(percentage * len(self.simulation.agents)):
+        for agent in self.simulation.agents.n_of(int(percentage * len(self.simulation.agents))):
             agent.need_green = (agent.need_green * 100 + self.greenness * 0.05)/100
             agent.need_safety = (agent.need_safety * 100 + self.safety * 0.05)/100
