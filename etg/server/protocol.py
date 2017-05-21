@@ -16,8 +16,9 @@ class ETGProtocol:
     The actual protocol class. Every new connection should create one of these to handle all the
     communication logic.
     """
-    party_watchers = (["current_date", "next_election", "active_party", "government_budget",
-                       "government_income", "non_voters", "weather"],
+    party_watchers = (["current_date", "days_until_election", "active_party", "government_budget",
+                       "government_income", "non_voters", "weather", "approval_rate",
+                       "energy_types"],
                       ["money", "campaign_cost"],
                       ["taxes"])
     company_watchers = (["current_date", "next_election", "active_party", "parties", "weather"],
@@ -143,5 +144,5 @@ class ETGProtocol:
         Prepare and send a packet to the client.
         """
         packet = self.handler.prepare_packet()
-        if packet != {}:
+        if packet and packet != {}:
             self.connection.send({'type': msg_type, 'packet': packet})

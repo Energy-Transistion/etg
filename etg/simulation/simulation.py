@@ -91,12 +91,23 @@ class Simulation(object):
                                                     initial_output=initial_energy, **data))
 
     @property
-    def approval(self):
+    def days_until_election(self):
+        """
+        The number of days until the next election.
+        """
+        return (self.next_election - self.current_date).days
+
+    @property
+    def approval_rate(self):
         """
         The approval for the party that is currently in power. This is the percantage of voters that
         would vote for that party.
         """
-        return self.votes[self.active_party]/len(self.agents)
+        try:
+            return self.votes[self.active_party]/len(self.agents)
+        except KeyError as exc:
+            print("Caught error: {}".format(exc))
+            return 0
 
     def add_party(self, name, taxes):
         """
@@ -164,7 +175,7 @@ class Simulation(object):
             else:
                 non_voters += 1
         self.votes = voters
-        self.non_voters = non_voters
+        self.non_voters = non_voters/len(self.agents)
         return (voters, non_voters)
 
     def election(self):
