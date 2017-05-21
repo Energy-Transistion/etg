@@ -10,8 +10,8 @@ simulation:
     chance_snd_friend: 0.05 # The chance that the agent gets a second friend from a friend
     avg_income: 20000 # The average income for the population of agents
     std_income: 15000
-    avg_energy_use: 7000 # The average energy use in kWh
-    std_energy_use: 500  # The standard deviation on energy use
+    avg_energy_use: 305 # The average energy use in kWh
+    std_energy_use: 125  # The standard deviation on energy use
 
   party: # Settings for the political parties
     starting_money: 100000 # The starting money for the parties
