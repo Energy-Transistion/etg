@@ -28,5 +28,5 @@ def difference(first, other, epsilon=0.005):
                 ret[key] = other[key]
         except TypeError:
             if first[key] != other[key]:
-                ret[key] = copy.copy(other[key])
+                ret[key] = copy.deepcopy(other[key])
     return ret
