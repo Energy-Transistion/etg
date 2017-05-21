@@ -7,7 +7,7 @@ from random import randrange
 from twisted.logger import Logger
 from twisted.web import resource, static
 from twisted.web.util import redirectTo
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from .resources import Assets, render_file
 from .session import get_session_state
@@ -30,7 +30,7 @@ class ETGSite(resource.Resource):
         self.image_path = options['images']
         self.env = Environment(
             loader=FileSystemLoader(self.html_templates),
-            autoescape=False)
+            autoescape=select_autoescape(['html', 'xml']))
         self.html_info = options['html_info']
         self._generate_assets()
         self.putChild(b'', self)
@@ -118,7 +118,7 @@ class PartyResource(resource.Resource):
             log.warn("Player tried to name party {name}, but this entity already exists!",
                      name=name)
             return redirectTo(b"/create_party.html", request)
-        state.name = html.escape(name)
+        state.name = name
         with self.service.simulation as sim:
             sim.add_party(state.name, state.taxes)
         return self.render_interface(request)
@@ -205,7 +205,7 @@ class CompanyResource(resource.Resource):
             log.warn("Player tried to name company {name}, but this entity already exists!",
                      name=name)
             return redirectTo(b"/create_company.html", request)
-        state.name = html.escape(name)
+        state.name = name
         with self.service.simulation as sim:
             sim.add_company(state.name, state.tiers)
         return self.render_interface(request)

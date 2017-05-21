@@ -8,11 +8,11 @@
     <script src="/js/interface.js"></script>
   <script>
 window.onload = function() {
-  window.socket = make_connection("{{ name }}");
+  window.socket = make_connection("{{ name|safe }}");
   define_components(socket)
   openTab({currentTarget:
-    document.getElementById('button-{{ starttab }}')},
-    '{{ starttab }}');
+    document.getElementById('button-{{ starttab|safe }}')},
+    '{{ starttab|safe }}');
   console.log("Adding event listener")
   socket.addEventListener("initial", function(e) {
     var data = e.detail.packet;

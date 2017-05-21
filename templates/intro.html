@@ -7,7 +7,7 @@
 {% block content %}
   <h1>{{ title }}</h1>
   <div id="text">
-    {{ text }}
+    {{ text|safe }}
   </div>
   <div id="links">
     <div class="link">
