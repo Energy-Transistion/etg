@@ -7,15 +7,16 @@ class EnergyType:
     """
     This class represents a specific energy type, that is read in from a yaml file.
     """
-    # pylint: disable=too-few-public-methods
-    def __init__(self, simulation, name, greenness, safety, initial_output, tiers_unlocks,
-                 market_price):
+    # pylint: disable=too-few-public-methods, too-many-instance-attributes
+    def __init__(self, simulation, name, greenness, safety, initial_output, initial_price,
+                 tiers_unlocks, market_price):
         # pylint: disable=too-many-arguments
         self.simulation = simulation
         self.name = name
         self.greenness = greenness
         self.safety = safety
         self.initial_output = initial_output
+        self.initial_price = initial_price
         self.tier_costs = tiers_unlocks
         self.market_price = market_price
 
@@ -49,6 +50,8 @@ class Producer:
         self.type = energy_type
         self.output = 0
         self.next_output = energy_type.initial_output
+        self.price = 0
+        self.next_price = energy_type.initial_price
         self.upgrade_price = self.type.tier_costs[self.tier]
 
     def upgrade(self):
@@ -57,5 +60,7 @@ class Producer:
         """
         self.tier += 1
         self.output = self.next_output
+        self.price = self.next_price
         self.upgrade_price = self.type.tier_costs[self.tier]
         self.next_output += self.next_output / self.tier
+        self.next_price /= 0.95

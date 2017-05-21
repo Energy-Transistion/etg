@@ -31,8 +31,8 @@ class Company(Entity):
         for etype in self.simulation.energy_types:
             self.producers[etype.name] = Producer(etype)
             self.market[etype.name] = 0
-        self.marketing = 0
-        self.price = 0
+        self.marketing = 5
+        self.price = self.rawcost * 1.10
 
     @property
     def users(self):
@@ -67,7 +67,8 @@ class Company(Entity):
         """
         How much the product of the company costs the company itself.
         """
-        return sum(self.market[etype.name] * etype.market_price
+        return sum(self.market[etype.name] * etype.market_price +
+                   self.producers[etype.name].price * self.producers[etype.name].output
                    for etype in self.simulation.energy_types)
 
     @property
@@ -141,7 +142,7 @@ class Company(Entity):
             producer.upgrade()
         else:
             return False, "Not enough budget"
-        return True
+        return True, ''
 
     def tick(self):
         """

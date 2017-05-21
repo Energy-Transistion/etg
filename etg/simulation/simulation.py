@@ -117,6 +117,7 @@ class Simulation(object):
             while tier > 0:
                 tier -= 1
                 company.producers[tiers['name']].upgrade()
+        company.price = company.rawcost/company.output * 1.10
         self.companies.append(company)
 
     def tick(self):

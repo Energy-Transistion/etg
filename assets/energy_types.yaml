@@ -3,6 +3,7 @@ name: solar # The name of the energy type
 greenness: 90 # How green the energy is, from 0 to 100
 safety: 100 # How safe the energy is, from 0 to 100
 market_price: 0.12 # The price for one kWh on the open market
+initial_price: 0.10 # The initial price per kWh
 initial_output: 5 # percent of needed kWh
 tiers_unlocks: # how expensive it is to unlock a new tier of this type of energy
   - 9000000
@@ -17,6 +18,7 @@ greenness: 80
 safety: 80
 initial_output: 5
 market_price: 0.11
+initial_price: 0.09
 tiers_unlocks:
   - 7750000
   - 6250000
@@ -30,6 +32,7 @@ greenness: 55
 safety: 20
 initial_output: 5
 market_price: 0.07
+initial_price: 0.05
 tiers_unlocks:
   - 6500000
   - 5000000
@@ -43,6 +46,7 @@ greenness: 10
 safety: 20
 initial_output: 5
 market_price: 0.02
+initial_price: 0.01
 tiers_unlocks:
   - 5500000
   - 4000000
@@ -56,6 +60,7 @@ greenness: 30
 safety: 40
 initial_output: 5
 market_price: 0.06
+initial_price: 0.04
 tiers_unlocks:
   - 5500000
   - 4000000
@@ -69,6 +74,7 @@ greenness: 5
 safety: 25
 initial_output: 5
 market_price: 0.06
+initial_price: 0.04
 tiers_unlocks:
   - 5500000
   - 4000000
