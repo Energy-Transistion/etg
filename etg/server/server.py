@@ -119,7 +119,9 @@ class SimulationService(service.Service):
                     simulation.election()
                 news = simulation.tick()
                 if simulation.current_date.weekday() == 0:
-                    simulation.poll()
+                    voters, non_voters = simulation.poll()
+                    log.info("Poll results in: % non voters: {non_voters}, votes: {votes}",
+                             non_voters=non_voters, voters=voters)
             for protocol in self.protocols:
                 protocol.send_packet()
                 for new in news:
