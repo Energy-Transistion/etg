@@ -103,7 +103,7 @@ class Company(Entity):
         The amount of taxation that goes over this product, calculated by taking the proportions for
         all the energy types in the output.
         """
-        return sum((self.simulation.active_party.taxes[etype.name]/100) / self.output *
+        return sum(((100 + self.simulation.active_party.taxes[etype.name])/100) / self.output *
                    (self.producers[etype.name].output + self.market[etype.name])
                    for etype in self.simulation.energy_types)
 

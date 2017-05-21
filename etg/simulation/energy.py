@@ -39,7 +39,7 @@ class EnergyType(Entity):
         The average price for this energy type including taxes.
         """
         try:
-            return self.raw_price * self.simulation.active_party.taxes[self.name]
+            return self.raw_price * (100 + self.simulation.active_party.taxes[self.name])/100
         except AttributeError:
             return 0
 
