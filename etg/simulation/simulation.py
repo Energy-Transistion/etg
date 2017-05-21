@@ -90,6 +90,20 @@ class Simulation(object):
                 self.energy_types.append(EnergyType(simulation=self,
                                                     initial_output=initial_energy, **data))
 
+    def __setstate__(self, state):
+        """
+        Return the pickled simulation back to the original state.
+        """
+        self.__dict__.update(state)
+        for agent in self.agents:
+            agent.simulation = self
+        for energy_type in self.energy_types:
+            energy_type.simulation = self
+        for party in self.parties:
+            party.simulation = self
+        for company in self.companies:
+            company.simulation = self
+
     @property
     def days_until_election(self):
         """

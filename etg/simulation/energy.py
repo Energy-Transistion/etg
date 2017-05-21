@@ -2,8 +2,9 @@
 This module contains all the code for keeping track of the different energy types.
 """
 from ..util.math import mean
+from .entity import Entity
 
-class EnergyType:
+class EnergyType(Entity):
     """
     This class represents a specific energy type, that is read in from a yaml file.
     """
@@ -11,7 +12,7 @@ class EnergyType:
     def __init__(self, simulation, name, greenness, safety, initial_output, initial_price,
                  tiers_unlocks, market_price):
         # pylint: disable=too-many-arguments
-        self.simulation = simulation
+        super().__init__(simulation)
         self.name = name
         self.greenness = greenness
         self.safety = safety
