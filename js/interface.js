@@ -97,6 +97,15 @@ function define_components(connection) {
                            'packet': {[this.ident]: this.value}});
       },
     },
+    created: function() {
+      var mon = this
+      connection.addEventListener('change', function(e) {
+        data = e.detail.packet;
+        if (data[mon.ident]) {
+          mon.value = data[mon.ident]
+        }
+      })
+    }
   })
 
   Vue.component('plot', {
