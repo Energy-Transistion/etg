@@ -55,9 +55,9 @@ window.campaign = function() {
         <th>Decrease</th>
       </tr>
         <tr v-for="type in energy_types">
-          <th>[[ type.name|capitalize ]]</th>
-          <td>[[ type.raw_price ]]</td>
-          <td>[[ type.price ]]</td>
+          <th>[[ type.name | capitalize ]]</th>
+          <td>[[ type.raw_price | round ]]</td>
+          <td>[[ type.price | round ]]</td>
           <td>[[ taxes[type.name] ]]</td>
           <td><button @click="changeTax('type.name', 1)"
               class="tax_button">+</button></td>

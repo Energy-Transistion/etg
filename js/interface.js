@@ -21,9 +21,24 @@ function make_connection (name) {
 }
 
 function define_components(connection) {
+  /* Vue filters */
+  Vue.filter('round', function(value) {
+    value = parseFloat(value);
+    value = Math.round((value + 0.0001) * 100) / 100;
+    value = value.toString()
+    x = value.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+      x1 = x1.replace(rgx, '$1' + ' ' + '$2');
+    }
+    return x1 + x2;
+  })
+
   /* Vue components */
   Vue.component('etg-monitor', {
-    template: '<div class="monitor"><h4><slot>{{ monitor }}</slot></h4><span>{{ value }}</span></div>',
+    template: '<div class="monitor"><h4><slot>{{ monitor }}</slot></h4><span>{{ value | round }}</span></div>',
     props: {
       monitor: {
         type: String,
@@ -55,7 +70,7 @@ function define_components(connection) {
     :min="min" :max="max" :step="step"
     v-on:input="update($event.target.value)">
     </input>
-    <span>{{ value }} {{ unit }}</span>
+    <span>{{ value | round }} {{ unit }}</span>
     </div>
     </div>`,
     props: {
