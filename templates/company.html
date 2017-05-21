@@ -112,14 +112,12 @@ window.update = function(energy_type) {
         <th>{{ type.name | capitalize }}</th>
         {% endfor %}
       </tr>
-      {% for party in parties %}
-        <tr>
-          <th>{{ party.name }}</th>
+        <tr v-for="party in parties">
+          <th>[[ party.name ]]</th>
           {% for type in energy_types %}
-            <td>0 %</td>
+          <td>[[ party.taxes.{{ type.name }} ]] %</td>
           {% endfor %}
         </tr>
-      {% endfor %}
     </table>
   {% endcall %}
   {{ super() }}
