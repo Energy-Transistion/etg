@@ -48,24 +48,22 @@ window.campaign = function() {
     <table style="width: 100%;">
       <tr>
         <th></th>
-        <!--<th>Bruto Price</th>
-        <th>Average Price</th>-->
+        <th>Bruto Price</th>
+        <th>Average Price</th>
         <th>Tax</th>
         <th>Increase</th>
         <th>Decrease</th>
       </tr>
-      {% for type in energy_types %}
-        <tr>
-          <th>{{ type.name|capitalize }}</th>
-          <!--<td>[[ {{ type.name }}.price_bruto ]]</td>
-          <td>[[ {{ type.name }}.price_average ]]</td>-->
-          <td>[[ taxes.{{ type.name }} ]]</td>
-          <td><button onclick="changeTax('{{ type.name }}', 1)"
+        <tr v-for="type in energy_types">
+          <th>[[ type.name|capitalize ]]</th>
+          <td>[[ type.raw_price ]]</td>
+          <td>[[ type.price ]]</td>
+          <td>[[ taxes[type.name] ]]</td>
+          <td><button @click="changeTax('type.name', 1)"
               class="tax_button">+</button></td>
-          <td><button onclick="changeTax('{{ type.name }}', -1)"
+          <td><button @click="changeTax('type.name', -1)"
               class="tax_button">-</button></td>
         </tr>
-      {% endfor %}
     </table>
   {% endcall %}
   {% call tabs.content('Campaign') %}

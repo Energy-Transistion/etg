@@ -136,6 +136,11 @@ function setup_vue(data, socket) {
     delimiters: ['[[', ']]'],
     data: data,
     methods: {
+      changeTax: function(energy_type, amount) {
+        var data = this.taxes;
+        data[energy_type] += amount;
+        sendJSON(socket, {'type': 'change', 'packet': {'taxes': data}})
+      },
       updateMarket: function(name, value) {
         if (value < 0) {
           value = 0;
@@ -144,7 +149,13 @@ function setup_vue(data, socket) {
         socket.send(JSON.stringify({'type': 'change', 'packet':
           {'market': {name: value}}}))
       }
-
+    },
+    filters: {
+      capitalize: function (value) {
+        if (!value) return ''
+        value = value.toString()
+        return value.charAt(0).toUpperCase() + value.slice(1)
+      },
     }
   })
   socket.dispatchEvent(new CustomEvent('change', {'detail': {'packet': data}}))
