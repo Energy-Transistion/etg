@@ -48,7 +48,7 @@ class Producer:
     This class represents an energy producer in the game. It is used by the companies to keep track
     of their energy production.
     """
-    # pylint: disable=too-few-public-methods
+    # pylint: disable=too-few-public-methods,too-many-instance-attributes
     def __init__(self, energy_type):
         """
         :param energy_type: The energy type that this is a producer for.
@@ -58,6 +58,7 @@ class Producer:
         self.output = 0
         self.next_output = energy_type.initial_output
         self.price = 0
+        self.sell_price = 0
         self.next_price = energy_type.initial_price
         self.upgrade_price = self.type.tier_costs[self.tier]
 
