@@ -12,7 +12,7 @@ def default(obj):
     """
     if isinstance(obj, datetime.date):
         return obj.isoformat()
-    elif isinstance(obj, Entity) or isinstance(obj, EnergyType):
+    elif isinstance(obj, Entity):
         _dict = {}
         for key in dir(obj):
             if key == "simulation" or key.startswith('__'):
