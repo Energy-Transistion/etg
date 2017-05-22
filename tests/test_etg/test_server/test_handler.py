@@ -2,7 +2,7 @@
 A module for testing to make sure that the Handler collects the correct information.
 """
 from twisted.trial import unittest
-from etg.server.handler import Handler
+from etg.server.handler import Handler, Attribute
 from etg.util.proxylock import ProxyLock
 
 class Foo:
@@ -47,9 +47,9 @@ class HandlerTestCase(unittest.TestCase):
         self.foo = Foo(simulation=self.simulation, name='foo', a=4, b=42, c="Hello")
         self.handler = Handler(ProxyLock(self.simulation),
                                ProxyLock(self.foo),
-                               ["count", "g"],
-                               ["a", 'b'],
-                               ['a'])
+                               [Attribute("count"), Attribute("g")],
+                               [Attribute("a"), Attribute('b')],
+                               [Attribute('a')])
 
     def test_process_packet(self):
         """

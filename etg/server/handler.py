@@ -49,11 +49,11 @@ class Handler():
         self._viewables_wrapee = view_wrapee
         self._controlables_wrapee = control_wrapee
         for key in self._viewables_wrapee:
-            self._state[key] = None
+            self._state[key.key] = None
         for key in self._controlables_wrapee:
-            self._state[key] = None
+            self._state[key.key] = None
         for key in self._viewables_simulation:
-            self._state[key] = None
+            self._state[key.key] = None
 
     def _update_state(self, new):
         """
@@ -72,12 +72,12 @@ class Handler():
         curstate = {}
         with self.wrapee as wrapee:
             for key in self._viewables_wrapee:
-                curstate[key] = getattr(wrapee, key)
+                curstate[key.key] = key.get(wrapee)
             for key in self._controlables_wrapee:
-                curstate[key] = getattr(wrapee, key)
+                curstate[key.key] = key.get(wrapee)
         with self.simulation as simulation:
             for key in self._viewables_simulation:
-                curstate[key] = getattr(simulation, key)
+                curstate[key.key] = key.get(simulation)
         diff = difference(self._state, curstate)
         return self._update_state(diff)
 
@@ -87,18 +87,135 @@ class Handler():
 
         :param dict packet: The values that need updating as a dictionary
         """
+        def make_equal(obj1):
+            "Make a lambda that tests if two things are equal"
+            return lambda a: a.key == obj1
         with self.wrapee as wrapee:
             for key, val in packet.items():
                 try:
-                    if key in self._controlables_wrapee:
-                        attr = getattr(wrapee, key)
-                        try:
-                            attr.update(val)
-                        except AttributeError:
-                            setattr(wrapee, key, val)
+                    attrs = list(filter(make_equal(key), self._controlables_wrapee))
+                    if len(attrs) > 0:
+                        attr = attrs[0]
+                        attr.set(wrapee, val)
                 except AttributeError as ex:
                     self._log.error("Trying to set a value that is not on the wrapee",
                                     exception=ex)
+
+class Attribute:
+    """
+    A class to represent one attribute on an object.
+    """
+    def __init__(self, attr):
+        """
+        :param attr: The attribute to get.
+        """
+        self.attr = attr
+
+    def get(self, obj):
+        """
+        Get the value represented by this Attribute from an object.
+        """
+        return getattr(obj, self.attr)
+
+    def set(self, obj, value):
+        """
+        Set the value represetned by this attribute on an object to `value`.
+        """
+        try:
+            attr = self.get(obj)
+            attr.update(value)
+        except AttributeError:
+            setattr(obj, self.attr, value)
+
+    @property
+    def key(self):
+        """
+        The property that this attribute is getting, so under which name it should be stored.
+        """
+        return self.attr
+
+class ObjectAttribute(Attribute):
+    """
+    A class to represent an object from which we want multiple variables.
+    """
+    def __init__(self, attr, *attrs):
+        super().__init__(attr)
+        self.attrs = attrs
+
+    def get(self, obj):
+        ret = {}
+        value = super().get(obj)
+        if value is None:
+            return {}
+        for attr in self.attrs:
+            ret[attr.attr] = attr.get(value)
+        return ret
+
+    def set(self, obj, value):
+        obj2 = self.get(obj)
+        for attr in self.attrs:
+            try:
+                attr.set(obj2, value[attr.key])
+            except KeyError:
+                pass
+
+class ListAttribute(Attribute):
+    """
+    A class to represent an attribute that we want for all elements of a list.
+    """
+    def __init__(self, attr, value):
+        super().__init__(attr)
+        self.attrs = value
+
+    def get(self, obj):
+        ret = []
+        value = super().get(obj)
+        for val in value:
+            ret.append(self.attrs.get(val))
+        return ret
+
+    def set(self, obj, value):
+        obj2 = super().get(obj)
+        for val in obj2:
+            self.attrs.set(val, value)
+
+class DictAttribute(Attribute):
+    """
+    A class to represent an attribute that we want for all elements of a dictionary.
+    """
+    def __init__(self, attr, value):
+        super().__init__(attr)
+        self.attrs = value
+
+    def get(self, obj):
+        ret = {}
+        value = super().get(obj)
+        for key in value:
+            ret[key] = self.attrs.get(value[key])
+        return ret
+
+    def set(self, obj, value):
+        obj2 = super().get(obj)
+        for key in obj2:
+            self.attrs.set(obj2[key], value)
+
+class MultiAttribute(Attribute):
+    """
+    Get multiple values from one object.
+    """
+    # pylint: disable=super-init-not-called
+    def __init__(self, *attrs):
+        self.attrs = attrs
+
+    def get(self, obj):
+        ret = {}
+        for attr in self.attrs:
+            ret[attr.key] = attr.get(obj)
+        return ret
+
+    def set(self, obj, value):
+        for attr in self.attrs:
+            attr.set(obj, value)
 
 class AdminHandler(Handler):
     """

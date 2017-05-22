@@ -6,7 +6,8 @@ connections.
 import html
 from twisted.logger import Logger
 from etg.util.proxylock import ProxyLock
-from .handler import Handler, AdminHandler
+from .handler import (Handler, AdminHandler, Attribute, ObjectAttribute, ListAttribute,
+                      MultiAttribute, DictAttribute)
 
 # pylint: disable=invalid-name
 log = Logger()
@@ -16,14 +17,29 @@ class ETGProtocol:
     The actual protocol class. Every new connection should create one of these to handle all the
     communication logic.
     """
-    party_watchers = (["current_date", "days_until_election", "active_party", "government_budget",
-                       "government_income", "non_voters", "weather", "approval_rate",
-                       "energy_types"],
-                      ["money", "campaign_cost"],
-                      ["taxes"])
-    company_watchers = (["current_date", "next_election", "active_party", "parties", "weather"],
-                        ["budget", "producers", "income"],
-                        ["marketing", "price", "market"])
+    party_watchers = ([Attribute("current_date"), Attribute("days_until_election"),
+                       ObjectAttribute("active_party", Attribute("name")),
+                       Attribute("government_budget"), Attribute("government_income"),
+                       Attribute("non_voters"), Attribute("weather"), Attribute("approval_rate"),
+                       ListAttribute("energy_types",
+                                     MultiAttribute(Attribute("name"), Attribute("raw_price"),
+                                                    Attribute("price"))),
+                       ListAttribute("parties", MultiAttribute(Attribute("name"),
+                                                               Attribute("percentage_voters")))],
+                      [Attribute("money"), Attribute("campaign_cost")],
+                      [Attribute("taxes")])
+    company_watchers = ([Attribute("current_date"), Attribute("days_until_election"),
+                         ObjectAttribute("active_party", Attribute("name")),
+                         Attribute("weather"),
+                         ListAttribute("parties",
+                                       MultiAttribute(Attribute("name"), Attribute("taxes")))],
+                        [Attribute("budget"), Attribute("income"),
+                         DictAttribute("producers",
+                                       MultiAttribute(Attribute("tier"), Attribute("output"),
+                                                      Attribute("upgrade_price"),
+                                                      Attribute("next_output"),
+                                                      Attribute("sell_price")))],
+                        [Attribute("marketing"), Attribute("price"), Attribute("market")])
     def __init__(self, service, simulation, connection):
         """
         :param service: The service parent of this Protocol, most likely an instance of
