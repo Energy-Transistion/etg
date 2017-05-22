@@ -33,6 +33,13 @@ class Party(Entity):
         return self.simulation.agents.filter(lambda a: a.party == self)
 
     @property
+    def percentage_voters(self):
+        """
+        The percentage of the population that votes for this party.
+        """
+        return len(self.voters)/len(self.simulation.agents)
+
+    @property
     def greenness(self):
         """
         The greenness of the policies of this party.
