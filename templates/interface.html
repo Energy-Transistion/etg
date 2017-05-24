@@ -41,9 +41,13 @@ window.onload = function() {
 
   window.send_chat = function () {
     var chatmsg = document.getElementById('chatmsg');
+    var target = []
+    if (vm.chat_target != "All") {
+      target = [vm.chat_target];
+    }
     socket.send(JSON.stringify({'type': 'chat',
                                 'text': chatmsg.value,
-                                'target': []}));
+                                'target': target}));
     chatmsg.value = '';
     return false;
   }
@@ -104,10 +108,16 @@ window.onload = function() {
           {% call tabs.content('Chat') %}
             <ol id="chatlist">
               <li v-for="chats in chatmessages" v-bind:key="chats">
+                <span v-if="chats.whisper">*</span>
                 <span>&lt;[[ chats.sender ]]&gt;</span> [[ chats.text ]]
               </li>
             </ol>
-            <form id="chatinput" action="" onsubmit="return send_chat();alert('done')">
+            <form id="chatinput" action="" onsubmit="return send_chat();">
+              <select v-model="chat_target">
+                <option>All</option>
+                <option v-for="party in parties">[[ party.name ]]</option>
+                <option v-for="company in companies">[[ company.name ]]</option>
+              </select>
               <input type="text" id="chatmsg" placeholder="type here">
               <input type="submit" value="Send">
               <label> <input type="checkbox" id="autoscroll" checked="checked">

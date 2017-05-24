@@ -3,7 +3,6 @@ This module implements the Protocol that is used by the server to communicate wi
 code is independent of the actual networking code, so it can be used by multiple types of
 connections.
 """
-import html
 from twisted.logger import Logger
 from etg.util.proxylock import ProxyLock
 from .handler import (Handler, AdminHandler, Attribute, ObjectAttribute, ListAttribute,
@@ -27,7 +26,8 @@ class ETGProtocol:
                                      MultiAttribute(Attribute("name"), Attribute("raw_price"),
                                                     Attribute("price"))),
                        ListAttribute("parties", MultiAttribute(Attribute("name"),
-                                                               Attribute("percentage_voters")))],
+                                                               Attribute("percentage_voters"))),
+                       ListAttribute("companies", MultiAttribute(Attribute("name")))],
                       [Attribute("money"), Attribute("campaign_cost")],
                       [Attribute("taxes")])
 
@@ -35,7 +35,8 @@ class ETGProtocol:
                          ObjectAttribute("active_party", Attribute("name")),
                          Attribute("weather"),
                          ListAttribute("parties",
-                                       MultiAttribute(Attribute("name"), Attribute("taxes")))],
+                                       MultiAttribute(Attribute("name"), Attribute("taxes"))),
+                         ListAttribute("companies", MultiAttribute(Attribute("name")))],
                         [Attribute("budget"), Attribute("income"),
                          DictAttribute("producers",
                                        MultiAttribute(Attribute("tier"), Attribute("output"),
@@ -126,14 +127,15 @@ class ETGProtocol:
             self.service.chat_all(message['text'], self.name)
         else:
             for target in filter(lambda p: p.name in message['target'], self.service.protocols):
-                target.send_chat(message['text'], self.name)
-            self.send_chat(message['text'], self.name)
+                target.send_chat(message['text'], self.name, whisper=True)
+            if self.name not in message['target']:
+                self.send_chat(message['text'], self.name, whisper=True)
 
-    def send_chat(self, text, sender):
+    def send_chat(self, text, sender, whisper=False):
         """
         Send a chat message to this client.
         """
-        self.connection.send({'type': 'chat', 'sender': sender, 'text': html.escape(text)})
+        self.connection.send({'type': 'chat', 'sender': sender, 'text': text, 'whisper': whisper})
 
     def on_action(self, message):
         """
