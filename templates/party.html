@@ -60,9 +60,9 @@ window.campaign = function() {
           <td>[[ type.raw_price | round ]]</td>
           <td>[[ type.price | round ]]</td>
           <td>[[ taxes[type.name] ]]</td>
-          <td><button @click="changeTax('type.name', 1)"
+          <td><button @click="changeTax(type.name, 1)"
               class="tax_button">+</button></td>
-          <td><button @click="changeTax('type.name', -1)"
+          <td><button @click="changeTax(type.name, -1)"
               class="tax_button">-</button></td>
         </tr>
     </table>
