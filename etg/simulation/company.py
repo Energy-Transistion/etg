@@ -127,7 +127,7 @@ class Company(Entity):
             return False, "Not enough budget"
         self.budget -= amount
         party.money += amount
-        return True, ""
+        return True, "{} donated €{} to {}".format(self.name, amount, party.name)
 
     def upgrade(self, producer_name):
         """

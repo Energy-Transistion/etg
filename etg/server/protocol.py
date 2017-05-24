@@ -138,24 +138,30 @@ class ETGProtocol:
         This method deals with new and income information and calls the corresponding method on the
         object.
         """
-        try:
-            with self.handler.wrapee as wrapee:
-                log.debug("Calling {method} on {name}", method=message['action'], name=self.name)
+        with self.handler.wrapee as wrapee:
+            log.debug("Calling {method} on {name}", method=message['action'], name=self.name)
+            try:
                 func = getattr(wrapee, message['action'])
-                res, msg = func(*message['args'])
-                if not res:
-                    log.warn("Error while calling {method}: {msg}", msg=msg,
-                             method=message['action'])
+            except AttributeError as e:
+                log.warn("Trying to call a method {method} that does not exsist!",
+                         method=e.args[0])
+                return
+            res, msg = func(*message['args'])
+        if not res:
+            log.warn("Error while calling {method}: {msg}", msg=msg,
+                     method=message['action'])
+        else:
+            log.debug("Called method succesfully")
             for protocol in self.service.protocols:
                 protocol.send_packet()
-            log.debug("Called method succesfully")
-        except AttributeError as e:
-            log.warn("Trying to call a method {method} that does not exsist!", method=e.args[0])
+                if msg != '':
+                    protocol.send_news(msg)
 
     def send_news(self, msg):
         """
         Send a news message to the accompanying client.
         """
+        log.debug("Sending news: {news}", news=msg)
         self.connection.send({'type': 'news', 'news': str(msg)})
 
     def send_packet(self, msg_type='change'):
