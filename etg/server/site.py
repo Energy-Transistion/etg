@@ -88,7 +88,7 @@ class PartyCreationResource(resource.Resource):
         except AttributeError:
             energy_types = []
             for etype in self.service.simulation.energy_types:
-                energy_types.append({'name': etype.name, 'taxes': randrange(-50, 50)})
+                energy_types.append({'name': etype.name, 'taxes': randrange(-20, 20)})
             state.taxes = energy_types
         return self.template.render(title="Party Creation", energy_types=state.taxes) \
                 .encode('utf-8')
