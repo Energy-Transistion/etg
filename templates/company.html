@@ -49,28 +49,35 @@ window.update = function(energy_type) {
         <h3>{{ type.name|capitalize }}</h3>
         <table>
           <tr>
-            <td>Tier level</td>
-            <td>[[ producers.{{ type.name }}.tier ]]</td>
-            <td>Output</td>
-            <td>[[ producers.{{ type.name }}.output | round ]] kWh</td>
-            <td>Tax level</td>
-            <td></td>
+            <th>Tier level</th>
+            <th>Output</th>
+            <th>Production cost</th>
           </tr>
           <tr>
-            <td><button v-if="producers.{{ type.name }}.upgrade_price <= budget
-            && producers.{{type.name}}.tier < producers.{{type.name}}.max_tier"
-                onclick="update('{{type.name}}')">Buy</button>
-              <button v-else disabled>Buy</button></td>
+            <td>[[ producers.{{ type.name }}.tier ]]</td>
+            <td>[[ producers.{{ type.name }}.output | round ]] kWh</td>
+            <td>€[[ producers.{{ type.name }}.price | round ]] per kWh</td>
+          </tr>
+          <tr>
+            <th>Upgrade cost</th>
+            <th>Output after update</th>
+            <th>Production cost after update</th>
+          </tr>
+          <tr>
             <td>[[ producers.{{ type.name }}.upgrade_price | round ]]</td>
-            <td>Output after update</td>
-            <td>[[ producers.{{ type.name }}.next_output | round ]]</td>
+            <td>[[ producers.{{ type.name }}.next_output | round ]] kWh</td>
+            <td>€[[ producers.{{ type.name }}.next_price | round ]] per kWh</td>
             <!--<td><button>Sell</button></td>
             <td>[[ producers.{{ type.name }}.sell_price | round ]]</td>-->
           </tr>
         </table>
+        <button v-if="producers.{{ type.name }}.upgrade_price <= budget
+        && producers.{{type.name}}.tier < producers.{{type.name}}.max_tier"
+                onclick="update('{{type.name}}')">Buy</button>
+        <button v-else disabled>Buy</button>
       </div>
     {% endfor %}
-  {% endcall %}
+    {% endcall %}
 
   {% call tabs.content('Buyable') %}
     <h3>Buy new producers</h3>

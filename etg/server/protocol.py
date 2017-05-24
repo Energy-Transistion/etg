@@ -43,6 +43,8 @@ class ETGProtocol:
                                                       Attribute("max_tier"),
                                                       Attribute("upgrade_price"),
                                                       Attribute("next_output"),
+                                                      Attribute("price"),
+                                                      Attribute("next_price"),
                                                       Attribute("sell_price")))],
                         [Attribute("marketing"), Attribute("price"), Attribute("market")])
 
