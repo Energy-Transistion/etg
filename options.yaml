@@ -15,7 +15,7 @@ simulation:
 
   party: # Settings for the political parties
     starting_money: 100000 # The starting money for the parties
-    campaign_cost:   50000 # The money needed to campaign
+    campaign_cost:  100000 # The money needed to campaign
 
   companies: # Settings for the companies
     starting_money: 10000000 # The amount of money that a company starts of with
