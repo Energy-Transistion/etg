@@ -19,7 +19,9 @@ class ETGProtocol:
     """
     party_watchers = ([Attribute("current_date"), Attribute("days_until_election"),
                        ObjectAttribute("active_party", Attribute("name")),
-                       Attribute("government_budget"), Attribute("government_income"),
+                       Attribute("government_budget"), Attribute("change_government_budget"),
+                       Attribute("government_income"), Attribute("change_government_income"),
+                       Attribute("greenness"), Attribute("change_greenness"),
                        Attribute("non_voters"), Attribute("weather"), Attribute("approval_rate"),
                        ListAttribute("energy_types",
                                      MultiAttribute(Attribute("name"), Attribute("raw_price"),

@@ -36,7 +36,10 @@ class Simulation(object):
         self.next_election = self.current_date + self.one_round
         self.active_party = None
         self.government_budget = options['government_budget']
+        self._old_government_budget = self.government_budget
         self.government_income = 0
+        self._old_government_income = self.government_income
+        self._old_greenness = 0
         self.votes = {}
         self.non_voters = 0
         self._generate_agents(options['agents'])
@@ -122,6 +125,32 @@ class Simulation(object):
         except KeyError as exc:
             print("Caught error: {}".format(exc))
             return 0
+
+    @property
+    def greenness(self):
+        """
+        How green the energy consumed by the population is.
+        """
+        return sum(etype.greenness *
+                   sum(company.producers[etype.name].output + company.market[etype.name]
+                       for company in self.companies) /
+                   sum(company.output for company in self.companies)
+                   for etype in self.energy_types)
+
+    @property
+    def change_government_income(self):
+        "Difference in the income since the last election"
+        return self.government_income - self._old_government_income
+
+    @property
+    def change_government_budget(self):
+        "Difference in the government budget since the last election"
+        return self.government_budget - self._old_government_budget
+
+    @property
+    def change_greenness(self):
+        "Difference in the greenness of the energy consumed since the last election"
+        return self.greenness - self._old_greenness
 
     def add_party(self, name, taxes):
         """
@@ -209,4 +238,7 @@ class Simulation(object):
         self.active_party = max(self.parties, key=lambda p: votes[p])
         self.votes = votes
         self.non_voters = non_voters
+        self._old_government_income = self.government_income
+        self._old_government_budget = self.government_budget
+        self._old_greenness = self.greenness
         return (votes, non_voters)
