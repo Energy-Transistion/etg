@@ -43,6 +43,13 @@ class EnergyType(Entity):
         except AttributeError:
             return 0
 
+    @property
+    def max_tier(self):
+        """
+        The maximum upgradeable tier for this energy type.
+        """
+        return len(self.tier_costs)
+
 class Producer:
     """
     This class represents an energy producer in the game. It is used by the companies to keep track
@@ -62,6 +69,13 @@ class Producer:
         self.next_price = energy_type.initial_price
         self.upgrade_price = self.type.tier_costs[self.tier]
 
+    @property
+    def max_tier(self):
+        """
+        The max tier for this producer.
+        """
+        return self.type.max_tier
+
     def upgrade(self):
         """
         Upgrade the energy producer by one tier.
@@ -69,6 +83,9 @@ class Producer:
         self.tier += 1
         self.output = self.next_output
         self.price = self.next_price
-        self.upgrade_price = self.type.tier_costs[self.tier]
+        if self.tier == self.type.max_tier:
+            self.upgrade_price = None
+        else:
+            self.upgrade_price = self.type.tier_costs[self.tier]
         self.next_output += self.next_output / self.tier
         self.next_price /= 0.95

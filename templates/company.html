@@ -57,7 +57,8 @@ window.update = function(energy_type) {
             <td></td>
           </tr>
           <tr>
-            <td><button v-if="producers.{{ type.name }}.upgrade_price <= budget"
+            <td><button v-if="producers.{{ type.name }}.upgrade_price <= budget
+            && producers.{{type.name}}.tier < producers.{{type.name}}.max_tier"
                 onclick="update('{{type.name}}')">Buy</button>
               <button v-else disabled>Buy</button></td>
             <td>[[ producers.{{ type.name }}.upgrade_price ]]</td>

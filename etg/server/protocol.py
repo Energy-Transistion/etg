@@ -28,6 +28,7 @@ class ETGProtocol:
                                                                Attribute("percentage_voters")))],
                       [Attribute("money"), Attribute("campaign_cost")],
                       [Attribute("taxes")])
+
     company_watchers = ([Attribute("current_date"), Attribute("days_until_election"),
                          ObjectAttribute("active_party", Attribute("name")),
                          Attribute("weather"),
@@ -36,10 +37,12 @@ class ETGProtocol:
                         [Attribute("budget"), Attribute("income"),
                          DictAttribute("producers",
                                        MultiAttribute(Attribute("tier"), Attribute("output"),
+                                                      Attribute("max_tier"),
                                                       Attribute("upgrade_price"),
                                                       Attribute("next_output"),
                                                       Attribute("sell_price")))],
                         [Attribute("marketing"), Attribute("price"), Attribute("market")])
+
     def __init__(self, service, simulation, connection):
         """
         :param service: The service parent of this Protocol, most likely an instance of
