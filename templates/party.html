@@ -45,6 +45,7 @@ window.campaign = function() {
 
 {% block controls %}
   {% call tabs.content('Inputs') %}
+    <h3>Tax Policy</h3>
     <table style="width: 100%;">
       <tr>
         <th></th>
@@ -65,6 +66,11 @@ window.campaign = function() {
               class="tax_button">-</button></td>
         </tr>
     </table>
+    <template v-if="active_party.name">
+      <h4 v-if="active_party.name === '{{ name }}'">You are in power!</h4>
+      <h4 v-else>[[ active_party.name ]] is in power.</h4>
+    </template>
+    <h4 v-else>The land is ruled by anarchy</h4>
   {% endcall %}
 
   {{ super() }}
