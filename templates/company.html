@@ -73,24 +73,24 @@ window.update = function(energy_type) {
   {% endcall %}
 
   {% call tabs.content('Buyable') %}
-    {% for type in energy_types %}
-      <div v-if="producers.{{ type.name }}.tier === 0">
-        <h3>{{ type.name | capitalize }}</h3>
-        <div class="rowcontainer">
-          <div>
-            <h4>Output</h4>
-            [[ producers.{{ type.name }}.next_output ]]
-          </div>
-          <div>
-            <h4>Price</h4>
-            [[ producers.{{ type.name }}.upgrade_price ]]
-          </div>
-          <button v-if="producers.{{ type.name }}.upgrade_price <= budget"
-            onclick="update('{{type.name}}')">Buy</button>
+    <h3>Buy new producers</h3>
+    <table style="width: 100%;">
+      <tr>
+        <th>Energy Type</th>
+        <th>Price</th>
+        <th>Initial Output</th>
+        <th>Buy</th>
+      </tr>
+      <tr v-for="(producer, name) in producers" v-if="producer.tier ===0">
+        <td>[[ name | capitalize ]]</td>
+        <td>[[ producer.upgrade_price | round ]]</td>
+        <td>[[ producer.next_output | round ]]</td>
+        <td><button v-if="producer.upgrade_price <= budget"
+            onclick="update(name)">Buy</button>
           <button v-else disabled>Buy</button>
-        </div>
-      </div>
-    {% endfor %}
+        </td>
+      </tr>
+    </table>
   {% endcall %}
 
   {% call tabs.content('Market') %}
