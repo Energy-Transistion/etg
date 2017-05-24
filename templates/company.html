@@ -52,7 +52,7 @@ window.update = function(energy_type) {
             <td>Tier level</td>
             <td>[[ producers.{{ type.name }}.tier ]]</td>
             <td>Output</td>
-            <td>[[ producers.{{ type.name }}.output ]] kWh</td>
+            <td>[[ producers.{{ type.name }}.output | round ]] kWh</td>
             <td>Tax level</td>
             <td></td>
           </tr>
@@ -61,11 +61,11 @@ window.update = function(energy_type) {
             && producers.{{type.name}}.tier < producers.{{type.name}}.max_tier"
                 onclick="update('{{type.name}}')">Buy</button>
               <button v-else disabled>Buy</button></td>
-            <td>[[ producers.{{ type.name }}.upgrade_price ]]</td>
+            <td>[[ producers.{{ type.name }}.upgrade_price | round ]]</td>
             <td>Output after update</td>
-            <td>[[ producers.{{ type.name }}.next_output ]]</td>
+            <td>[[ producers.{{ type.name }}.next_output | round ]]</td>
             <!--<td><button>Sell</button></td>
-            <td>[[ producers.{{ type.name }}.sell_price ]]</td>-->
+            <td>[[ producers.{{ type.name }}.sell_price | round ]]</td>-->
           </tr>
         </table>
       </div>
