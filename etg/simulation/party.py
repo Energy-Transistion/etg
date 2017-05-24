@@ -85,5 +85,5 @@ class Party(Entity):
         """
         percentage = 83 * math.exp((self._last_campaign - self.simulation.current_tick)/30)
         for agent in self.simulation.agents.n_of(int(percentage * len(self.simulation.agents))):
-            agent.need_green = (agent.need_green * 100 + self.greenness * 0.05)/100
-            agent.need_safety = (agent.need_safety * 100 + self.safety * 0.05)/100
+            agent.need_green = (agent.need_green * 100 + self.greenness * 0.10)/100
+            agent.need_safety = (agent.need_safety * 100 + self.safety * 0.10)/100
