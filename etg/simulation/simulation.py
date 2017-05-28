@@ -131,11 +131,14 @@ class Simulation(object):
         """
         How green the energy consumed by the population is.
         """
-        return sum(etype.greenness *
-                   sum(company.producers[etype.name].output + company.market[etype.name]
-                       for company in self.companies) /
-                   sum(company.output for company in self.companies)
-                   for etype in self.energy_types)
+        if len(self.companies) == 0:
+            return 0
+        else:
+            return sum(etype.greenness *
+                       sum(company.producers[etype.name].output + company.market[etype.name]
+                           for company in self.companies) /
+                       sum(company.output for company in self.companies)
+                       for etype in self.energy_types)
 
     @property
     def change_government_income(self):
