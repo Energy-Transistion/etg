@@ -60,7 +60,10 @@ class Company(Entity):
         """
         How much money the company earned this tick.
         """
-        return self.profit * (1 - self.marketing)
+        if self.profit >= 0:
+            return self.profit * (1 - self.marketing/100)
+        else:
+            return self.profit
 
     @property
     def rawcost(self):
@@ -150,6 +153,7 @@ class Company(Entity):
         their product.
         """
         self.budget += self.income
-        for agent in self.simulation.agents:
-            agent.need_green = (agent.need_green * 100 + self.product_green * self.marketing)/100
-            agent.need_safety = (agent.need_safety * 100 + self.product_safety * self.marketing)/100
+        if self.profit >= 0:
+            for agent in self.simulation.agents:
+                agent.need_green = (agent.need_green * 100 + self.product_green * self.marketing/100)/100
+                agent.need_safety = (agent.need_safety * 100 + self.product_safety * self.marketing/100)/100
