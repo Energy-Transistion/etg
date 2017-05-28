@@ -5,6 +5,8 @@
   {% block scripts %}
     <script src="https://use.fontawesome.com/db3220912c.js"></script>
     <script src="/js/vue.js"></script>
+    <script src="/js/moment.js"></script>
+    <script src="/js/Chart.js"></script>
     <script src="/js/interface.js"></script>
   <script>
 window.onload = function() {
@@ -94,7 +96,6 @@ window.onload = function() {
           </ul>
         </div>
         {% block plot %}
-          <plot></plot>
         {% endblock plot %}
         {% block monitors %}
         {% endblock monitors %}
