@@ -212,12 +212,12 @@ class Simulation(object):
         voters = {}
         non_voters = 0
         for party in self.parties:
-            voters[party] = 0
+            voters[party.name] = 0
         sample = self.agents.n_of(100)
         for agent in sample:
             agent.choose_best_party()
             if agent.party:
-                voters[agent.party] += 1
+                voters[agent.party.name] += 1
             else:
                 non_voters += 1
         self.votes = voters
@@ -231,14 +231,14 @@ class Simulation(object):
         votes = {}
         non_voters = 0
         for party in self.parties:
-            votes[party] = 0
+            votes[party.name] = 0
         for agent in self.agents:
             agent.choose_best_party()
             if agent.party:
-                votes[agent.party] += 1
+                votes[agent.party.name] += 1
             else:
                 non_voters += 1
-        self.active_party = max(self.parties, key=lambda p: votes[p])
+        self.active_party = max(self.parties, key=lambda p: votes[p.name])
         self.votes = votes
         self.non_voters = non_voters
         self._old_government_income = self.government_income

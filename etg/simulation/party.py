@@ -35,9 +35,13 @@ class Party(Entity):
     @property
     def percentage_voters(self):
         """
-        The percentage of the population that votes for this party.
+        The percentage of the population that would vote for this party in the last poll, as a
+        percentage.
         """
-        return len(self.voters)/len(self.simulation.agents)
+        try:
+            return self.simulation.votes[self.name]
+        except KeyError:
+            return 0
 
     @property
     def greenness(self):
