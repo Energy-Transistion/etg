@@ -1,3 +1,4 @@
+"use strict";
 /* WebSockets */
 function sendJSON(socket, obj) {
   socket.send(JSON.stringify(obj));
@@ -26,9 +27,9 @@ function define_components(connection) {
     value = parseFloat(value);
     value = Math.round((value + 0.0001) * 100) / 100;
     value = value.toString()
-    x = value.split('.');
-    x1 = x[0];
-    x2 = x.length > 1 ? '.' + x[1] : '';
+    var x = value.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? '.' + x[1] : '';
     var rgx = /(\d+)(\d{3})/;
     while (rgx.test(x1)) {
       x1 = x1.replace(rgx, '$1' + ' ' + '$2');
@@ -53,7 +54,7 @@ function define_components(connection) {
     created: function() {
       var mon = this
       connection.addEventListener('change', function(e) {
-        data = e.detail.packet;
+        var data = e.detail.packet;
         if (data[mon.monitor]) {
           mon.value = data[mon.monitor]
         }
