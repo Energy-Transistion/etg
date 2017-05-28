@@ -35,6 +35,10 @@ window.update = function(energy_type) {
     <etg-monitor monitor="income">Income</etg-monitor>
   </div>
   <div class="rowcontainer">
+    <etg-monitor monitor="rawcost">Raw cost</etg-monitor>
+    <etg-monitor monitor="profit">Profit</etg-monitor>
+  </div>
+  <div class="rowcontainer">
     <etg-slider ident="marketing">Marketing</etg-slider>
     <!-- slider, van 0 tot 100% van inkomen -->
     <etg-slider ident="price" :max="1" :step="0.01" unit="€">Price per kWh</etg-slider>
