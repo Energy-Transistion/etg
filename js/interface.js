@@ -161,6 +161,11 @@ function define_components(connection) {
         required: false,
         default: 100,
       },
+      maxdata: {
+        type: Number,
+        required: false,
+        default: 10
+      },
     },
 
     mounted: function() {
@@ -195,12 +200,37 @@ function define_components(connection) {
           scales: {
             yAxes: [{
               ticks: {
-                min: this.min,
-                max: this.max,
+                min: this.min - 1,
+                max: this.max + 1,
               },
             }],
           },
         },
+      });
+      // Register for events
+      var self = this;
+      connection.addEventListener('change', function(e) {
+        var data = e.detail.packet;
+        console.log(data);
+        if (data[self.collection]) {
+          var coll = data[self.collection];
+          if (coll[0][self.variable] !== undefined) {
+            var pop_data = false;
+            if (self.chart.data.labels.length >= self.maxdata) {
+              self.chart.data.length.shift()
+              pop_data = true;
+            }
+            self.chart.data.labels.push(data.current_date);
+            self.chart.data.datasets.forEach((dataset) => {
+              if (pop_data) {
+                dataset.data.shift()
+              }
+              var value = coll.filter((val) => val.name === dataset.label)[0];
+              dataset.data.push(value[self.variable]);
+            });
+            self.chart.update()
+          }
+        }
       });
     },
   })
