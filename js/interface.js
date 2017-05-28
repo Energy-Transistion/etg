@@ -135,8 +135,74 @@ function define_components(connection) {
     }
   })
 
-  Vue.component('plot', {
-    template: '<div class = "plot"></div>',
+  Vue.component('etg-plot', {
+    template: '<canvas class="plot"></canvas>',
+    props: {
+      variable: {
+        type: String,
+        required: true,
+      },
+      collection: {
+        type: String,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      min: {
+        type: Number,
+        required: false,
+        default: 0
+      },
+      max: {
+        type: Number,
+        required: false,
+        default: 100,
+      },
+    },
+
+    mounted: function() {
+      var coll = this.$root[this.collection];
+      var length = coll.length;
+      var data = {
+        labels: [this.$root.current_date],
+        datasets: []
+      };
+      var coll = this.$root[this.collection];
+      var length = coll.length;
+      // Building the datasets
+      for (var i = 0; i < length; i++) {
+        data.datasets.push({
+          label: coll[i].name,
+          data: [coll[i][this.variable]],
+          borderColor: 'rgb(0,0,255)',
+        });
+      }
+      console.log(data)
+      var ctx = this.$el.getContext('2d');
+      var title = {display: false}
+      if (this.title) {
+        title.display = true;
+        title.text = this.title;
+      }
+      this.chart = new Chart(ctx, {
+        type: "line",
+        data: data,
+        options: {
+          title: title,
+          scales: {
+            yAxes: [{
+              ticks: {
+                min: this.min,
+                max: this.max,
+              },
+            }],
+          },
+        },
+      });
+    },
   })
 }
 

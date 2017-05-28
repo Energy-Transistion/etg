@@ -17,7 +17,8 @@ window.campaign = function() {
 
 {% block plot %}
 <div class="rowcontainer">
-  {{ super() }}
+  <etg-plot title="Election poll" variable="percentage_voters" collection="parties">
+  </etg-plot>
   <div class="columncontainer">
     <etg-monitor monitor="days_until_election">Days till election</etg-monitor>
     <etg-monitor monitor="approval_rate">Approval</etg-monitor>
