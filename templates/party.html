@@ -16,19 +16,17 @@ window.campaign = function() {
 {% endblock %}
 
 {% block plot %}
-<div class="rowcontainer">
   <etg-plot title="Election poll" variable="percentage_voters" collection="parties">
   </etg-plot>
+{% endblock plot %}
+
+{% block monitors %}
+  <div id="govmonitors" class="rowcontainer">
   <div class="columncontainer">
     <etg-monitor monitor="days_until_election">Days till election</etg-monitor>
     <etg-monitor monitor="approval_rate">Approval</etg-monitor>
     <etg-monitor monitor="non_voters">Non voters</etg-monitor>
   </div>
-</div>
-{% endblock plot %}
-
-{% block monitors %}
-  <div id="govmonitors" class="rowcontainer">
     <div class="columncontainer">
       <etg-monitor monitor="government_income">Income</etg-monitor>
       <etg-monitor monitor="change_government_income">Change</etg-monitor>
