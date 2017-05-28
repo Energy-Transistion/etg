@@ -21,6 +21,17 @@ function make_connection (name) {
   return socket;
 }
 
+/* Setup Chart.js */
+Chart.defaults.global.legend.position = "right";
+Chart.defaults.global.elements.line.fill = false;
+Chart.defaults.line.scales.xAxes = [{
+  type: 'time',
+  time: {
+    unit: 'week',
+  },
+}];
+
+/* Setup Vue */
 function define_components(connection) {
   /* Vue filters */
   Vue.filter('round', function(value) {
