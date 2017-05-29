@@ -37,7 +37,12 @@ class Party(Entity):
         """
         The percentage of the population that votes for this party.
         """
-        return len(self.voters)/len(self.simulation.agents)
+        try:
+            return self.simulation.votes[self.name] * 100 / \
+                (sum(self.simulation.votes[name] for name in self.simulation.votes) +
+                 self.simulation.non_voters)
+        except KeyError:
+            return 0
 
     @property
     def greenness(self):
