@@ -146,6 +146,10 @@ function define_components(connection) {
         type: String,
         required: true,
       },
+      overlay: {
+        type: String,
+        required: false,
+      },
       title: {
         type: String,
         required: false,
@@ -184,6 +188,13 @@ function define_components(connection) {
           borderColor: 'rgb(0,0,255)',
         });
       }
+      if (this.overlay) {
+        data.datasets.push({
+          label: this.overlay,
+          data: [this.$root[this.overlay]],
+          borderColor: 'rgb(0,0,0)',
+        })
+      }
       console.log(data)
       var ctx = this.$el.getContext('2d');
       var title = {display: false}
@@ -217,7 +228,7 @@ function define_components(connection) {
           if (coll[0][self.variable] !== undefined) {
             var pop_data = false;
             if (self.chart.data.labels.length >= self.maxdata) {
-              self.chart.data.length.shift()
+              self.chart.data.labels.shift()
               pop_data = true;
             }
             self.chart.data.labels.push(data.current_date);
@@ -225,8 +236,14 @@ function define_components(connection) {
               if (pop_data) {
                 dataset.data.shift()
               }
-              var value = coll.filter((val) => val.name === dataset.label)[0];
-              dataset.data.push(value[self.variable]);
+              var value = undefined;
+              if (dataset.label === self.overlay) {
+                value = self.$root[self.overlay];
+              } else {
+                value = coll.filter((val) => val.name === dataset.label)[0];
+                value = value[self.variable];
+              }
+              dataset.data.push(value);
             });
             self.chart.update()
           }

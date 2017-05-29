@@ -17,7 +17,7 @@ window.campaign = function() {
 
 {% block plot %}
   <etg-plot title="Election poll" :max="100"
-    variable="percentage_voters" collection="parties">
+    variable="percentage_voters" collection="parties" overlay="non_voters">
   </etg-plot>
 {% endblock plot %}
 
