@@ -135,6 +135,51 @@ function define_components(connection) {
     }
   })
 
+  Vue.component('etg-plot-container', {
+    created: function() {
+      this.plots = {};
+      this.titles = [];
+      if (this.$slots.default) {
+        console.log(this.$slots.default);
+        for (let node of this.$slots.default) {
+          console.log(node)
+          var title = node.componentOptions.propsData.title;
+          this.plots[title] = node;
+          this.titles.push(title);
+        }
+        this.title = this.titles[0];
+        console.log(this.plots)
+      }
+    },
+    render: function(createElement) {
+      console.log("Rendering")
+      console.log(this.title)
+      if (this.titles.length === 0){
+        return create('span', 'No plots to display');
+      } else if (this.titles.length === 1) {
+        return this.plots[this.titles[0]];
+      }
+      var self = this;
+      var select = createElement('select', {
+        domProps: {
+          value: self.title
+        },
+        on: {
+          change: function (event) {
+            self.title = event.target.value
+            self.$emit('change', event.target.value)
+            self.$forceUpdate()
+            console.log("New title: " + self.title)
+          }
+        }
+      },
+        this.titles.map(t => createElement('option', t)));
+      console.log(this.title)
+      console.log(this.plots[this.title])
+      return createElement('div', [this.plots[this.title], select]);
+    }
+  });
+
   Vue.component('etg-plot', {
     template: '<canvas class="plot"></canvas>',
     props: {
