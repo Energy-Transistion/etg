@@ -221,7 +221,7 @@ class Simulation(object):
             else:
                 non_voters += 1
         self.votes = voters
-        self.non_voters = non_voters/len(self.agents)
+        self.non_voters = non_voters
         return (voters, non_voters)
 
     def election(self):
@@ -240,7 +240,7 @@ class Simulation(object):
                 non_voters += 1
         self.active_party = max(self.parties, key=lambda p: votes[p.name])
         self.votes = votes
-        self.non_voters = non_voters
+        self.non_voters = non_voters/len(self.agents) * 100
         self._old_government_income = self.government_income
         self._old_government_budget = self.government_budget
         self._old_greenness = self.greenness

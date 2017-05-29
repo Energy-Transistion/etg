@@ -39,9 +39,9 @@ class Party(Entity):
         percentage.
         """
         try:
-            return self.simulation.votes[self.name]
-        except KeyError:
-            return 0
+            return self.simulation.votes[self.name] * 100 / \
+                (sum(self.simulation.votes[name] for name in self.simulation.votes) +
+                 self.simulation.non_voters)
 
     @property
     def greenness(self):
