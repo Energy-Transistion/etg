@@ -159,7 +159,6 @@ function define_components(connection) {
       max: {
         type: Number,
         required: false,
-        default: 100,
       },
       maxdata: {
         type: Number,
@@ -192,6 +191,10 @@ function define_components(connection) {
         title.display = true;
         title.text = this.title;
       }
+      var ticks = {suggestedMin: this.min};
+      if (this.max !== undefined) {
+        ticks.suggestedMax = this.max;
+      }
       this.chart = new Chart(ctx, {
         type: "line",
         data: data,
@@ -199,10 +202,7 @@ function define_components(connection) {
           title: title,
           scales: {
             yAxes: [{
-              ticks: {
-                min: this.min - 1,
-                max: this.max + 1,
-              },
+              ticks: ticks,
             }],
           },
         },
