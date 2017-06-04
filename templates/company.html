@@ -92,12 +92,12 @@ window.update = function(energy_type) {
         <th>Initial Output</th>
         <th>Buy</th>
       </tr>
-      <tr v-for="(producer, name) in producers" v-if="producer.tier ===0">
-        <td>[[ name | capitalize ]]</td>
+      <tr v-for="(producer, prod_name) in producers" v-if="producer.tier ===0">
+        <td>[[ prod_name | capitalize ]]</td>
         <td>[[ producer.upgrade_price | round ]]</td>
         <td>[[ producer.next_output | round ]]</td>
         <td><button v-if="producer.upgrade_price <= budget"
-            onclick="update(name)">Buy</button>
+            v-on:click="updateProducer(prod_name)">Buy</button>
           <button v-else disabled>Buy</button>
         </td>
       </tr>
@@ -108,7 +108,7 @@ window.update = function(energy_type) {
     <h3>Open Energy Market</h3>
     {% for type in energy_types %}
       <h4>{{ type.name | capitalize }}</h4>
-      <input v-model.number="market.{{ type.name }}" type="number"
+      <input v-model.number.lazy="market.{{ type.name }}" type="number"
              v-on:input="updateMarket('{{ type.name }}', $event.target.value)">
       <span>kWh</span>
     {% endfor %}
