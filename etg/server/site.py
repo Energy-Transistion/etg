@@ -1,7 +1,6 @@
 """
 The code for generating the site.
 """
-import html
 import os
 from random import randrange
 from twisted.logger import Logger
@@ -120,7 +119,7 @@ class PartyResource(resource.Resource):
             return redirectTo(b"/create_party.html", request)
         state.name = name
         with self.service.simulation as sim:
-            sim.add_party(state.name, state.taxes)
+            sim.add_party(state.name, state.taxes, "rgb(0,0,255)")
         return self.render_interface(request)
 
     def render_GET(self, request):
@@ -207,7 +206,7 @@ class CompanyResource(resource.Resource):
             return redirectTo(b"/create_company.html", request)
         state.name = name
         with self.service.simulation as sim:
-            sim.add_company(state.name, state.tiers)
+            sim.add_company(state.name, state.tiers, "rgb(0, 0, 255)")
         return self.render_interface(request)
 
     def render_GET(self, request):

@@ -9,11 +9,12 @@ class EnergyType(Entity):
     This class represents a specific energy type, that is read in from a yaml file.
     """
     # pylint: disable=too-few-public-methods, too-many-instance-attributes
-    def __init__(self, simulation, name, greenness, safety, initial_output, initial_price,
+    def __init__(self, simulation, name, color, greenness, safety, initial_output, initial_price,
                  tiers_unlocks, market_price):
         # pylint: disable=too-many-arguments
         super().__init__(simulation)
         self.name = name
+        self.color = color
         self.greenness = greenness
         self.safety = safety
         self.initial_output = initial_output
@@ -68,6 +69,7 @@ class Producer:
         self.sell_price = 0
         self.next_price = energy_type.initial_price
         self.upgrade_price = self.type.tier_costs[self.tier]
+        self.color = energy_type.color
 
     @property
     def max_tier(self):

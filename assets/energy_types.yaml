@@ -1,5 +1,6 @@
 ---
 name: solar # The name of the energy type
+color: "rgb(255, 255, 25)"
 greenness: 90 # How green the energy is, from 0 to 100
 safety: 100 # How safe the energy is, from 0 to 100
 market_price: 0.12 # The price for one kWh on the open market
@@ -14,6 +15,7 @@ tiers_unlocks: # how expensive it is to unlock a new tier of this type of energy
   - 5500000
 ---
 name: wind
+color: "rgb(0, 0, 255)"
 greenness: 80
 safety: 80
 initial_output: 5
@@ -28,6 +30,7 @@ tiers_unlocks:
   - 4250000
 ---
 name: nuclear
+color: "rgb(0, 255, 0)"
 greenness: 55
 safety: 20
 initial_output: 5
@@ -42,6 +45,7 @@ tiers_unlocks:
   - 2500000
 ---
 name: oil
+color: "rgb(87, 54, 42)"
 greenness: 10
 safety: 20
 initial_output: 5
@@ -56,6 +60,7 @@ tiers_unlocks:
   - 2000000
 ---
 name: gas
+color: "rgb(53, 87, 42)"
 greenness: 30
 safety: 40
 initial_output: 5
@@ -70,6 +75,7 @@ tiers_unlocks:
   - 2000000
 ---
 name: coal
+color: "rgb(163, 42, 3)"
 greenness: 5
 safety: 25
 initial_output: 5

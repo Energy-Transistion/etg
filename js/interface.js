@@ -23,7 +23,7 @@ function make_connection (name) {
 
 /* Setup Chart.js */
 Chart.defaults.global.legend.position = "right";
-Chart.defaults.global.elements.line.fill = false;
+//Chart.defaults.global.elements.line.fill = false;
 Chart.defaults.line.scales.xAxes = [{
   type: 'time',
   time: {
@@ -127,7 +127,7 @@ function define_components(connection) {
     created: function() {
       var mon = this
       connection.addEventListener('change', function(e) {
-        data = e.detail.packet;
+        var data = e.detail.packet;
         if (data[mon.ident]) {
           mon.value = data[mon.ident]
         }
@@ -155,7 +155,7 @@ function define_components(connection) {
       console.log("Rendering")
       console.log(this.title)
       if (this.titles.length === 0){
-        return create('span', 'No plots to display');
+        return createElement('span', 'No plots to display');
       } else if (this.titles.length === 1) {
         return this.plots[this.titles[0]];
       }
@@ -214,6 +214,11 @@ function define_components(connection) {
         required: false,
         default: 10
       },
+      stacked: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
 
     mounted: function() {
@@ -230,7 +235,9 @@ function define_components(connection) {
         data.datasets.push({
           label: coll[i].name,
           data: [coll[i][this.variable]],
-          borderColor: 'rgb(0,0,255)',
+          fill: this.stacked,
+          borderColor: coll[i].color,
+          backgroundColor: coll[i].color.replace(/rgb/g, 'rgba').replace(/\)/g,",0.6)"),
         });
       }
       if (this.overlay) {
@@ -259,24 +266,30 @@ function define_components(connection) {
           scales: {
             yAxes: [{
               ticks: ticks,
+              stacked: this.stacked,
             }],
           },
         },
       });
       // Register for events
       var self = this;
+
       connection.addEventListener('change', function(e) {
         var data = e.detail.packet;
+        var date = vm.current_date;
+        if (data.current_date !== undefined) {
+          data = data.current_date;
+        }
         console.log(data);
         if (data[self.collection]) {
           var coll = data[self.collection];
-          if (coll[0][self.variable] !== undefined) {
+          if (coll.some((x) => {return x[self.variable] !== undefined})) {
             var pop_data = false;
             if (self.chart.data.labels.length >= self.maxdata) {
               self.chart.data.labels.shift()
               pop_data = true;
             }
-            self.chart.data.labels.push(data.current_date);
+            self.chart.data.labels.push(date);
             self.chart.data.datasets.forEach((dataset) => {
               if (pop_data) {
                 dataset.data.shift()
@@ -326,13 +339,23 @@ function setup_vue(data, socket) {
         data[energy_type] += amount;
         sendJSON(socket, {'type': 'change', 'packet': {'taxes': data}})
       },
+      updateProducer: function(energy_type) {
+        var data = {'type': 'action', 'action': 'upgrade', 'args': [energy_type]}
+        console.log(data)
+        sendJSON(socket, data)
+      },
       updateMarket: function(name, value) {
+        if (value == '') {
+          return;
+        }
+        value = parseFloat(value)
         if (value < 0) {
-          value = 0;
+          console.log("Smaller than 0");
+          value = 0
           vm.market[name] = 0;
         }
         socket.send(JSON.stringify({'type': 'change', 'packet':
-          {'market': {name: value}}}))
+          {'market': {[name]: value}}}))
       }
     },
     filters: {

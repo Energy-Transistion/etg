@@ -155,16 +155,17 @@ class Simulation(object):
         "Difference in the greenness of the energy consumed since the last election"
         return self.greenness - self._old_greenness
 
-    def add_party(self, name, taxes):
+    def add_party(self, name, taxes, color):
         """
         Add a new political party to the simulation.
         """
         party = Party(self, self._options['party'], name)
         for tax in taxes:
             party.taxes[tax['name']] = tax['taxes']
+        party.color = color
         self.parties.append(party)
 
-    def add_company(self, name, unlocked_tiers):
+    def add_company(self, name, unlocked_tiers, color):
         """
         Add a new company to the simulation.
         """
@@ -175,6 +176,7 @@ class Simulation(object):
                 tier -= 1
                 company.producers[tiers['name']].upgrade()
         company.price = company.rawcost/company.output * 1.10
+        company.color = color
         self.companies.append(company)
 
     def tick(self):
