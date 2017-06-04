@@ -121,8 +121,8 @@ class Simulation(object):
         would vote for that party.
         """
         try:
-            return self.votes[self.active_party]/len(self.agents)
-        except KeyError as exc:
+            return self.votes[self.active_party.name]/len(self.agents)
+        except AttributeError as exc:
             print("Caught error: {}".format(exc))
             return 0
 
