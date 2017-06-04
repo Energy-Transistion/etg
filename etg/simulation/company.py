@@ -49,6 +49,11 @@ class Company(Entity):
         return len(self.users)
 
     @property
+    def market_share(self):
+        "The percentage of the population that buys their energy here."
+        return self.buyers/len(self.simulation.agents) * 100
+
+    @property
     def profit(self):
         """
         How much profit the company makes each tick.
@@ -81,6 +86,13 @@ class Company(Entity):
         """
         return sum(self.producers[etype.name].output + self.market[etype.name]
                    for etype in self.simulation.energy_types)
+
+    @property
+    def total_output(self):
+        "The output and market per producer."
+        return [Output(etype.name, etype.color,
+                       self.producers[etype.name].output + self.market[etype.name])
+                for etype in self.simulation.energy_types]
 
     @property
     def product_green(self):
@@ -157,3 +169,10 @@ class Company(Entity):
             for agent in self.simulation.agents:
                 agent.need_green = (agent.need_green * 100 + self.product_green * self.marketing/100)/100
                 agent.need_safety = (agent.need_safety * 100 + self.product_safety * self.marketing/100)/100
+
+class Output:
+    # pylint: disable=too-few-public-methods
+    def __init__(self, name, color, output):
+        self.name = name
+        self.color = color
+        self.output = output

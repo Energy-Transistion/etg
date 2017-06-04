@@ -18,15 +18,18 @@ window.update = function(energy_type) {
 {% endblock %}
 
 {% block plot %}
-  <div class="columncontainer">
-    {{ super() }}
-    <select>
-      <option>Market Share</option>
-      <option>Greenness</option>
-      <option>Income</option>
-      <option>Energy consumption and production</option>
-    </select>
-  </div>
+  <etg-plot-container>
+    <etg-plot title="Market Share" :max="100" key="share"
+              variable="market_share" collection="companies">
+    </etg-plot><etg-plot title="Greenness" :max="100" key="green"
+                         collection="companies" variable="product_green">
+    </etg-plot><etg-plot title="Income" key="income"
+                         collection="companies" variable="income">
+    </etg-plot><etg-plot title="Energy production" key="production"
+    :stacked="true"
+                         collection="total_output" variable="output">
+    </etg-plot>
+  </etg-plot-container>
 {% endblock plot %}
 
 {% block monitors %}
