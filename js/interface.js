@@ -95,6 +95,16 @@ function define_components(connection) {
         type: String,
         required: true
       },
+      collection: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      index: {
+        type: String,
+        required: false,
+        default: ''
+      },
       init: {
         type: Number,
         required: false,
@@ -125,15 +135,25 @@ function define_components(connection) {
     methods: {
       update: function(value) {
         this.value = parseFloat(value);
+        var packet = {[this.ident]: this.value}
+        if (this.collection) {
+          packet = {[this.collection]: {[this.index]: packet}};
+        }
         sendJSON(socket, {'type': 'change',
-                           'packet': {[this.ident]: this.value}});
+                           'packet': packet});
       },
     },
     created: function() {
       var mon = this
       connection.addEventListener('change', function(e) {
         var data = e.detail.packet;
-        if (data[mon.ident]) {
+        if (mon.collection && data[mon.collection]) {
+          var coll = data[mon.collection];
+          if (coll[mon.index] !== undefined &&
+              coll[mon.index][mon.ident] !== undefined) {
+            mon.value = coll[mon.index][mon.ident];
+          }
+        } else if (data[mon.ident] !== undefined) {
           mon.value = data[mon.ident]
         }
       })
