@@ -42,9 +42,28 @@ class Simulation(object):
         self._old_greenness = 0
         self.votes = {}
         self.non_voters = 0
+        self._setup_seasons(options['season_file'])
         self._generate_agents(options['agents'])
         self._setup_energy_types(options['energy_types'], options['agents']['avg_energy_use'])
         self._options = options
+
+    def _setup_seasons(self, path):
+        """
+        Load the information for all the different seasons
+        """
+        self.seasons = []
+        with open(path, 'r') as file:
+            season_data = yaml.load_all(file)
+            for data in season_data:
+                self.seasons.append(Season(current_date=self.current_date, **data))
+        season_candidate = None
+        for season in self.seasons:
+            start_date = season.start_date
+            old_start = datetime.date(self.current_date.year, start_date.month, start_date.day)
+            if old_start <= self.current_date:
+                if not season_candidate or season_candidate.start_date < season.start_date:
+                    season_candidate = season
+        self.current_season = season_candidate
 
     def _generate_agents(self, agent_options):
         """
@@ -183,6 +202,10 @@ class Simulation(object):
         Iterate the simulation by one tick.
         """
         news = []
+        for season in self.seasons:
+            if season.should_trigger(self.current_date):
+                season.trigger(self.current_date, self)
+                news.append("It is now {season}!".format(season=season.name.capitalize()))
         for agent in self.agents:
             agent.tick()
         for company in self.companies:
@@ -246,3 +269,30 @@ class Simulation(object):
         self._old_government_budget = self.government_budget
         self._old_greenness = self.greenness
         return (votes, non_voters)
+
+class Season:
+    """This class represents a single season for use within the game."""
+    def __init__(self, name, start_date, current_date):
+        start_date = datetime.datetime.strptime(start_date, "%B %d").date()
+        self.name = name
+        self.start_date = datetime.date(current_date.year, start_date.month, start_date.day)
+        if current_date > self.start_date:
+            self.start_date = datetime.date(current_date.year + 1, start_date.month, start_date.day)
+
+    def __repr__(self):
+        "Make a nice string format of the season"
+        return "<Season {name} starts on {date}>".format(name=self.name, date=self.start_date)
+
+    def should_trigger(self, current_date):
+        "Returns if this next season should start"
+        return self.start_date <= current_date
+
+    def trigger(self, current_date, simulation):
+        "Activate this new season if applicable."
+        if not self.should_trigger(current_date):
+            return False
+        simulation.current_season = self
+        year = self.start_date.year + 1
+        month = self.start_date.month
+        day = self.start_date.day
+        self.start_date = datetime.date(year, month, day)

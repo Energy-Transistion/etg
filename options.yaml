@@ -3,6 +3,7 @@ simulation:
   tick_rate: 0.33 # Number of seconds between two ticks
   government_budget: 100000 # The initial government budget
   refraction_ticks: 250 # Number of ticks between agent decisions
+  season_file: assets/seasons.yaml
   agents:
     number_agents: 500 # Number of agents in the game
     seed_size: 30 # Size of fully linked initial agent network
