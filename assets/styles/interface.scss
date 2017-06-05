@@ -115,6 +115,9 @@ div.splits {
 }
 
 .tabcontent {
+	.slider, .monitor {
+		background-color: transparent;
+	}
 	padding: $margin-size;
 	margin: 0px;
 	height: calc(100% - #{2 * $margin-size});

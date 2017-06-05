@@ -168,6 +168,14 @@ class Company(Entity):
             return False, "Not enough budget"
         return True, ''
 
+    def sell(self, producer_name):
+        "Sell the producer with `producer_name` for half of the money of the tier that it is at"
+        producer = self.producers[producer_name]
+        self.producers[producer_name] = Producer(producer.type)
+        self.producers[producer_name].production_level = producer.production_level
+        self.budget += 0.5 * sum(producer.type.tier_costs[i] for i in range(0, producer.tier))
+        return True, ''
+
     def tick(self):
         """
         In a tick, the companies do their marketing, by updating the needs of the agents to mimic

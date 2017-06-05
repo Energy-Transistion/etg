@@ -14,6 +14,10 @@ window.update = function(energy_type) {
   console.log(data)
   sendJSON(socket, data)
 }
+window.sell = function(energy_type) {
+  var data = {'type': 'action', 'action': 'sell', 'args': [energy_type]}
+  sendJSON(socket, data)
+}
   </script>
 {% endblock %}
 
@@ -89,6 +93,7 @@ window.update = function(energy_type) {
           && producers.{{type.name}}.tier < producers.{{type.name}}.max_tier"
                   onclick="update('{{type.name}}')">Upgrade</button>
           <button v-else disabled>Upgrade</button>
+          <button onclick="sell('{{type.name}}')" style="width: 10%">Sell</button>
         </div>
       </div>
     {% endfor %}
