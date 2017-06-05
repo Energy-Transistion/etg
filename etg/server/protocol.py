@@ -58,7 +58,8 @@ class ETGProtocol:
                                                       Attribute("price"),
                                                       Attribute("next_price"),
                                                       Attribute("sell_price")))],
-                        [Attribute("marketing"), Attribute("price"), Attribute("market")])
+                        [Attribute("marketing"), Attribute("price"), Attribute("market"),
+                         DictAttribute("producers", MultiAttribute(Attribute("production_level")))])
 
     def __init__(self, service, simulation, connection):
         """

@@ -78,13 +78,19 @@ class Producer:
         """
         self.tier = 0
         self.type = energy_type
-        self.output = 0
+        self.full_output = 0
         self.next_output = energy_type.initial_output
         self.price = 0
         self.sell_price = 0
         self.next_price = energy_type.initial_price
         self.upgrade_price = self.type.tier_costs[self.tier]
         self.color = energy_type.color
+        self.production_level = 100
+
+    @property
+    def output(self):
+        "The output for this producer"
+        return self.production_level/100 * self.full_output
 
     @property
     def max_tier(self):
@@ -98,7 +104,7 @@ class Producer:
         Upgrade the energy producer by one tier.
         """
         self.tier += 1
-        self.output = self.next_output
+        self.full_output = self.next_output
         self.price = self.next_price
         if self.tier == self.type.max_tier:
             self.upgrade_price = None

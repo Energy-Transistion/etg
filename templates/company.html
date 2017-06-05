@@ -81,10 +81,15 @@ window.update = function(energy_type) {
             <td>[[ producers.{{ type.name }}.sell_price | round ]]</td>-->
           </tr>
         </table>
-        <button v-if="producers.{{ type.name }}.upgrade_price <= budget
-        && producers.{{type.name}}.tier < producers.{{type.name}}.max_tier"
-                onclick="update('{{type.name}}')">Buy</button>
-        <button v-else disabled>Buy</button>
+        <div class="rowcontainer">
+          <etg-slider ident="production_level" collection="producers"
+                      index="{{ type.name }}" :init="100">Production Level
+          </etg-slider>
+          <button v-if="producers.{{ type.name }}.upgrade_price <= budget
+          && producers.{{type.name}}.tier < producers.{{type.name}}.max_tier"
+                  onclick="update('{{type.name}}')">Upgrade</button>
+          <button v-else disabled>Upgrade</button>
+        </div>
       </div>
     {% endfor %}
     {% endcall %}
