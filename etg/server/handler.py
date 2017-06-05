@@ -225,18 +225,3 @@ class MultiAttribute(Attribute):
         for attr in self.attrs:
             if attr.key in value:
                 attr.set(obj, value[attr.key])
-
-class AdminHandler(Handler):
-    """
-    The handler that is used for the connection to the admin screen.
-    """
-    def __init__(self, service, simulation):
-        self.service = service
-        self.simulation = simulation
-        self._state = {}
-
-    def process_packet(self, _):
-        pass
-
-    def prepare_packet(self):
-        pass

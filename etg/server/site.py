@@ -256,4 +256,4 @@ class AdminResource(resource.Resource):
         Render the actual Admin Interface.
         """
         # pylint: disable=invalid-name
-        return self.template.render().encode('utf-8')
+        return self.template.render(name="admin", starttab="Chat").encode('utf-8')

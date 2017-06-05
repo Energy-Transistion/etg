@@ -1,40 +1,66 @@
-{% extends "base.html" %}
+{% extends "interface.html" %}
 {% block title %}ETG - Admin Panel{% endblock %}
-{% block content %}
 {% block scripts %}
-    <script src="https://use.fontawesome.com/db3220912c.js"></script>
-    <script src="/js/vue.js"></script>
-    <script src="/js/interface.js"></script>
+  {{ super() }}
   <script>
-  var socket = new WebSocket('ws://' + location.hostname + ':8080/ws');
-  socket.onopen = function() {
-    socket.send("admin")
-    console.log("made connection")
-  }
+var oldOnload = window.onload
 
-  socket.onclose = function() {
-    alert("Server closed connection")
-  }
+window.onload = function() {
+  oldOnload();
+  var tabs = document.getElementById("tabs");
+  tabs.style.display = "none";
+}
 
 window.start = function() {
-  socket.send(JSON.stringify({'type': 'admin', 'value': 'start'}))
+  socket.send(JSON.stringify({type: 'action', action: 'start', args: []}))
   console.log("Send start")
 }
 
 window.pause = function() {
-  socket.send(JSON.stringify({'type': 'admin', 'value': 'pause'}))
+  socket.send(JSON.stringify({type: 'action', action: 'pause', args: []}))
   console.log("Send pause")
 }
 
 window.setup = function() {
-  socket.send(JSON.stringify({'type': 'admin', 'value': 'setup'}))
+  socket.send(JSON.stringify({type: 'action', action: 'setup', args: []}))
   console.log("Send setup")
 }
   </script>
 {% endblock %}
 
-<button onclick="start()">Start</button>
-<button onclick="pause()">Pause</button>
-<button onclick="setup()">Setup</button>
+{% block plot %}
+<div style="height: 300px;">
+<etg-pie title="Resource Use" key="res" collection="energy_types"
+                                        variable="percentage_use">
+</etg-pie>
+</div>
 {% endblock %}
 
+{% block monitors %}
+<div class="extra" style="width: calc(100% - 10px);">
+  <h2>Parties</h2>
+  <span v-for="party in parties">[[ party.name ]]</span>
+</div>
+{% endblock %}
+
+{% block extracontrols %}
+<div class="adminbuttons columncontainer">
+<button onclick="start()" :disabled="!is_setup">Start</button>
+<button onclick="pause()"
+        :disabled="parties.length == 0 || companies.length == 0">
+        Pause</button>
+<button onclick="setup()" :disabled="is_setup">Setup</button>
+</div>
+
+<etg-plot title="Market Share" :max="100" key="share"
+          y-label="% of the population"
+          variable="market_share" collection="companies">
+</etg-plot>
+
+<div class="extra" style="width: calc(100% - 10px);">
+  <h2>Companies</h2>
+  <span v-for="company in companies">[[ company.name ]]</span>
+</div>
+{% endblock %}
+
+{% block starttab %}Chat{% endblock %}

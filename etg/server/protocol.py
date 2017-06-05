@@ -5,7 +5,7 @@ connections.
 """
 from twisted.logger import Logger
 from etg.util.proxylock import ProxyLock
-from .handler import (Handler, AdminHandler, Attribute, ObjectAttribute, ListAttribute,
+from .handler import (Handler, Attribute, ObjectAttribute, ListAttribute,
                       MultiAttribute, DictAttribute)
 
 # pylint: disable=invalid-name
@@ -82,7 +82,20 @@ class ETGProtocol:
         """
         if name == "admin":
             self.name = "admin"
-            self.handler = AdminHandler(self.service, self.simulation)
+            self.handler = Handler(self.simulation, ProxyLock(self.service),
+                                   [Attribute("weather"), Attribute("current_date"),
+                                    ListAttribute("parties",
+                                                  MultiAttribute(Attribute("name"))),
+                                    ListAttribute("companies",
+                                                  MultiAttribute(Attribute("name"),
+                                                                 Attribute("color"),
+                                                                 Attribute("market_share"))),
+                                    ListAttribute("energy_types",
+                                                  MultiAttribute(Attribute("percentage_use"),
+                                                                 Attribute("name"),
+                                                                 Attribute("color")))],
+                                   [Attribute("paused"), Attribute("is_setup")], [])
+            self.send_packet(msg_type="initial")
             return True
         entity_type = ''
         parties = list(filter(lambda p: p.name == name, self.simulation.parties))
@@ -121,18 +134,6 @@ class ETGProtocol:
             self.on_chat_message(message)
         elif message['type'] == "action":
             self.on_action(message)
-        elif message['type'] == "admin":
-            if message['value'] == 'start':
-                self.service.start()
-            elif message['value'] == 'setup':
-                with self.simulation as simulation:
-                    simulation.election()
-                    for agent in simulation.agents:
-                        agent.use_deliberation()
-                for protocol in self.service.protocols:
-                    protocol.send_packet()
-            else:
-                self.service.pause()
         else:
             log.warn("Unrecognized message type {type}", type=message['type'])
 

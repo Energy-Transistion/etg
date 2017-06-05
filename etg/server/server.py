@@ -22,6 +22,7 @@ class SimulationService(service.Service):
         self._simulation = simulation
         self.options = options
         self.paused = True
+        self.is_setup = False
         self.protocols = []
 
     @property
@@ -94,6 +95,7 @@ class SimulationService(service.Service):
         """
         self.paused = False
         log.info("Started the simulation")
+        return True, ''
 
     def pause(self):
         """
@@ -101,6 +103,7 @@ class SimulationService(service.Service):
         """
         self.paused = True
         log.info("Paused the simulation")
+        return True, ''
 
     def toggle_pause(self):
         """
@@ -108,6 +111,17 @@ class SimulationService(service.Service):
         """
         self.paused = not self.paused
         log.info("Toggled the running state")
+
+    def setup(self):
+        """
+        Sets up the simulation to make sure we can run.
+        """
+        with self.simulation as simulation:
+            simulation.election()
+            for agent in simulation.agents:
+                agent.use_deliberation()
+        self.is_setup = True
+        return True, ''
 
     def loop(self):
         """
