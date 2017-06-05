@@ -30,3 +30,20 @@ def difference(first, other, epsilon=0.005):
             if first[key] != other[key]:
                 ret[key] = other[key]
     return ret
+
+def merge(x, y):
+    """
+    Merge two dictionaries with dictionaries in them. Keys that occur in both are taken from the
+    second argument.
+    """
+    # pylint: disable=invalid-name
+    ret = copy.copy(x)
+    for key in y:
+        if key in x:
+            if isinstance(x[key], dict) and isinstance(y[key], dict):
+                ret[key] = merge(x[key], y[key])
+            else:
+                ret[key] = y[key]
+        else:
+            ret[key] = y[key]
+    return ret

@@ -5,7 +5,7 @@ information back to the interface.
 """
 import copy
 from twisted.logger import Logger
-from ..util.dict import difference
+from ..util.dict import difference, merge
 
 class Handler():
     """
@@ -75,7 +75,11 @@ class Handler():
             for key in self._viewables_wrapee:
                 curstate[key.key] = copy.copy(key.get(wrapee))
             for key in self._controlables_wrapee:
-                curstate[key.key] = copy.copy(key.get(wrapee))
+                value = copy.copy(key.get(wrapee))
+                if key.key in curstate:
+                    curstate[key.key] = merge(curstate[key.key], value)
+                else:
+                    curstate[key.key] = value
         with self.simulation as simulation:
             for key in self._viewables_simulation:
                 curstate[key.key] = copy.copy(key.get(simulation))
@@ -102,7 +106,7 @@ class Handler():
                     else:
                         self._log.warn("Failed to set the value for {key}", key=key)
                 except AttributeError as ex:
-                    self._log.error("Trying to set a value that is not on the wrapee",
+                    self._log.error("Trying to set a value that is not on the wrapee:\n{exception}",
                                     exception=ex)
 
 class Attribute:
@@ -218,13 +222,9 @@ class MultiAttribute(Attribute):
         return ret
 
     def set(self, obj, value):
-        print("Updating MultiAttribute")
-        print("obj: " + str(obj))
-        print("value: " + str(value))
         for attr in self.attrs:
-            attr.set(obj, attr.get(value))
-            print("attr: " + attr.key)
-            print("new value: " + str(attr.get(obj)))
+            if attr.key in value:
+                attr.set(obj, value[attr.key])
 
 class AdminHandler(Handler):
     """
