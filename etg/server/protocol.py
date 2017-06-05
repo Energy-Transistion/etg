@@ -129,6 +129,8 @@ class ETGProtocol:
                     simulation.election()
                     for agent in simulation.agents:
                         agent.use_deliberation()
+                for protocol in self.service.protocols:
+                    protocol.send_packet()
             else:
                 self.service.pause()
         else:
