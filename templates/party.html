@@ -18,8 +18,10 @@ window.campaign = function() {
 {% block plot %}
 <etg-plot-container>
   <etg-plot title="Election poll" :max="100" key="poll"
+    y-label="% of the population"
     variable="percentage_voters" collection="parties" overlay="non_voters">
   </etg-plot><etg-plot title="Energy Prices" :max="0.5" key="prices"
+            y-label="€/kWh"
             collection="energy_types" variable="price">
   </etg-plot>
 </etg-plot-container>

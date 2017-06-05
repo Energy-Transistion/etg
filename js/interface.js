@@ -23,9 +23,14 @@ function make_connection (name) {
 
 /* Setup Chart.js */
 Chart.defaults.global.legend.position = "right";
+Chart.defaults.global.layout = {padding: {bottom: 10, left: 10}};
 //Chart.defaults.global.elements.line.fill = false;
 Chart.defaults.line.scales.xAxes = [{
   type: 'time',
+  scaleLabel: {
+    labelString: "Date",
+    display: false,
+  },
   time: {
     unit: 'week',
   },
@@ -206,6 +211,11 @@ function define_components(connection) {
         required: false,
         default: 10
       },
+      yLabel: {
+        type: String,
+        required: false,
+        default: ''
+      },
       stacked: {
         type: Boolean,
         required: false,
@@ -258,6 +268,10 @@ function define_components(connection) {
             yAxes: [{
               ticks: ticks,
               stacked: this.stacked,
+              scaleLabel: {
+                labelString: this.yLabel,
+                display: this.yLabel != '',
+              },
             }],
           },
         },

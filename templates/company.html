@@ -20,13 +20,16 @@ window.update = function(energy_type) {
 {% block plot %}
   <etg-plot-container>
     <etg-plot title="Market Share" :max="100" key="share"
+              y-label="% of the population"
               variable="market_share" collection="companies">
     </etg-plot><etg-plot title="Greenness" :max="100" key="green"
+                         y-label="Greenness of energy sold"
                          collection="companies" variable="product_green">
     </etg-plot><etg-plot title="Income" key="income"
+                         y-label="€"
                          collection="companies" variable="income">
     </etg-plot><etg-plot title="Energy production" key="production"
-    :stacked="true"
+                         :stacked="true" y-label="kWh"
                          collection="total_output" variable="output">
     </etg-plot>
   </etg-plot-container>
