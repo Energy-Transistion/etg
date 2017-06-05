@@ -29,7 +29,8 @@ class ETGProtocol:
                                                                Attribute("color"),
                                                                Attribute("percentage_voters"))),
                        ListAttribute("companies", MultiAttribute(Attribute("name")))],
-                      [Attribute("money"), Attribute("campaign_cost")],
+                      [Attribute("money"), Attribute("campaign_cost"),
+                       Attribute("campaign_reach")],
                       [Attribute("taxes")])
 
     company_watchers = ([Attribute("current_date"), Attribute("days_until_election"),

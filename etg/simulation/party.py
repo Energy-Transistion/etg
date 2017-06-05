@@ -67,6 +67,11 @@ class Party(Entity):
         return sum(etype.safety * self.taxes[etype.name] / total_taxes
                    for etype in self.simulation.energy_types)
 
+    @property
+    def campaign_reach(self):
+        "What percentage of the population is affected by the campaigns of this party."
+        return 83 * math.exp((self._last_campaign - self.simulation.current_tick)/30)
+
     def campaign(self):
         """
         The party can campaign in order to get more voters to vote for them. It then does need the
@@ -89,7 +94,7 @@ class Party(Entity):
         """
         In a turn, the party campaigns to get more voters.
         """
-        percentage = 83 * math.exp((self._last_campaign - self.simulation.current_tick)/30)
+        percentage = self.campaign_reach
         for agent in self.simulation.agents.n_of(int(percentage * len(self.simulation.agents))):
             agent.need_green = (agent.need_green * 100 + self.greenness * 0.10)/100
             agent.need_safety = (agent.need_safety * 100 + self.safety * 0.10)/100

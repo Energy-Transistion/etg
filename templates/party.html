@@ -89,7 +89,7 @@ window.campaign = function() {
 {% block extracontrols %}
   <div class="rowcontainer">
     <etg-monitor monitor="money">Party Budget</etg-monitor>
-    <etg-monitor monitor="compaign_reach">Campaign Reach</etg-monitor>
+    <etg-monitor monitor="campaign_reach">Campaign Reach</etg-monitor>
   </div>
   <button v-if="money >= campaign_cost" onclick="campaign()"
     class="tax_button">Spend money on campaign</button>
