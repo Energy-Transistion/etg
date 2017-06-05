@@ -99,18 +99,24 @@ class Company(Entity):
         """
         How green the product of this company is.
         """
-        return sum(etype.greenness / self.output *
-                   (self.producers[etype.name].output + self.market[etype.name])
-                   for etype in self.simulation.energy_types)
+        try:
+            return sum(etype.greenness / self.output *
+                       (self.producers[etype.name].output + self.market[etype.name])
+                       for etype in self.simulation.energy_types)
+        except ZeroDivisionError:
+            return 0
 
     @property
     def product_safety(self):
         """
         How safe the product of this company is.
         """
-        return sum(etype.safety / self.output *
-                   (self.producers[etype.name].output + self.market[etype.name])
-                   for etype in self.simulation.energy_types)
+        try:
+            return sum(etype.safety / self.output *
+                       (self.producers[etype.name].output + self.market[etype.name])
+                       for etype in self.simulation.energy_types)
+        except ZeroDivisionError:
+            return 0
 
     @property
     def taxes(self):
@@ -118,9 +124,12 @@ class Company(Entity):
         The amount of taxation that goes over this product, calculated by taking the proportions for
         all the energy types in the output.
         """
-        return sum(((100 + self.simulation.active_party.taxes[etype.name])/100) / self.output *
-                   (self.producers[etype.name].output + self.market[etype.name])
-                   for etype in self.simulation.energy_types)
+        try:
+            return sum(((100 + self.simulation.active_party.taxes[etype.name])/100) / self.output *
+                       (self.producers[etype.name].output + self.market[etype.name])
+                       for etype in self.simulation.energy_types)
+        except ZeroDivisionError:
+            return 0
 
     @property
     def product_cost(self):
