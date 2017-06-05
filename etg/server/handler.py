@@ -73,12 +73,12 @@ class Handler():
         curstate = {}
         with self.wrapee as wrapee:
             for key in self._viewables_wrapee:
-                curstate[key.key] = key.get(wrapee)
+                curstate[key.key] = copy.copy(key.get(wrapee))
             for key in self._controlables_wrapee:
-                curstate[key.key] = key.get(wrapee)
+                curstate[key.key] = copy.copy(key.get(wrapee))
         with self.simulation as simulation:
             for key in self._viewables_simulation:
-                curstate[key.key] = key.get(simulation)
+                curstate[key.key] = copy.copy(key.get(simulation))
         diff = difference(self._state, curstate)
         return self._update_state(diff)
 
@@ -119,7 +119,7 @@ class Attribute:
         """
         Get the value represented by this Attribute from an object.
         """
-        return copy.copy(getattr(obj, self.attr))
+        return getattr(obj, self.attr)
 
     def set(self, obj, value):
         """
@@ -128,7 +128,6 @@ class Attribute:
         try:
             attr = self.get(obj)
             attr.update(value)
-            setattr(obj, self.attr, attr)
         except AttributeError:
             setattr(obj, self.attr, value)
 
@@ -201,8 +200,8 @@ class DictAttribute(Attribute):
 
     def set(self, obj, value):
         obj2 = super().get(obj)
-        for key in obj2:
-            self.attrs.set(obj2[key], value)
+        for key in value:
+            self.attrs.set(obj2[key], value[key])
 
 class MultiAttribute(Attribute):
     """
@@ -219,8 +218,13 @@ class MultiAttribute(Attribute):
         return ret
 
     def set(self, obj, value):
+        print("Updating MultiAttribute")
+        print("obj: " + str(obj))
+        print("value: " + str(value))
         for attr in self.attrs:
-            attr.set(obj, value)
+            attr.set(obj, attr.get(value))
+            print("attr: " + attr.key)
+            print("new value: " + str(attr.get(obj)))
 
 class AdminHandler(Handler):
     """
