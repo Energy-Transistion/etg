@@ -120,10 +120,9 @@ class Simulation(object):
         The approval for the party that is currently in power. This is the percantage of voters that
         would vote for that party.
         """
-        try:
+        if self.active_party:
             return self.votes[self.active_party.name]/len(self.agents)
-        except AttributeError as exc:
-            print("Caught error: {}".format(exc))
+        else:
             return 0
 
     @property
