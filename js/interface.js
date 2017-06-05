@@ -66,7 +66,7 @@ function define_components(connection) {
       var mon = this
       connection.addEventListener('change', function(e) {
         var data = e.detail.packet;
-        if (data[mon.monitor]) {
+        if (data[mon.monitor] !== undefined) {
           mon.value = data[mon.monitor]
         }
       })
@@ -140,20 +140,15 @@ function define_components(connection) {
       this.plots = {};
       this.titles = [];
       if (this.$slots.default) {
-        console.log(this.$slots.default);
         for (let node of this.$slots.default) {
-          console.log(node)
           var title = node.componentOptions.propsData.title;
           this.plots[title] = node;
           this.titles.push(title);
         }
         this.title = this.titles[0];
-        console.log(this.plots)
       }
     },
     render: function(createElement) {
-      console.log("Rendering")
-      console.log(this.title)
       if (this.titles.length === 0){
         return createElement('span', 'No plots to display');
       } else if (this.titles.length === 1) {
@@ -169,13 +164,10 @@ function define_components(connection) {
             self.title = event.target.value
             self.$emit('change', event.target.value)
             self.$forceUpdate()
-            console.log("New title: " + self.title)
           }
         }
       },
         this.titles.map(t => createElement('option', t)));
-      console.log(this.title)
-      console.log(this.plots[this.title])
       return createElement('div', [this.plots[this.title], select]);
     }
   });
@@ -247,7 +239,6 @@ function define_components(connection) {
           borderColor: 'rgb(0,0,0)',
         })
       }
-      console.log(data)
       var ctx = this.$el.getContext('2d');
       var title = {display: false}
       if (this.title) {
@@ -280,7 +271,6 @@ function define_components(connection) {
         if (data.current_date !== undefined) {
           data = data.current_date;
         }
-        console.log(data);
         if (data[self.collection]) {
           var coll = data[self.collection];
           if (coll.some((x) => {return x[self.variable] !== undefined})) {
@@ -341,7 +331,6 @@ function setup_vue(data, socket) {
       },
       updateProducer: function(energy_type) {
         var data = {'type': 'action', 'action': 'upgrade', 'args': [energy_type]}
-        console.log(data)
         sendJSON(socket, data)
       },
       updateMarket: function(name, value) {
@@ -350,7 +339,6 @@ function setup_vue(data, socket) {
         }
         value = parseFloat(value)
         if (value < 0) {
-          console.log("Smaller than 0");
           value = 0
           vm.market[name] = 0;
         }
