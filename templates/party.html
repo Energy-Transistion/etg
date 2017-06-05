@@ -70,11 +70,6 @@ window.campaign = function() {
               class="tax_button">-</button></td>
         </tr>
     </table>
-    <template v-if="active_party.name">
-      <h4 v-if="active_party.name === '{{ name }}'">You are in power!</h4>
-      <h4 v-else>[[ active_party.name ]] is in power.</h4>
-    </template>
-    <h4 v-else>The land is ruled by anarchy</h4>
   {% endcall %}
 
   {{ super() }}
@@ -87,11 +82,20 @@ window.campaign = function() {
 {% endblock %}
 
 {% block extracontrols %}
-  <div class="rowcontainer">
-    <etg-monitor monitor="money">Party Budget</etg-monitor>
-    <etg-monitor monitor="campaign_reach">Campaign Reach</etg-monitor>
+  <div style="width: 90%">
+    <div class="rowcontainer">
+      <etg-monitor monitor="money">Party Budget</etg-monitor>
+      <etg-monitor monitor="campaign_reach">Campaign Reach</etg-monitor>
+    </div>
+    <button v-if="money >= campaign_cost" onclick="campaign()"
+      class="tax_button">Spend money on campaign</button>
+    <button v-else disabled>Spend money on campaign</button>
   </div>
-  <button v-if="money >= campaign_cost" onclick="campaign()"
-    class="tax_button">Spend money on campaign</button>
-  <button v-else disabled>Spend money on campaign</button>
+  <div class="extra" style="text-align:center;">
+    <template v-if="active_party.name">
+      <h4 v-if="active_party.name === '{{ name }}'">You are in power!</h4>
+      <h4 v-else>[[ active_party.name ]] is in power.</h4>
+    </template>
+    <h4 v-else>The land is ruled by anarchy</h4>
+  </div>
 {% endblock %}
