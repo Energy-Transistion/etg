@@ -23,7 +23,9 @@ window.campaign = function() {
   </etg-plot><etg-plot title="Energy Prices" :max="0.5" key="prices"
             y-label="€/kWh"
             collection="energy_types" variable="price">
-  </etg-plot>
+  </etg-plot><etg-pie title="Resource Use" key="res"
+                      collection="energy_types" variable="percentage_use">
+  </etg-pie>
 </etg-plot-container>
 {% endblock plot %}
 

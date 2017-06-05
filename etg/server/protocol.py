@@ -24,6 +24,7 @@ class ETGProtocol:
                        Attribute("non_voters"), Attribute("weather"), Attribute("approval_rate"),
                        ListAttribute("energy_types",
                                      MultiAttribute(Attribute("name"), Attribute("raw_price"),
+                                                    Attribute("percentage_use"),
                                                     Attribute("color"), Attribute("price"))),
                        ListAttribute("parties", MultiAttribute(Attribute("name"),
                                                                Attribute("color"),

@@ -51,6 +51,21 @@ class EnergyType(Entity):
         """
         return len(self.tier_costs)
 
+    @property
+    def total_output(self):
+        "The total amount of kWh that is produced and bought for this energy type"
+        return sum(company.producers[self.name].output + company.market[self.name]
+                   for company in self.simulation.companies)
+
+    @property
+    def percentage_use(self):
+        "How large the percentage of the use of this type of energy is"
+        total_production = sum(etype.total_output for etype in self.simulation.energy_types)
+        if total_production == 0:
+            return 0
+        else:
+            return self.total_output/total_production * 100
+
 class Producer:
     """
     This class represents an energy producer in the game. It is used by the companies to keep track

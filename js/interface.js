@@ -313,6 +313,79 @@ function define_components(connection) {
       });
     },
   })
+
+  Vue.component('etg-pie', {
+    template: '<canvas class="plot"></canvas>',
+    props: {
+      variable: {
+        type: String,
+        required: true,
+      },
+      collection: {
+        type: String,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: false,
+        default: '',
+      },
+    },
+
+    mounted: function() {
+      var coll = this.$root[this.collection];
+      var length = coll.length;
+      var data = {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: [],
+        }],
+      };
+      // Building the datasets
+      for (var i = 0; i < length; i++) {
+        data.labels.push(coll[i].name);
+        data.datasets[0].data.push(coll[i][this.variable]);
+        data.datasets[0].backgroundColor.push(coll[i].color);
+      }
+      var ctx = this.$el.getContext('2d');
+      var title = {display: false}
+      if (this.title) {
+        title.display = true;
+        title.text = this.title;
+      }
+      this.chart = new Chart(ctx, {
+        type: "pie",
+        data: data,
+        options: {
+          title: title,
+          maintainAspectRatio: false,
+        },
+      });
+      // Register for events
+      var self = this;
+
+      connection.addEventListener('change', function(e) {
+        var data = e.detail.packet;
+        if (data[self.collection]) {
+          var coll = data[self.collection];
+          if (coll.some((x) => {return x[self.variable] !== undefined})) {
+            var values = {}
+            coll.forEach((dat) => {
+              values[dat.name] = dat[self.variable];
+            });
+            for (var i = 0; i < self.chart.data.labels.length; i++) {
+              var label = self.chart.data.labels[i];
+              if (values[label] !== undefined) {
+                self.chart.data.datasets[0].data[i] = values[label];
+              }
+            }
+            self.chart.update()
+          }
+        }
+      });
+    },
+  })
 }
 
 /* Tab functionality */
