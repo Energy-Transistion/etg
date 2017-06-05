@@ -14,6 +14,16 @@ from .session import get_session_state
 # pylint: disable=invalid-name
 log = Logger("etg.site")
 
+COLORS = ["rgb(255, 255, 0)", # yellow
+          "rgb(0, 102, 255)", # blue
+          "rgb(255, 102, 0)", # orange
+          "rgb(0, 204, 0)",   # green
+          "rgb(102, 255, 255)", # light blue
+          "rgb(255, 0, 0)", # red
+          "rgb(255, 102, 255)", # pink
+          "rgb(153, 255, 153)", # light green
+          "rgb(0, 186, 179)"] # Renes Moeder
+
 # pylint: disable=too-many-instance-attributes
 class ETGSite(resource.Resource):
     """
@@ -122,8 +132,11 @@ class PartyResource(resource.Resource):
                      name=name)
             return redirectTo(b"/create_party.html", request)
         state.name = name
+        color_num = randrange(0, len(COLORS))
+        color = COLORS[color_num]
+        del COLORS[color_num]
         with self.service.simulation as sim:
-            sim.add_party(state.name, state.taxes, "rgb(0,0,255)")
+            sim.add_party(state.name, state.taxes, color)
         return self.render_interface(request)
 
     def render_GET(self, request):
@@ -213,8 +226,11 @@ class CompanyResource(resource.Resource):
                      name=name)
             return redirectTo(b"/create_company.html", request)
         state.name = name
+        color_num = randrange(0, len(COLORS))
+        color = COLORS[color_num]
+        del COLORS[color_num]
         with self.service.simulation as sim:
-            sim.add_company(state.name, state.tiers, "rgb(0, 0, 255)")
+            sim.add_company(state.name, state.tiers, color)
         return self.render_interface(request)
 
     def render_GET(self, request):
