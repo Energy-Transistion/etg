@@ -45,11 +45,10 @@ window.setup = function() {
 
 {% block extracontrols %}
 <div class="adminbuttons columncontainer">
-<button onclick="start()" :disabled="!is_setup">Start</button>
-<button onclick="pause()"
-        :disabled="parties.length == 0 || companies.length == 0">
-        Pause</button>
-<button onclick="setup()" :disabled="is_setup">Setup</button>
+<button onclick="start()" :disabled="!is_setup || !paused">Start</button>
+<button onclick="pause()" :disabled="paused">Pause</button>
+<button onclick="setup()" :disabled="is_setup || parties.length == 0 ||
+  companies.length == 0">Setup</button>
 </div>
 
 <etg-plot title="Market Share" :max="100" key="share"
