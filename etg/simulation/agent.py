@@ -82,6 +82,7 @@ class Agent(Entity):
         self.refraction = randrange(self.simulation.refraction_ticks)
         self._satis = 0
         self._last_satis = self.simulation.current_tick
+        self.days_with_blackout = 0
         self.company = None
         self.party = None
 
@@ -144,6 +145,7 @@ class Agent(Entity):
         company_dist = dist_money + dist_green + dist_safety
         if company_dist < 0:
             company_dist = 0
+        company_dist *= ((self.days_with_blackout + 1) ** 2)/3
         self._satis += (100 - company_dist - self._satis) / 20
         if self._satis < 1:
             self._satis = 1
@@ -178,6 +180,7 @@ class Agent(Entity):
                     self.use_imitation()
                 else:
                     self.use_repetition()
+            self.days_with_blackout = 0
 
     def choose_best_party(self):
         """
@@ -233,6 +236,9 @@ class Agent(Entity):
 
 def dist(agent, company):
     "Calculate the distance between an agent and a company."
-    return math.sqrt((agent.need_money - company.product_cost) ** 2 +
-                     (agent.need_green - company.product_green) ** 2 +
-                     (agent.need_safety - company.product_safety) ** 2)
+    _dist = math.sqrt((agent.need_money - company.product_cost) ** 2 +
+                      (agent.need_green - company.product_green) ** 2 +
+                      (agent.need_safety - company.product_safety) ** 2)
+    if company == agent.company:
+        _dist *= ((agent.days_with_blackout + 1) **2)/3
+    return _dist

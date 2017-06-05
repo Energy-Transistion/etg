@@ -49,6 +49,11 @@ class Company(Entity):
         return len(self.users)
 
     @property
+    def demand(self):
+        "The amount of energy that the consumers of this company require"
+        return sum(agent.energy_consumed for agent in self.users)
+
+    @property
     def market_share(self):
         "The percentage of the population that buys their energy here."
         return self.buyers/len(self.simulation.agents) * 100
@@ -183,6 +188,10 @@ class Company(Entity):
         """
         news = []
         self.budget += self.income
+        if self.demand > self.output:
+            news.append("A blackout occured at {name}!".format(name=self.name))
+            for buyer in self.users:
+                buyer.days_with_blackout += 1
         if self.profit >= 0:
             for agent in self.simulation.agents:
                 agent.need_green = (agent.need_green * 100 + \
