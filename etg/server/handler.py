@@ -3,6 +3,7 @@ This module contains all the code that is necessary to facilitate the updating
 of the simulation and other objects from the interface, and also for sending
 information back to the interface.
 """
+import copy
 from twisted.logger import Logger
 from ..util.dict import difference
 
@@ -97,6 +98,9 @@ class Handler():
                     if len(attrs) > 0:
                         attr = attrs[0]
                         attr.set(wrapee, val)
+                        self._log.info("Set the value for {key}", key=key)
+                    else:
+                        self._log.warn("Failed to set the value for {key}", key=key)
                 except AttributeError as ex:
                     self._log.error("Trying to set a value that is not on the wrapee",
                                     exception=ex)
@@ -115,7 +119,7 @@ class Attribute:
         """
         Get the value represented by this Attribute from an object.
         """
-        return getattr(obj, self.attr)
+        return copy.copy(getattr(obj, self.attr))
 
     def set(self, obj, value):
         """
@@ -124,6 +128,7 @@ class Attribute:
         try:
             attr = self.get(obj)
             attr.update(value)
+            setattr(obj, self.attr, attr)
         except AttributeError:
             setattr(obj, self.attr, value)
 

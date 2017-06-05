@@ -186,5 +186,7 @@ class ETGProtocol:
         Prepare and send a packet to the client.
         """
         packet = self.handler.prepare_packet()
+        log.debug("Preparing to send packet for {name}", name=self.name)
         if packet and packet != {}:
+            log.debug("Sending packet: {packet} to: {name}", packet=packet, name=self.name)
             self.connection.send({'type': msg_type, 'packet': packet})
