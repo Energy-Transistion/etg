@@ -110,6 +110,10 @@ class PartyResource(resource.Resource):
         """
         # pylint: disable=invalid-name
         state = get_session_state(request)
+        try:
+            state.taxes
+        except AttributeError:
+            return redirectTo(b"/create_party.html", request)
         name = request.args[b'partyname'][0].decode('utf-8')
         parties = list(filter(lambda p: p.name == name, self.service.simulation.parties))
         companies = list(filter(lambda p: p.name == name, self.service.simulation.companies))
@@ -197,6 +201,10 @@ class CompanyResource(resource.Resource):
         """
         # pylint: disable=invalid-name
         state = get_session_state(request)
+        try:
+            state.tiers
+        except AttributeError:
+            return redirectTo(b"/create_company.html", request)
         name = request.args[b'companyname'][0].decode('utf-8')
         parties = list(filter(lambda p: p.name == name, self.service.simulation.parties))
         companies = list(filter(lambda p: p.name == name, self.service.simulation.companies))
