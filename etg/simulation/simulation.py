@@ -209,9 +209,9 @@ class Simulation(object):
         for agent in self.agents:
             agent.tick()
         for company in self.companies:
-            company.tick()
+            news.extend(company.tick())
         for party in self.parties:
-            party.tick()
+            news.extend(party.tick())
         if self.current_date == self.next_election:
             self.next_election += self.one_round
             self.election()

@@ -181,13 +181,18 @@ class Company(Entity):
         In a tick, the companies do their marketing, by updating the needs of the agents to mimic
         their product.
         """
+        news = []
         self.budget += self.income
         if self.profit >= 0:
             for agent in self.simulation.agents:
-                agent.need_green = (agent.need_green * 100 + self.product_green * self.marketing/100)/100
-                agent.need_safety = (agent.need_safety * 100 + self.product_safety * self.marketing/100)/100
+                agent.need_green = (agent.need_green * 100 + \
+                                    self.product_green * self.marketing/100)/100
+                agent.need_safety = (agent.need_safety * 100 + \
+                                     self.product_safety * self.marketing/100)/100
+        return news
 
 class Output:
+    "A class to represent the output of the company in the interface"
     # pylint: disable=too-few-public-methods
     def __init__(self, name, color, output):
         self.name = name

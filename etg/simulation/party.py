@@ -94,7 +94,9 @@ class Party(Entity):
         """
         In a turn, the party campaigns to get more voters.
         """
+        news = []
         percentage = self.campaign_reach
         for agent in self.simulation.agents.n_of(int(percentage * len(self.simulation.agents))):
             agent.need_green = (agent.need_green * 100 + self.greenness * 0.10)/100
             agent.need_safety = (agent.need_safety * 100 + self.safety * 0.10)/100
+        return news
