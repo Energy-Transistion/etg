@@ -10,7 +10,7 @@ class EnergyType(Entity):
     """
     # pylint: disable=too-few-public-methods, too-many-instance-attributes
     def __init__(self, simulation, name, color, greenness, safety, initial_output, initial_price,
-                 tiers_unlocks, market_price):
+                 tiers_unlocks, market_price, failure_weather, reliability):
         # pylint: disable=too-many-arguments
         super().__init__(simulation)
         self.name = name
@@ -21,6 +21,18 @@ class EnergyType(Entity):
         self.initial_price = initial_price
         self.tier_costs = tiers_unlocks
         self.market_price = market_price
+        self.failing = False
+        self.failure_weather = failure_weather
+        if isinstance(reliability, dict):
+            rel = {}
+            for season in self.simulation.seasons:
+                rel[season.name] = reliability[season.name]
+            self.reliability = rel
+        else:
+            rel = {}
+            for season in self.simulation.seasons:
+                rel[season.name] = reliability
+            self.reliability = rel
 
     @property
     def raw_price(self):
@@ -89,8 +101,11 @@ class Producer:
 
     @property
     def output(self):
-        "The output for this producer"
-        return self.production_level/100 * self.full_output
+        "The output for this producer in this tick"
+        if self.type.failing:
+            return 0
+        else:
+            return self.production_level/100 * self.full_output
 
     @property
     def max_tier(self):

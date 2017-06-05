@@ -2,7 +2,7 @@
 This module contains the simulation and all otherwise related functions.
 """
 import datetime
-from random import randrange
+from random import choice, randrange
 import yaml
 from etg.simulation.agent import Agent
 from etg.simulation.company import Company
@@ -217,6 +217,8 @@ class Simulation(object):
             self.election()
             news.append("{} just got elected as the major party!".format(self.active_party.name))
         self.update_government_budget()
+        if self.current_date.weekday() == 2: #weather only updates on wednesdays
+            news.extend(self.update_weather())
         self.current_tick += 1
         self.current_date += self.one_day
         return news
@@ -228,6 +230,29 @@ class Simulation(object):
         self.government_income = sum(agent.energy_consumed * agent.company.taxes
                                      for agent in self.agents)
         self.government_budget += self.government_income
+
+    def update_weather(self):
+        "Update the weather in the simulation."
+        news = []
+        weather = []
+        for etype in self.energy_types:
+            etype.failing = False
+            prob = randrange(0, 100)
+            if prob > etype.reliability[self.current_season.name]: # This type will fail
+                tmp_weather = choice(etype.failure_weather)
+                weather.append(tmp_weather)
+                etype.failing = True
+                news.append("The weather is {weather}! {type} power will not work tomorrow"\
+                            .format(weather=tmp_weather, type=etype.name.capitalize()))
+        if len(weather) == 0:
+            self.weather = "sunny"
+        elif len(weather) == 1:
+            self.weather = weather[0]
+        elif len(weather) == 2:
+            self.weather = ' and '.join(weather)
+        else:
+            self.weather = ', '.join(weather[:-1]) + ', and ' + weather[-1]
+        return news
 
     def poll(self):
         """

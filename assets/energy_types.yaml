@@ -5,7 +5,7 @@ greenness: 90 # How green the energy is, from 0 to 100
 safety: 100 # How safe the energy is, from 0 to 100
 market_price: 0.12 # The price for one kWh on the open market
 initial_price: 0.10 # The initial price per kWh
-initial_output: 5 # percent of needed kWh
+initial_output: 5 # percent of theoretically needed kWh
 tiers_unlocks: # how expensive it is to unlock a new tier of this type of energy
   - 9000000
   - 7500000
@@ -13,6 +13,16 @@ tiers_unlocks: # how expensive it is to unlock a new tier of this type of energy
   - 6500000
   - 6000000
   - 5500000
+failure_weather:
+  - cloudy
+  - rainy
+  - stormy
+reliability:
+  summer: 80
+  autumn: 60
+  winter: 50
+  spring: 80
+
 ---
 name: wind
 color: "rgb(0, 0, 255)"
@@ -28,6 +38,15 @@ tiers_unlocks:
   - 5250000
   - 4750000
   - 4250000
+failure_weather:
+  - windstill
+  - storming
+reliability:
+  summer: 88
+  autumn: 94
+  winter: 95
+  spring: 88
+
 ---
 name: nuclear
 color: "rgb(0, 255, 0)"
@@ -43,6 +62,9 @@ tiers_unlocks:
   - 3500000
   - 3000000
   - 2500000
+failure_weather: []
+reliability: 100
+
 ---
 name: oil
 color: "rgb(87, 54, 42)"
@@ -58,6 +80,9 @@ tiers_unlocks:
   - 3000000
   - 2500000
   - 2000000
+failure_weather: []
+reliability: 100
+
 ---
 name: gas
 color: "rgb(53, 87, 42)"
@@ -73,6 +98,9 @@ tiers_unlocks:
   - 3000000
   - 2500000
   - 2000000
+failure_weather: []
+reliability: 100
+
 ---
 name: coal
 color: "rgb(163, 42, 3)"
@@ -88,3 +116,5 @@ tiers_unlocks:
   - 3000000
   - 2500000
   - 2000000
+failure_weather: []
+reliability: 100
