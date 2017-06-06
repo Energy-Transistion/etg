@@ -38,7 +38,7 @@ $new-news-color: rgb(230, 249, 255);
 
 div.splits {
 	width: calc(50% - #{2 * $margin-size});
-	height: calc(100% - #{2* $margin-size});
+	/*height: calc(100% - #{2* $margin-size});*/
 	margin: $margin-size;
 }
 
@@ -276,4 +276,9 @@ table {
 
 .tax_button {
 	width: 100%;
+}
+
+#logo {
+	margin: $margin-size;
+	align-self: flex-end;
 }
