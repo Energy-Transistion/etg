@@ -87,7 +87,7 @@ class SimulationService(service.Service):
         Send a chat message to all connected clients.
         """
         for prot in self.protocols:
-            prot.send_chat(message, source)
+            prot.send_chat(message, source, prot.name)
 
     def start(self):
         """

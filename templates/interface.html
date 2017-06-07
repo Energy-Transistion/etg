@@ -44,9 +44,9 @@ window.onload = function() {
 
   window.send_chat = function () {
     var chatmsg = document.getElementById('chatmsg');
-    var target = []
+    var target = ''
     if (vm.chat_target != "All") {
-      target = [vm.chat_target];
+      target = vm.chat_target;
     }
     socket.send(JSON.stringify({'type': 'chat',
                                 'text': chatmsg.value,
@@ -108,10 +108,23 @@ window.onload = function() {
         {% endblock controls %}
         {% block chat %}
           {% call tabs.content('Chat') %}
+            <h4>Public chat</h4>
             <ol id="chatlist">
-              <li v-for="chats in chatmessages" v-bind:key="chats">
-                <span v-if="chats.whisper">*</span>
-                <span>&lt;[[ chats.sender ]]&gt;</span> [[ chats.text ]]
+              <li v-for="chats in chatmessages" v-if="!chats.whisper" v-bind:key="chats">
+                <span>[[ chats.sender ]]:</span> [[ chats.text ]]
+              </li>
+            </ol>
+            <h4>Private chat</h4>
+            <ol id="chatlist">
+              <li v-for="chats in chatmessages" v-if="chats.whisper"
+                v-bind:key="chats">
+                <span v-if="chats.sender !== '{{ name }}'">
+                  <i>[[ chats.sender ]]</i>:
+                </span>
+                <span v-else>
+                  <i>To [[ chats.target ]]</i>:
+                </span>
+                [[ chats.text ]]
               </li>
             </ol>
             <form id="chatinput" action="" onsubmit="return send_chat();">

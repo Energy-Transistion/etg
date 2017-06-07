@@ -141,19 +141,26 @@ class ETGProtocol:
         """
         This message makes sure that the correct respondent gets the chat message if it is recieved.
         """
-        if message['target'] == []:
+        if message['target'] == '':
             self.service.chat_all(message['text'], self.name)
         else:
-            for target in filter(lambda p: p.name in message['target'], self.service.protocols):
-                target.send_chat(message['text'], self.name, whisper=True)
-            if self.name not in message['target']:
-                self.send_chat(message['text'], self.name, whisper=True)
+            targets = list(filter(lambda p: p.name == message['target'], self.service.protocols))
+            print(targets)
+            if len(targets) == 1:
+                target = targets[0]
+                target.send_chat(message['text'], self.name, target.name, whisper=True)
+                if self.name != target:
+                    self.send_chat(message['text'], self.name, target.name, whisper=True)
+            else:
+                log.warn("Trying to chat player {name}, but this player is not found!",
+                         name=message['target'])
 
-    def send_chat(self, text, sender, whisper=False):
+    def send_chat(self, text, sender, target, whisper=False):
         """
         Send a chat message to this client.
         """
-        self.connection.send({'type': 'chat', 'sender': sender, 'text': text, 'whisper': whisper})
+        self.connection.send({'type': 'chat', 'sender': sender, 'target': target,
+                              'text': text, 'whisper': whisper})
 
     def on_action(self, message):
         """
