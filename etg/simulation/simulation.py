@@ -16,7 +16,7 @@ class Simulation(object):
     """
     # pylint: disable=too-many-instance-attributes
     one_day = datetime.timedelta(days=1)
-    one_round = datetime.timedelta(days=1461)
+    one_round = datetime.timedelta(days=730)
 
     def __init__(self,
                  options):
