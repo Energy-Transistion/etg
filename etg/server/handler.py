@@ -73,16 +73,16 @@ class Handler():
         curstate = {}
         with self.wrapee as wrapee:
             for key in self._viewables_wrapee:
-                curstate[key.key] = copy.copy(key.get(wrapee))
+                curstate[key.key] = copy.deepcopy(key.get(wrapee))
             for key in self._controlables_wrapee:
-                value = copy.copy(key.get(wrapee))
+                value = copy.deepcopy(key.get(wrapee))
                 if key.key in curstate:
                     curstate[key.key] = merge(curstate[key.key], value)
                 else:
                     curstate[key.key] = value
         with self.simulation as simulation:
             for key in self._viewables_simulation:
-                curstate[key.key] = copy.copy(key.get(simulation))
+                curstate[key.key] = copy.deepcopy(key.get(simulation))
         diff = difference(self._state, curstate)
         return self._update_state(diff)
 

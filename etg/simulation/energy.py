@@ -45,6 +45,8 @@ class EnergyType(Entity):
                         for company in self.simulation.companies)
         except AttributeError:
             return 0
+        except ZeroDivisionError:
+            return 0
 
     @property
     def price(self):
