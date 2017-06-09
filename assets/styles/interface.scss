@@ -1,6 +1,7 @@
 $background-color: rgba(255, 255, 255, 0.8);
 $margin-size: 5px;
 $newsfeed-height: 170px;
+$plot-height: 300px;
 $new-news-color: rgb(230, 249, 255);
 
 #header {
@@ -28,7 +29,7 @@ $new-news-color: rgb(230, 249, 255);
 
 .plot {
 	width: 100%;
-	height: 300px;
+	height: $plot-height;
 	background-color: $background-color;
 }
 
@@ -120,7 +121,7 @@ div.splits {
 	}
 	padding: $margin-size;
 	margin: 0px;
-	height: calc(100% - #{2 * $margin-size});
+	max-height: #{$newsfeed-height + $plot-height + 2 * $margin-size};
 	width: calc(90% - #{2 * $margin-size});
 	background-color: $background-color;
 }
@@ -152,15 +153,17 @@ button.tablinks.active {
 	color: #f2f2f2;
 }
 
-#chatlist {
+.chatlist {
 	li {
 		list-style-type: none;
 		padding-left: 5px;
+		border-bottom: 1px solid rgb(212, 212, 212);
 	}
+	border-top: 1px solid black;
 	overflow: auto;
 	margin: 0px;
 	padding: 0px;
-	height: calc(100% - #{2 * $margin-size} - 29px);
+	height: #{($newsfeed-height + $plot-height)/2 + $margin-size - 89px};
 }
 
 #chatinput {

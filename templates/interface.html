@@ -55,10 +55,17 @@ window.onload = function() {
     return false;
   }
 
-  var chatlist = document.getElementById("chatlist")
   socket.addEventListener("chat", function(e) {
-    console.log("Got a chat message");
     vm.chatmessages.push(e.detail);
+    if (autoscroll.checked) {
+      Vue.nextTick(function() {
+        var pubchatlist  = document.getElementById("pubchat")
+        var privchatlist = document.getElementById("privchat")
+        var autoscroll   = document.getElementById("autoscroll")
+        pubchatlist.scrollTop = pubchatlist.scrollHeight;
+        privchatlist.scrollTop = privchatlist.scrollHeight;
+      });
+    }
   })
 }
   </script>
@@ -111,13 +118,13 @@ window.onload = function() {
         {% block chat %}
           {% call tabs.content('Chat') %}
             <h4>Public chat</h4>
-            <ol id="chatlist">
+            <ol class="chatlist" id="pubchat">
               <li v-for="chats in chatmessages" v-if="!chats.whisper" v-bind:key="chats">
                 <span>[[ chats.sender ]]:</span> [[ chats.text ]]
               </li>
             </ol>
             <h4>Private chat</h4>
-            <ol id="chatlist">
+            <ol class="chatlist" id="privchat">
               <li v-for="chats in chatmessages" v-if="chats.whisper"
                 v-bind:key="chats">
                 <span v-if="chats.sender !== '{{ name }}'">
