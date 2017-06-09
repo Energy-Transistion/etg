@@ -81,6 +81,7 @@ window.onload = function() {
     <span id="date">[[ current_date ]]</span>
   </div>
   {% endblock header %}
+
   <div id="interface">
   {% block interface %}
     <div class="splits columncontainer" id="information-view">
@@ -101,6 +102,7 @@ window.onload = function() {
         {% endblock monitors %}
       {% endblock information %}
     </div>
+
     <div class="splits columncontainer">
       <div class="rowcontainer" id="tabs">
       {% block tabs %}
@@ -141,6 +143,7 @@ window.onload = function() {
             </form>
           {% endcall %}
         {% endblock chat %}
+
         <div class="tablisting">
           {% block tablisting %}
             {{ tabs.link('Chat', faicon='envelope-o') }}

@@ -39,7 +39,11 @@ window.setup = function() {
 {% block monitors %}
 <div class="extra" style="width: calc(100% - 10px);">
   <h2>Parties</h2>
-  <span v-for="party in parties">[[ party.name ]]</span>
+  <ul>
+    <li v-for="party in parties" v-bind:key="party.name">
+      [[ party.name ]]
+    </li>
+  </ul>
 </div>
 <div class="filler"></div>
 <div style="height: 55px;"></div>
@@ -60,8 +64,10 @@ window.setup = function() {
 
 <div class="extra" style="width: calc(100% - 10px);">
   <h2>Companies</h2>
-  <span v-for="company in companies">[[ company.name ]]</span>
+  <ul>
+    <li v-for="company in companies" v-bind:key="company.name">
+      [[ company.name ]]
+    </li>
+  </ul>
 </div>
 {% endblock %}
-
-{% block starttab %}Chat{% endblock %}
