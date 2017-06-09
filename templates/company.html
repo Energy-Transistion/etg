@@ -126,7 +126,8 @@ window.sell = function(energy_type) {
       <h4>{{ type.name | capitalize }}</h4>
       <input v-model.number.lazy="market.{{ type.name }}" type="number"
              v-on:input="updateMarket('{{ type.name }}', $event.target.value)">
-      <span>kWh</span>
+      <span>kWh</span><br/>
+      <span>€[[ producers.{{ type.name }}.type.market_price ]] per kWh</span>
     {% endfor %}
   {% endcall %}
   <!-- Een tab waar energie van vrije markt staat, die koop je in kwh -->

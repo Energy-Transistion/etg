@@ -52,6 +52,8 @@ class ETGProtocol:
                          DictAttribute("producers",
                                        MultiAttribute(Attribute("tier"), Attribute("output"),
                                                       Attribute("color"),
+                                                      ObjectAttribute("type",
+                                                                      Attribute("market_price")),
                                                       Attribute("max_tier"),
                                                       Attribute("upgrade_price"),
                                                       Attribute("next_output"),
@@ -149,7 +151,7 @@ class ETGProtocol:
             if len(targets) == 1:
                 target = targets[0]
                 target.send_chat(message['text'], self.name, target.name, whisper=True)
-                if self.name != target:
+                if self.name != target.name:
                     self.send_chat(message['text'], self.name, target.name, whisper=True)
             else:
                 log.warn("Trying to chat player {name}, but this player is not found!",
