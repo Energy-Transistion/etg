@@ -32,21 +32,21 @@ window.campaign = function() {
 {% block monitors %}
   <div id="govmonitors" class="rowcontainer">
   <div class="columncontainer">
-    <etg-monitor monitor="days_until_election">Days till election</etg-monitor>
-    <etg-monitor monitor="approval_rate">Approval</etg-monitor>
+    <etg-monitor monitor="days_until_election" unit="days">Days till election</etg-monitor>
+    <etg-monitor monitor="approval_rate" unit="%">Approval</etg-monitor>
     <etg-monitor monitor="non_voters">Non voters</etg-monitor>
   </div>
     <div class="columncontainer">
-      <etg-monitor monitor="government_income">Income</etg-monitor>
-      <etg-monitor monitor="change_government_income">Change</etg-monitor>
+      <etg-monitor monitor="government_income" unit="€">Income</etg-monitor>
+      <etg-monitor monitor="change_government_income" unit="€">Change</etg-monitor>
     </div>
     <div class="columncontainer">
-      <etg-monitor monitor="government_budget">Government Budget</etg-monitor>
-      <etg-monitor monitor="change_government_budget">Change</etg-monitor>
+      <etg-monitor monitor="government_budget" unit="€">Government Budget</etg-monitor>
+      <etg-monitor monitor="change_government_budget" unit="€">Change</etg-monitor>
     </div>
     <div class="columncontainer">
-      <etg-monitor monitor="greenness">Green</etg-monitor>
-      <etg-monitor monitor="change_greenness">Change</etg-monitor>
+      <etg-monitor monitor="greenness" unit="€">Green</etg-monitor>
+      <etg-monitor monitor="change_greenness" unit="€">Change</etg-monitor>
     </div>
   </div>
 {% endblock monitors %}
@@ -88,8 +88,8 @@ window.campaign = function() {
 {% block extracontrols %}
   <div style="width: 90%">
     <div class="rowcontainer">
-      <etg-monitor monitor="money">Party Budget</etg-monitor>
-      <etg-monitor monitor="campaign_reach">Campaign Reach</etg-monitor>
+      <etg-monitor monitor="money" unit="€">Party Budget</etg-monitor>
+      <etg-monitor monitor="campaign_reach" unit="% of population">Campaign Reach</etg-monitor>
     </div>
     <button v-if="money >= campaign_cost" onclick="campaign()"
       class="tax_button">Spend money on campaign</button>
@@ -101,5 +101,12 @@ window.campaign = function() {
       <h4 v-else>[[ active_party.name ]] is in power.</h4>
     </template>
     <h4 v-else>The land is ruled by anarchy</h4>
+  </div>
+  <div style="height: 110px;"></div>
+  <div class="rowcontainer">
+    <etg-monitor monitor="total_output" unit="kWh">Total Energy
+      production</etg-monitor>
+    <etg-monitor monitor="total_demand" unit="kWh">Total Energy
+      demand</etg-monitor>
   </div>
 {% endblock %}

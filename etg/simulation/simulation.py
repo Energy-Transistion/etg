@@ -173,6 +173,16 @@ class Simulation(object):
         "Difference in the greenness of the energy consumed since the last election"
         return self.greenness - self._old_greenness
 
+    @property
+    def total_production(self):
+        "The grand total of the energy production, in kWh"
+        return sum(company.output for company in self.companies)
+
+    @property
+    def total_demand(self):
+        "The grand total of energy consumed by the agents in the simulation"
+        return sum(agent.energy_consumed for agent in self.agents)
+
     def add_party(self, name, taxes, color):
         """
         Add a new political party to the simulation.

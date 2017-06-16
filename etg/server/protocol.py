@@ -20,6 +20,7 @@ class ETGProtocol:
                        ObjectAttribute("active_party", Attribute("name")),
                        Attribute("government_budget"), Attribute("change_government_budget"),
                        Attribute("government_income"), Attribute("change_government_income"),
+                       Attribute("total_production"), Attribute("total_demand"),
                        Attribute("greenness"), Attribute("change_greenness"),
                        Attribute("non_voters"), Attribute("weather"), Attribute("approval_rate"),
                        ListAttribute("energy_types",
