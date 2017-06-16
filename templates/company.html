@@ -14,11 +14,21 @@ window.update = function(energy_type) {
   console.log(data)
   sendJSON(socket, data)
 }
+
 window.sell = function(energy_type) {
   var data = {'type': 'action', 'action': 'sell', 'args': [energy_type]}
   sendJSON(socket, data)
 }
   </script>
+{% endblock %}
+
+{% block content %}
+<div id="overlay" v-if="output < demand"></div>
+{{ super() }}
+{% endblock %}
+
+{% block header %}
+<span class="fa fa-bolt" :class="{ 'black-out': output < demand }"></span>
 {% endblock %}
 
 {% block plot %}

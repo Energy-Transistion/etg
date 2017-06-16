@@ -87,17 +87,17 @@ window.onload = function() {
 {% endblock styles %}
 
 {% block content %}
-{% block header %}
 <div id="header">
   <span id="name">{{ name }}</span>
   <span class="filler"></span>
+  {% block header %}
+  {% endblock header %}
   <span class="fa fa-envelope-o" :class="{mailnoti: newmessage }"
-    aria-hidden="true"></span>
+        aria-hidden="true"></span>
   <span id="weather">[[ weather | capitalize ]]</span>
   <span class="divider"></span>
   <span id="date">[[ current_date ]]</span>
 </div>
-{% endblock header %}
 
 <div id="interface">
   {% block interface %}
