@@ -55,12 +55,17 @@ function define_components(connection) {
 
   /* Vue components */
   Vue.component('etg-monitor', {
-    template: '<div class="monitor"><h4><slot>{{ monitor }}</slot></h4><span>{{ value | round }}</span></div>',
+    template: '<div class="monitor"><h4><slot>{{ monitor }}</slot></h4><span>{{ value | round }}{{ unit ? (" " + unit) : "" }}</span></div>',
     props: {
       monitor: {
         type: String,
         required: true
-      }
+      },
+      unit: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     data: function() {
       return {

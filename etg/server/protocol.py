@@ -44,7 +44,7 @@ class ETGProtocol:
                                                                    Attribute("color"),
                                                                    Attribute("market_share"),
                                                                    Attribute("product_green")))],
-                        [Attribute("budget"), Attribute("income"), Attribute("rawcost"),
+                        [Attribute("budget"), Attribute("income"), Attribute("output"),
                          Attribute("demand"),
                          ListAttribute("total_output", MultiAttribute(Attribute("name"),
                                                                       Attribute("color"),

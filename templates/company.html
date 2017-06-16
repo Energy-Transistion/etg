@@ -41,12 +41,12 @@ window.sell = function(energy_type) {
 
 {% block monitors %}
   <div class="rowcontainer">
-    <etg-monitor monitor="budget">Budget</etg-monitor>
-    <etg-monitor monitor="income">Income</etg-monitor>
+    <etg-monitor monitor="budget" unit="€">Budget</etg-monitor>
+    <etg-monitor monitor="income" unit="€">Income</etg-monitor>
   </div>
   <div class="rowcontainer">
-    <etg-monitor monitor="rawcost">Raw cost</etg-monitor>
-    <etg-monitor monitor="demand">Demand</etg-monitor>
+    <etg-monitor monitor="output" unit="kWh">Energy Production</etg-monitor>
+    <etg-monitor monitor="demand" unit="kWh">Energy Demand</etg-monitor>
   </div>
   <div class="rowcontainer">
     <etg-slider ident="marketing">Marketing</etg-slider>
