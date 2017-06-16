@@ -189,7 +189,6 @@ class Company(Entity):
         news = []
         self.budget += self.income
         if self.demand > self.output:
-            news.append("A blackout occured at {name}!".format(name=self.name))
             for buyer in self.users:
                 buyer.days_with_blackout += 1
         if self.profit >= 0:
