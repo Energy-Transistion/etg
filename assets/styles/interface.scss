@@ -13,6 +13,9 @@ $new-news-color: rgb(230, 249, 255);
 	height: 20px;
 	color: white;
 	font-family: 'Trebuchet MS', Helvetica, sans-serif;
+	span {
+		margin-right: $margin-size;
+	}
 }
 
 #weather {
@@ -45,6 +48,19 @@ div.splits {
 
 #information-view {
 	flex: 0 0 50%;
+}
+
+@keyframes mail {
+	0% {
+		color: red;
+	}
+	100% {
+		color: white;
+	}
+}
+
+.mailnoti {
+	animation: mail 2s;
 }
 
 @keyframes news {

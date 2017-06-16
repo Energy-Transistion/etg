@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% import 'tabs.html' as tabs %}
 {% block head %}
-  {{ super() }}
-  {% block scripts %}
-    <script src="https://use.fontawesome.com/db3220912c.js"></script>
-    <script src="/js/vue.js"></script>
-    <script src="/js/moment.js"></script>
-    <script src="/js/Chart.js"></script>
-    <script src="/js/interface.js"></script>
-  <script>
+{{ super() }}
+{% block scripts %}
+<script src="https://use.fontawesome.com/db3220912c.js"></script>
+<script src="/js/vue.js"></script>
+<script src="/js/moment.js"></script>
+<script src="/js/Chart.js"></script>
+<script src="/js/interface.js"></script>
+<script>
 window.onload = function() {
   window.socket = make_connection("{{ name|safe }}");
   define_components(socket)
@@ -21,6 +21,7 @@ window.onload = function() {
     data.newsfeed = [];
     data.chatmessages = [];
     data.chat_target = "All";
+    data.newmessage = false;
     data.active_party = "";
     data.donate_party = "";
     data.donate_amount = 0;
@@ -49,14 +50,21 @@ window.onload = function() {
       target = vm.chat_target;
     }
     socket.send(JSON.stringify({'type': 'chat',
-                                'text': chatmsg.value,
-                                'target': target}));
+      'text': chatmsg.value,
+      'target': target}));
     chatmsg.value = '';
     return false;
   }
 
   socket.addEventListener("chat", function(e) {
     vm.chatmessages.push(e.detail);
+    if (!vm.newmessage) {
+      setTimeout(function() {
+        console.log("Resetting animation");
+        vm.newmessage = false;
+      }, 2000);
+    }
+    vm.newmessage = true;
     if (autoscroll.checked) {
       Vue.nextTick(function() {
         var pubchatlist  = document.getElementById("pubchat")
@@ -68,102 +76,104 @@ window.onload = function() {
     }
   })
 }
-  </script>
-  {% endblock %}
+</script>
+{% endblock %}
 {% endblock head%}
 {% block title %}ETG - {{ name }}{% endblock %}
 
 {% block styles %}
-  {{ super() }}
-  <link rel="stylesheet" href="/styles/interface.css">
+{{ super() }}
+<link rel="stylesheet" href="/styles/interface.css">
 {% endblock styles %}
 
 {% block content %}
-  {% block header %}
-  <div id="header">
-    <span id="name">{{ name }}</span>
-    <span class="filler"></span>
-    <span id="weather">[[ weather | capitalize ]]</span>
-    <span class="divider"></span>
-    <span id="date">[[ current_date ]]</span>
-  </div>
-  {% endblock header %}
+{% block header %}
+<div id="header">
+  <span id="name">{{ name }}</span>
+  <span class="filler"></span>
+  <span class="fa fa-envelope-o" :class="{mailnoti: newmessage }"
+    aria-hidden="true"></span>
+  <span id="weather">[[ weather | capitalize ]]</span>
+  <span class="divider"></span>
+  <span id="date">[[ current_date ]]</span>
+</div>
+{% endblock header %}
 
-  <div id="interface">
+<div id="interface">
   {% block interface %}
-    <div class="splits columncontainer" id="information-view">
-      {% block information %}
-        <div id="newsfeed">
-          <h2>Newsfeed</h2>
-          <ul>
-            <transition-group name="newnews">
-              <li v-for="news in newsfeed" v-bind:key="news">
-                [[ news ]]
-              </li>
-            </transition-group>
-          </ul>
-        </div>
-        {% block plot %}
-        {% endblock plot %}
-        {% block monitors %}
-        {% endblock monitors %}
-      {% endblock information %}
+  <div class="splits columncontainer" id="information-view">
+    {% block information %}
+    <div id="newsfeed">
+      <h2>Newsfeed</h2>
+      <ul>
+        <transition-group name="newnews">
+          <li v-for="news in newsfeed" v-bind:key="news">
+            [[ news ]]
+          </li>
+        </transition-group>
+      </ul>
     </div>
+    {% block plot %}
+    {% endblock plot %}
+    {% block monitors %}
+    {% endblock monitors %}
+    {% endblock information %}
+  </div>
 
-    <div class="splits columncontainer">
-      <div class="rowcontainer" id="tabs">
+  <div class="splits columncontainer">
+    <div class="rowcontainer" id="tabs">
       {% block tabs %}
-        {% block controls %}
-        {% endblock controls %}
-        {% block chat %}
-          {% call tabs.content('Chat') %}
-            <h4>Public chat</h4>
-            <ol class="chatlist" id="pubchat">
-              <li v-for="chats in chatmessages" v-if="!chats.whisper" v-bind:key="chats">
-                <span>[[ chats.sender ]]:</span> [[ chats.text ]]
-              </li>
-            </ol>
-            <h4>Private chat</h4>
-            <ol class="chatlist" id="privchat">
-              <li v-for="chats in chatmessages" v-if="chats.whisper"
-                v-bind:key="chats">
-                <span v-if="chats.sender !== '{{ name }}'">
-                  <i>[[ chats.sender ]]</i>:
-                </span>
-                <span v-else>
-                  <i>To [[ chats.target ]]</i>:
-                </span>
-                [[ chats.text ]]
-              </li>
-            </ol>
-            <form id="chatinput" action="" onsubmit="return send_chat();">
-              <select v-model="chat_target">
-                <option>All</option>
-                <option v-for="party in parties">[[ party.name ]]</option>
-                <option v-for="company in companies">[[ company.name ]]</option>
-              </select>
-              <input type="text" id="chatmsg" placeholder="type here">
-              <input type="submit" value="Send">
-              <label> <input type="checkbox" id="autoscroll" checked="checked">
-              autoscroll
-              </label>
-            </form>
-          {% endcall %}
-        {% endblock chat %}
+      {% block controls %}
+      {% endblock controls %}
+      {% block chat %}
+      {% call tabs.content('Chat') %}
+      <h4>Public chat</h4>
+      <ol class="chatlist" id="pubchat">
+        <li v-for="chats in chatmessages" v-if="!chats.whisper" v-bind:key="chats">
+          <span>[[ chats.sender ]]:</span> [[ chats.text ]]
+        </li>
+      </ol>
+      <h4>Private chat</h4>
+      <ol class="chatlist" id="privchat">
+        <li v-for="chats in chatmessages" v-if="chats.whisper"
+                                          v-bind:key="chats">
+          <span v-if="chats.sender !== '{{ name }}'">
+            <i>[[ chats.sender ]]</i>:
+          </span>
+          <span v-else>
+            <i>To [[ chats.target ]]</i>:
+          </span>
+          [[ chats.text ]]
+        </li>
+      </ol>
+      <form id="chatinput" action="" onsubmit="return send_chat();">
+        <select v-model="chat_target">
+          <option>All</option>
+          <option v-for="party in parties">[[ party.name ]]</option>
+          <option v-for="company in companies">[[ company.name ]]</option>
+        </select>
+        <input type="text" id="chatmsg" placeholder="type here">
+        <input type="submit" value="Send">
+        <label> <input type="checkbox" id="autoscroll" checked="checked">
+          autoscroll
+        </label>
+      </form>
+      {% endcall %}
+      {% endblock chat %}
 
-        <div class="tablisting">
-          {% block tablisting %}
-            {{ tabs.link('Chat', faicon='envelope-o') }}
-          {% endblock tablisting %}
-        </div>
-      {% endblock tabs %}
+      <div class="tablisting">
+        {% block tablisting %}
+        {{ tabs.link('Chat', faicon='envelope-o') }}
+        {% endblock tablisting %}
       </div>
+      {% endblock tabs %}
+    </div>
     {% block extracontrols %}
     {% endblock %}
     <div class="filler"></div>
     <img id="logo" src="/images/logo.png" alt="ETG Logo" width="100">
     </img>
-    </div>
-  {% endblock interface %}
   </div>
+  {% endblock interface %}
+</div>
 {% endblock content %}
