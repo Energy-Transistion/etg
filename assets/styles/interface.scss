@@ -138,6 +138,7 @@ div.splits {
 	padding: $margin-size;
 	margin: 0px;
 	max-height: #{$newsfeed-height + $plot-height + 2 * $margin-size};
+	overflow: auto;
 	width: calc(90% - #{2 * $margin-size});
 	background-color: $background-color;
 }
