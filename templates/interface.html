@@ -10,7 +10,7 @@
 <script src="/js/interface.js"></script>
 <script>
 window.onload = function() {
-  window.socket = make_connection("{{ name|safe }}");
+  window.socket = make_connection("{{ name }}");
   define_components(socket)
   openTab({currentTarget:
     document.getElementById('button-{{ starttab|safe }}')},
