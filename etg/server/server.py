@@ -1,6 +1,7 @@
 """
 The code for the server.
 """
+import random
 from etg.server.site import ETGSite
 from etg.server.websocket import WebSocketConnection
 from autobahn.twisted.websocket import WebSocketServerFactory
@@ -116,8 +117,13 @@ class SimulationService(service.Service):
         """
         Sets up the simulation to make sure we can run.
         """
+        if len(self.simulation.parties) < 1:
+            return False, 'Not enough parties connected'
+        elif len(self.simulation.companies) < 1:
+            return False, 'Not enough companies connected'
         with self.simulation as simulation:
             simulation.election()
+            simulation.active_party = random.choice(simulation.parties)
             for agent in simulation.agents:
                 agent.use_deliberation()
         self.is_setup = True
