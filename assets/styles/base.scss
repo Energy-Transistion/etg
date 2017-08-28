@@ -7,33 +7,6 @@ body {
 	background-color: #9AE265;
 }
 
-/*
-#content:before {
-	content: "";
-	position: fixed;
-	left: -5%;
-	top: -5%;
-	right: 0;
-	z-index: -1;
-
-	display: block;
-	background-image: linear-gradient(
-		rgba(255, 255, 255, 0.4),
-		rgba(255, 255, 255, 0.4)),
-		url('/images/nuclear.jpg');
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center center;
-	width: 110%;
-	height: 110%;
-
-	-webkit-filter: blur(5px);
-	-moz-filter: blur(5px);
-	-o-filter: blur(5px);
-	-ms-filter: blur(5px);
-	filter: blur(5px);
-} */
-
 #content {
 	position: fixed;
 	x: 0;
@@ -61,4 +34,12 @@ h1, h2, h3, h4, h5, h6 {
 	flex-direction: column;
 	justify-content: space-between;
 	flex-grow: 1;
+}
+
+.filler {
+	flex-grow: 1;
+}
+
+.divider {
+	width: 10px;
 }

@@ -1,0 +1,43 @@
+/*********************
+ * Tabs Meta styling *
+ *********************
+ All the styling neede to get the tabs working
+ *********************/
+.tabcontent {
+	.slider, .monitor {
+		background-color: transparent;
+	}
+	padding: $margin-size;
+	margin: 0px;
+	max-height: #{$newsfeed-height + $plot-height + 2 * $margin-size};
+	overflow: auto;
+	width: calc(90% - #{2 * $margin-size});
+	background-color: $background-color;
+}
+
+.tablisting {
+	display: flex;
+	flex-direction: column;
+	height: calc(100% - #{2 * $margin-size});
+	width: calc(10% - #{2 * $margin-size});
+}
+
+.tablinks {
+	display: block;
+	background-color: $background-color;
+	color: black;
+	padding: $margin-size;
+	margin: 0px;
+	border: none;
+	outline: none;
+	font-size: 250%;
+}
+
+button.tablinks:hover {
+	background-color: rgb(191, 191, 191);
+}
+
+button.tablinks.active {
+	background-color: rgb(89, 89, 89);
+	color: #f2f2f2;
+}

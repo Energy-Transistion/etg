@@ -1,9 +1,21 @@
+/*************
+ * Variables *
+ *************/
 $background-color: rgba(255, 255, 255, 0.8);
 $margin-size: 5px;
 $newsfeed-height: 170px;
 $plot-height: 300px;
 $new-news-color: rgb(230, 249, 255);
 
+/***********
+ * Imports *
+ ***********/
+@import 'components.scss';
+@import 'tabs.scss';
+
+/**********
+ * Header *
+ **********/
 #header {
 	display: flex;
 	flex-direction: row;
@@ -22,34 +34,6 @@ $new-news-color: rgb(230, 249, 255);
 	color: white;
 }
 
-.filler {
-	flex-grow: 1;
-}
-
-.divider {
-	width: 10px;
-}
-
-.plot {
-	width: 100%;
-	height: $plot-height;
-	background-color: $background-color;
-}
-
-#interface {
-	display: flex;
-}
-
-div.splits {
-	width: calc(50% - #{2 * $margin-size});
-	/*height: calc(100% - #{2* $margin-size});*/
-	margin: $margin-size;
-}
-
-#information-view {
-	flex: 0 0 50%;
-}
-
 @keyframes mail {
 	0% {
 		color: red;
@@ -63,6 +47,26 @@ div.splits {
 	animation: mail 2s;
 }
 
+/******************
+ * Main interface *
+ ******************/
+#interface {
+	display: flex;
+}
+
+/*********************************
+ * Information view (left split) *
+ *********************************/
+#information-view {
+	flex: 0 0 50%;
+}
+
+div.splits {
+	width: calc(50% - #{2 * $margin-size});
+	margin: $margin-size;
+}
+
+/* News */
 @keyframes news {
 	0% {
 		background-color: $new-news-color;
@@ -103,73 +107,21 @@ div.splits {
 	margin-left: 0px;
 }
 
-#controls {
-	flex: 1;
-}
-
 #monitors {
 	display: flex;
 	flex-direction: row;
 }
 
-.monitor {
-	h4 {
-		margin: 0px;
-		padding: 0px;
-	}
-	span {
-		text-align: right;
-		width: 100%;
-		align-self: flex-end;
-	}
-	margin: $margin-size;
-	padding: $margin-size;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-around;
-	flex-grow: 1;
-	background-color: $background-color;
+/****************
+ * Tab contents *
+ ****************/
+#controls {
+	flex: 1;
 }
 
-.tabcontent {
-	.slider, .monitor {
-		background-color: transparent;
-	}
-	padding: $margin-size;
-	margin: 0px;
-	max-height: #{$newsfeed-height + $plot-height + 2 * $margin-size};
-	overflow: auto;
-	width: calc(90% - #{2 * $margin-size});
-	background-color: $background-color;
-}
-
-.tablisting {
-	display: flex;
-	flex-direction: column;
-	height: calc(100% - #{2 * $margin-size});
-	width: calc(10% - #{2 * $margin-size});
-}
-
-.tablinks {
-	display: block;
-	background-color: $background-color;
-	color: black;
-	padding: $margin-size;
-	margin: 0px;
-	border: none;
-	outline: none;
-	font-size: 250%;
-}
-
-button.tablinks:hover {
-	background-color: rgb(191, 191, 191);
-}
-
-button.tablinks.active {
-	background-color: rgb(89, 89, 89);
-	color: #f2f2f2;
-}
-
+/********
+ * Chat *
+ ********/
 .chatlist {
 	li {
 		list-style-type: none;
@@ -200,6 +152,9 @@ button.tablinks.active {
 	align-items: center;
 }
 
+/****************
+ * Party Inputs *
+ ****************/
 #Inputs {
 	td {
 		text-align: right;
@@ -217,59 +172,13 @@ table {
 	min-width: 60%;
 }
 
-.slider {
-	h4 {
-		margin: 0px;
-		padding: 0px;
-	}
-	input {
-		margin: 2px;
-		width: calc(80% - 4px);
-	}
-	span {
-		width: 20%;
-		display: inline-block;
-		text-align: right;
-	}
-	.rowcontainer {
-		justify-content: space-between;
-		align-items: center;
-	}
-	background-color: $background-color;
-	margin: $margin-size;
-	padding: $margin-size;
-	width: 50%;
+.tax_button {
+	width: 100%;
 }
 
-#govmonitors {
-	margin: -$margin-size;
-	margin-top: $margin-size;
-	margin-bottom: $margin-size;
-}
-
-.rowcontainer > {
-	.monitor, .slider {
-		&:first-of-type {
-			margin-left: 0px;
-		}
-		&:last-of-type {
-			margin-right: 0px;
-		}
-	}
-}
-
-.columncontainer > {
-	.monitor, .slider {
-		&:first-of-type {
-			margin-top: 0px;
-		}
-		&:last-of-type {
-			margin-bottom: 0px;
-		}
-	}
-}
-
-
+/**************
+ * Under tabs *
+ **************/
 .extra {
 	input {
 		flex-grow: 1;
@@ -283,6 +192,9 @@ table {
 	width: calc(90% - #{2 * $margin-size});
 }
 
+/*********
+ * Admin *
+ *********/
 .adminbuttons {
 	button {
 		font-size: large;
@@ -294,10 +206,9 @@ table {
 	margin-left: 0px;
 }
 
-.tax_button {
-	width: 100%;
-}
-
+/*****************
+ * Blackout info *
+ *****************/
 .fa-bolt {
 	color: yellow;
 }
@@ -328,6 +239,9 @@ table {
 	animation: blackout 4s infinite;
 }
 
+/********
+ * Logo *
+ ********/
 #logo {
 	margin: $margin-size;
 	align-self: flex-end;
