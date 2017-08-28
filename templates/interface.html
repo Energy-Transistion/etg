@@ -81,11 +81,6 @@ window.onload = function() {
 {% endblock head%}
 {% block title %}ETG - {{ name }}{% endblock %}
 
-{% block styles %}
-{{ super() }}
-<link rel="stylesheet" href="/styles/interface.css">
-{% endblock styles %}
-
 {% block content %}
 <div id="header">
   <span id="name">{{ name }}</span>

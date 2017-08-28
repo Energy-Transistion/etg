@@ -152,30 +152,6 @@ div.splits {
 	align-items: center;
 }
 
-/****************
- * Party Inputs *
- ****************/
-#Inputs {
-	td {
-		text-align: right;
-	}
-	th {
-		font-family: 'Trebuchet MS', Helvetica, sans-serif;
-		text-align: left;
-	}
-	h3 {
-		margin: 0px;
-	}
-}
-
-table {
-	min-width: 60%;
-}
-
-.tax_button {
-	width: 100%;
-}
-
 /**************
  * Under tabs *
  **************/
@@ -190,53 +166,6 @@ table {
 	padding: $margin-size;
 	margin-top: $margin-size;
 	width: calc(90% - #{2 * $margin-size});
-}
-
-/*********
- * Admin *
- *********/
-.adminbuttons {
-	button {
-		font-size: large;
-	}
-	height: $newsfeed-height;
-	margin: $margin-size;
-	padding: $margin-size;
-	width: calc(100% - #{2 * $margin-size});
-	margin-left: 0px;
-}
-
-/*****************
- * Blackout info *
- *****************/
-.fa-bolt {
-	color: yellow;
-}
-
-@keyframes blackout {
-	0%, 100% {
-		color: yellow;
-		background-color: transparent;
-	}
-	50% {
-		color: darkgray;
-		background-color: rgba(0, 0, 0, 0.7);
-	}
-}
-
-#overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 10;
-	animation: blackout 4s infinite;
-	pointer-events: none;
-}
-
-.black-out {
-	animation: blackout 4s infinite;
 }
 
 /********

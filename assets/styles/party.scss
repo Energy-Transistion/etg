@@ -1,0 +1,37 @@
+/***********
+ * Imports *
+ ***********/
+@import 'interface.scss';
+
+/****************
+ * Party Inputs *
+ ****************/
+#Inputs {
+	td {
+		text-align: right;
+	}
+	th {
+		font-family: 'Trebuchet MS', Helvetica, sans-serif;
+		text-align: left;
+	}
+	h3 {
+		margin: 0px;
+	}
+}
+
+table {
+	min-width: 60%;
+}
+
+.tax_button {
+	width: 100%;
+}
+
+/************
+ * Monitors *
+ ************/
+#govmonitors {
+	margin: -$margin-size;
+	margin-top: $margin-size;
+	margin-bottom: $margin-size;
+}

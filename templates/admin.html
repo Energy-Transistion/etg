@@ -28,6 +28,11 @@ window.setup = function() {
   </script>
 {% endblock %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="/styles/party.css">
+{% endblock styles %}
+
 {% block plot %}
 <div style="height: 300px;">
 <etg-pie title="Resource Use" key="res" collection="energy_types"
