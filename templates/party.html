@@ -45,8 +45,8 @@ window.campaign = function() {
       <etg-monitor monitor="change_government_budget" unit="€">Change</etg-monitor>
     </div>
     <div class="columncontainer">
-      <etg-monitor monitor="greenness" unit="€">Green</etg-monitor>
-      <etg-monitor monitor="change_greenness" unit="€">Change</etg-monitor>
+      <etg-monitor monitor="greenness">Green</etg-monitor>
+      <etg-monitor monitor="change_greenness">Change</etg-monitor>
     </div>
   </div>
 {% endblock monitors %}
@@ -104,7 +104,7 @@ window.campaign = function() {
   </div>
   <div style="height: 110px;"></div>
   <div class="rowcontainer">
-    <etg-monitor monitor="total_output" unit="kWh">Total Energy
+    <etg-monitor monitor="total_production" unit="kWh">Total Energy
       production</etg-monitor>
     <etg-monitor monitor="total_demand" unit="kWh">Total Energy
       demand</etg-monitor>
