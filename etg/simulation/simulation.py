@@ -140,7 +140,8 @@ class Simulation(object):
         would vote for that party.
         """
         if self.active_party:
-            return self.votes[self.active_party.name]/len(self.agents)
+            return self.votes[self.active_party.name] * 100 / \
+                    (sum(self.votes[name] for name in self.votes) + self.non_voters)
         else:
             return 0
 
