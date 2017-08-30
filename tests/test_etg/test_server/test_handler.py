@@ -48,7 +48,7 @@ class HandlerTestCase(unittest.TestCase):
         self.handler = Handler(ProxyLock(self.simulation),
                                ProxyLock(self.foo),
                                [Attribute("count"), Attribute("g")],
-                               [Attribute("a"), Attribute('b')],
+                               [Attribute('b')],
                                [Attribute('a')])
 
     def test_process_packet(self):
