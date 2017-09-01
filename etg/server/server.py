@@ -171,6 +171,10 @@ def make_application(simulation, options):
     strports.service("tcp:8080", Site(site)).setServiceParent(service_collection)
     loop = task.LoopingCall(server.loop)
     loop_deferred = loop.start(simulation.tick_rate)
-
     loop_deferred.addErrback(make_errback(server, log))
+
+    import socket
+    ip_addr = socket.gethostbyname(socket.gethostname())
+    print("Ask players to go to the following URL: http://{}:8080".format(str(ip_addr)))
+    print("You can find the Admin interface at http://{}:8080/admin.html".format(str(ip_addr)))
     return application
