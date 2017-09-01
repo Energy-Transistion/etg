@@ -7,7 +7,6 @@ from twisted.logger import Logger
 from etg.util.json import dumps as json_dump
 from .protocol import ETGProtocol
 
-# pylint: disable=invalid-name
 log = Logger()
 
 class WebSocketConnection(WebSocketServerProtocol):
@@ -18,7 +17,6 @@ class WebSocketConnection(WebSocketServerProtocol):
         """
         This method triggers once the connection is open, and creates the used ETGProtocol.
         """
-        # pylint: disable=no-member,attribute-defined-outside-init
         log.info("Opened new connection")
         self.protocol = ETGProtocol(self.factory.service, self.factory.simulation, Sender(self))
         self.factory.service.add_protocol(self.protocol)
@@ -40,7 +38,6 @@ class WebSocketConnection(WebSocketServerProtocol):
             self.protocol.on_message(json.loads(line))
 
     def onClose(self, wasClean, code, reason):
-        # pylint: disable=no-member
         try:
             name = self.protocol.name
             self.factory.service.remove_protocol(self.protocol)

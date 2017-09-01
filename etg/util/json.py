@@ -3,7 +3,7 @@ A module for serializing different Python objects to JSON.
 """
 import datetime
 import json
-from etg.simulation.energy import EnergyType, Producer
+from etg.simulation.energy import Producer
 from etg.simulation.entity import Entity
 
 def default(obj):

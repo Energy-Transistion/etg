@@ -8,7 +8,6 @@ from etg.util.proxylock import ProxyLock
 from .handler import (Handler, Attribute, ObjectAttribute, ListAttribute,
                       MultiAttribute, DictAttribute)
 
-# pylint: disable=invalid-name
 log = Logger()
 
 class ETGProtocol:
@@ -174,9 +173,9 @@ class ETGProtocol:
             log.debug("Calling {method} on {name}", method=message['action'], name=self.name)
             try:
                 func = getattr(wrapee, message['action'])
-            except AttributeError as e:
+            except AttributeError as ex:
                 log.warn("Trying to call a method {method} that does not exsist!",
-                         method=e.args[0])
+                         method=ex.args[0])
                 return
             res, msg = func(*message['args'])
         if not res:

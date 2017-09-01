@@ -41,7 +41,6 @@ class Handler():
         :param list view_wrapee: A list of attributes that are viewable on the wrapee
         :param list control_wrapee: A list with attributes that can be set on the wrapee
         """
-        # pylint: disable=too-many-arguments
         self.simulation = simulation
         self.wrapee = wrapee
         self.name = wrapee.name
@@ -211,8 +210,8 @@ class MultiAttribute(Attribute):
     """
     Get multiple values from one object.
     """
-    # pylint: disable=super-init-not-called
     def __init__(self, *attrs):
+        super().__init__(attrs[0])
         self.attrs = attrs
 
     def get(self, obj):

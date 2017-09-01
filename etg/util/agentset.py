@@ -69,7 +69,6 @@ class AgentSet:
         """
         Return a random agent from the set.
         """
-        # pylint: disable=protected-access
         for agent in self.n_of(1):
             return agent
 

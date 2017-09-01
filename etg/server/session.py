@@ -5,6 +5,7 @@ from zope.interface import Interface, Attribute, implementer
 from twisted.python.components import registerAdapter
 from twisted.web.server import Session
 
+# pylint: disable=inherit-non-class
 class ISessionState(Interface):
     """
     An interface for specifying what the session state needs as a minimum.
@@ -20,7 +21,8 @@ class SessionState(object):
     The actual state for the session. Implements everything in
     :class:`~etg.server.session.ISessionState`
     """
-    def __init__(self, session):
+    # pylint: disable=too-few-public-methods
+    def __init__(self, _):
         self.name = ""
         self.short_name = ""
         self.player_name = ""

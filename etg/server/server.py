@@ -11,7 +11,6 @@ from twisted.internet import task
 from twisted.logger import Logger
 from twisted.web.server import Site
 
-# pylint: disable=invalid-name
 log = Logger("etg.service")
 
 class SimulationService(service.Service):

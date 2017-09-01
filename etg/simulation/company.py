@@ -13,8 +13,6 @@ class Company(Entity):
     manually.
     """
 
-    # pylint: disable=too-many-instance-attributes
-
     def __init__(self, simulation, options, name):
         super(Company, self).__init__(simulation)
         self.set_values(options)

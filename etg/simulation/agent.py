@@ -57,7 +57,6 @@ class Agent(Entity):
     """
 
     # pylint: disable=too-many-instance-attributes
-
     def __init__(self,
                  simulation,
                  income,
@@ -94,7 +93,6 @@ class Agent(Entity):
         :param avg_income: The average income wanted for the population.
         :param std_income: The standard deviation for the income.
         """
-        # pylint: disable=too-many-arguments
         income = -1
         while income < 1000:
             income = normalvariate(avg_income, std_income)
@@ -195,7 +193,6 @@ class Agent(Entity):
                    abs(mean(energy.raw_price + energy.raw_price * party.taxes[energy.name] / 100
                             for energy in self.simulation.energy_types) - self.need_money) + \
                    random() * 5 - 10
-                   #TODO: calculation if the party gets positive income
         self.party = min(self.simulation.parties, key=party_satisfaction)
         if party_satisfaction(self.party) < 20: # Non-voter
             self.party = None

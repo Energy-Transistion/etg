@@ -11,7 +11,6 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from .resources import Assets, render_file
 from .session import get_session_state
 
-# pylint: disable=invalid-name
 log = Logger("etg.site")
 
 COLORS = ["rgb(255, 255, 0)", # yellow
@@ -65,7 +64,6 @@ class ETGSite(resource.Resource):
         """
         Render the index page without keeping up the server.
         """
-        # pylint: disable=invalid-name
         return self.content
 
     def getChild(self, path, request):
@@ -90,7 +88,6 @@ class PartyCreationResource(resource.Resource):
         """
         Render a page to show if we do not yet have all the necessary information for this party.
         """
-        # pylint: disable=invalid-name
         state = get_session_state(request)
         try:
             state.taxes
@@ -118,7 +115,6 @@ class PartyResource(resource.Resource):
         """
         Render the page after a post request, so we got a new name for the party.
         """
-        # pylint: disable=invalid-name
         state = get_session_state(request)
         try:
             state.taxes
@@ -143,7 +139,6 @@ class PartyResource(resource.Resource):
         """
         Render the page for a party based on the session information from the request.
         """
-        # pylint: disable=invalid-name
         state = get_session_state(request)
         if state.name == '':
             return redirectTo(b"/create_party.html", request)
@@ -176,7 +171,6 @@ class CompanyCreationResource(resource.Resource):
         """
         Generates a random company and then presents it to the player.
         """
-        # pylint: disable=invalid-name
         state = get_session_state(request)
         types = self.service.simulation.energy_types
         try:
@@ -212,7 +206,6 @@ class CompanyResource(resource.Resource):
         """
         Render the page after a post request, so we got a new name for the company.
         """
-        # pylint: disable=invalid-name
         state = get_session_state(request)
         try:
             state.tiers
@@ -237,7 +230,6 @@ class CompanyResource(resource.Resource):
         """
         Render the page for a party based on the session information from the request.
         """
-        # pylint: disable=invalid-name
         state = get_session_state(request)
         if state.name == '':
             return redirectTo(b"/create_company.html", request)
@@ -271,5 +263,4 @@ class AdminResource(resource.Resource):
         """
         Render the actual Admin Interface.
         """
-        # pylint: disable=invalid-name
         return self.template.render(name="admin", starttab="Chat").encode('utf-8')
