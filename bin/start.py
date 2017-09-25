@@ -18,5 +18,5 @@ if old_path:
     putenv('PYTHONPATH', main_dir + pathsep + getenv('PYTHONPATH'))
 else:
     putenv('PYTHONPATH', main_dir)
-#chdir(main_dir)
+chdir(main_dir)
 execv(twistd, ['twistd', '-ny', path.join(main_dir, 'bin', 'test-server')])
