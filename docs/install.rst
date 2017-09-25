@@ -1,10 +1,20 @@
 *************************
 Installation instructions
 *************************
-These are the extended installation instructions for the Energy Transition 
-Game. They are separated for the different needs and levels of technical 
-insight. It is recommended that you pick the one that you are most comfortable 
+These are the extended installation instructions for the Energy Transition
+Game. They are separated for the different needs and levels of technical
+insight. It is recommended that you pick the one that you are most comfortable
 with.
+
+I want to run the game and do not know what I am doing
+======================================================
+1. Install a recent version of `Python 3`_. Version 3.6 should work fine.
+2. If you us a Mac, open a terminal and copy the following command::
+
+        xcode-select --install
+
+3. Run the python file `bin/install.py` by opening it with Python.
+4. You are ready to run the game!
 
 I want to run the game and know what I am doing
 ===============================================

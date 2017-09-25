@@ -15,6 +15,7 @@ game. It also holds all of the documentation for the :mod:`etg` package.
    :caption: Contents:
 
    install
+   running
    Code documentation <etg>
    Test documentation <tests>
 
