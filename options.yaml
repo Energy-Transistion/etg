@@ -30,5 +30,5 @@ site:
   images: assets/images
   javascript: js
   templates: templates
-  html_info: assets/intro
+  html_info: assets/html
   port: 8080
