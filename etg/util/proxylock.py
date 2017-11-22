@@ -87,7 +87,7 @@ class ProxyLock:
 
     def __new__(cls, obj, *args, **kwargs):
         """
-        creates an proxy instance referencing `obj`. (obj, *args, **kwargs) are
+        creates an proxy instance referencing `obj`. (obj, \*args, \*\*kwargs) are
         passed to this class' __init__, so deriving classes can define an
         __init__ method of their own.
         note: _class_proxy_cache is unique per deriving class (each deriving
