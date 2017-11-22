@@ -1,0 +1,7 @@
+etg.simulation.company module
+=============================
+
+.. automodule:: etg.simulation.company
+    :members:
+    :undoc-members:
+    :show-inheritance:

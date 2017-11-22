@@ -1,0 +1,7 @@
+etg.util.proxylock module
+=========================
+
+.. automodule:: etg.util.proxylock
+    :members:
+    :undoc-members:
+    :show-inheritance:

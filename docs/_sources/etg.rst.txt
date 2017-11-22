@@ -1,0 +1,17 @@
+etg package
+===========
+
+.. automodule:: etg
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    etg.server
+    etg.simulation
+    etg.util
+

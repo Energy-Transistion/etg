@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.simulation.energy &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for etg.simulation.energy</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains all the code for keeping track of the different energy types.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">..util.math</span> <span class="k">import</span> <span class="n">mean</span>
+<span class="kn">from</span> <span class="nn">.entity</span> <span class="k">import</span> <span class="n">Entity</span>
+
+<div class="viewcode-block" id="EnergyType"><a class="viewcode-back" href="../../../etg.simulation.energy.html#etg.simulation.energy.EnergyType">[docs]</a><span class="k">class</span> <span class="nc">EnergyType</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a specific energy type, that is read in from a yaml file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-few-public-methods, too-many-instance-attributes</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">greenness</span><span class="p">,</span> <span class="n">safety</span><span class="p">,</span> <span class="n">initial_output</span><span class="p">,</span> <span class="n">initial_price</span><span class="p">,</span>
+                 <span class="n">tiers_unlocks</span><span class="p">,</span> <span class="n">market_price</span><span class="p">,</span> <span class="n">failure_weather</span><span class="p">,</span> <span class="n">reliability</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=too-many-arguments</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">greenness</span> <span class="o">=</span> <span class="n">greenness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">safety</span> <span class="o">=</span> <span class="n">safety</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_output</span> <span class="o">=</span> <span class="n">initial_output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_price</span> <span class="o">=</span> <span class="n">initial_price</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tier_costs</span> <span class="o">=</span> <span class="n">tiers_unlocks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market_price</span> <span class="o">=</span> <span class="n">market_price</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">failing</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">failure_weather</span> <span class="o">=</span> <span class="n">failure_weather</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reliability</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">rel</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">season</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">seasons</span><span class="p">:</span>
+                <span class="n">rel</span><span class="p">[</span><span class="n">season</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reliability</span><span class="p">[</span><span class="n">season</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reliability</span> <span class="o">=</span> <span class="n">rel</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rel</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">season</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">seasons</span><span class="p">:</span>
+                <span class="n">rel</span><span class="p">[</span><span class="n">season</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reliability</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reliability</span> <span class="o">=</span> <span class="n">rel</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The average price for this energy type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mean</span><span class="p">(</span><span class="n">company</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">*</span> <span class="n">company</span><span class="o">.</span><span class="n">price</span> <span class="o">/</span>
+                        <span class="nb">sum</span><span class="p">(</span><span class="n">producer</span><span class="o">.</span><span class="n">output</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">producer</span> <span class="ow">in</span> <span class="n">company</span><span class="o">.</span><span class="n">producers</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                        <span class="k">for</span> <span class="n">company</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The average price for this energy type including taxes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">100</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">active_party</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">])</span><span class="o">/</span><span class="mi">100</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_tier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The maximum upgradeable tier for this energy type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tier_costs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;The total amount of kWh that is produced and bought for this energy type&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">company</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="n">company</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                   <span class="k">for</span> <span class="n">company</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">percentage_use</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;How large the percentage of the use of this type of energy is&quot;</span>
+        <span class="n">total_production</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">etype</span><span class="o">.</span><span class="n">total_output</span> <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total_production</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_output</span><span class="o">/</span><span class="n">total_production</span> <span class="o">*</span> <span class="mi">100</span></div>
+
+<div class="viewcode-block" id="Producer"><a class="viewcode-back" href="../../../etg.simulation.energy.html#etg.simulation.energy.Producer">[docs]</a><span class="k">class</span> <span class="nc">Producer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents an energy producer in the game. It is used by the companies to keep track</span>
+<span class="sd">    of their energy production.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-few-public-methods,too-many-instance-attributes</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energy_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param energy_type: The energy type that this is a producer for.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tier</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">energy_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_output</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_output</span> <span class="o">=</span> <span class="n">energy_type</span><span class="o">.</span><span class="n">initial_output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sell_price</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_price</span> <span class="o">=</span> <span class="n">energy_type</span><span class="o">.</span><span class="n">initial_price</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upgrade_price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">tier_costs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tier</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">energy_type</span><span class="o">.</span><span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">production_level</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;The output for this producer in this tick&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">failing</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">production_level</span><span class="o">/</span><span class="mi">100</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_output</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_tier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The max tier for this producer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">max_tier</span>
+
+<div class="viewcode-block" id="Producer.upgrade"><a class="viewcode-back" href="../../../etg.simulation.energy.html#etg.simulation.energy.Producer.upgrade">[docs]</a>    <span class="k">def</span> <span class="nf">upgrade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Upgrade the energy producer by one tier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tier</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_price</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tier</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">max_tier</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">upgrade_price</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">upgrade_price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">tier_costs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tier</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_output</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_output</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">tier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_price</span> <span class="o">/=</span> <span class="mf">0.95</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

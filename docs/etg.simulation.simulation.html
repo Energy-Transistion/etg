@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.simulation.simulation module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg.util package" href="etg.util.html" />
+    <link rel="prev" title="etg.simulation.party module" href="etg.simulation.party.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.util.html" title="etg.util package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.party.html" title="etg.simulation.party module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.simulation.html" accesskey="U">etg.simulation package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-etg.simulation.simulation">
+<span id="etg-simulation-simulation-module"></span><h1>etg.simulation.simulation module<a class="headerlink" href="#module-etg.simulation.simulation" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the simulation and all otherwise related functions.</p>
+<dl class="class">
+<dt id="etg.simulation.simulation.Season">
+<em class="property">class </em><code class="descclassname">etg.simulation.simulation.</code><code class="descname">Season</code><span class="sig-paren">(</span><em>name</em>, <em>start_date</em>, <em>current_date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Season"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Season" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This class represents a single season for use within the game.</p>
+<dl class="method">
+<dt id="etg.simulation.simulation.Season.should_trigger">
+<code class="descname">should_trigger</code><span class="sig-paren">(</span><em>current_date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Season.should_trigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Season.should_trigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if this next season should start</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.simulation.Season.trigger">
+<code class="descname">trigger</code><span class="sig-paren">(</span><em>current_date</em>, <em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Season.trigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Season.trigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activate this new season if applicable.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.simulation.simulation.Simulation">
+<em class="property">class </em><code class="descclassname">etg.simulation.simulation.</code><code class="descname">Simulation</code><span class="sig-paren">(</span><em>options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The actual simulation for the game.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tick_rate</strong> &#8211; The number of seconds in a tick.</li>
+<li><strong>refraction_ticks</strong> &#8211; The number of ticks between the decisions that an agent makes.</li>
+<li><strong>agent_options</strong> &#8211; The options for the generation of the agents</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="etg.simulation.simulation.Simulation.add_company">
+<code class="descname">add_company</code><span class="sig-paren">(</span><em>name</em>, <em>unlocked_tiers</em>, <em>color</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Simulation.add_company"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Simulation.add_company" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new company to the simulation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.simulation.Simulation.add_party">
+<code class="descname">add_party</code><span class="sig-paren">(</span><em>name</em>, <em>taxes</em>, <em>color</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Simulation.add_party"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Simulation.add_party" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new political party to the simulation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.approval_rate">
+<code class="descname">approval_rate</code><a class="headerlink" href="#etg.simulation.simulation.Simulation.approval_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The approval for the party that is currently in power. This is the percantage of voters that
+would vote for that party.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.change_government_budget">
+<code class="descname">change_government_budget</code><a class="headerlink" href="#etg.simulation.simulation.Simulation.change_government_budget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Difference in the government budget since the last election</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.change_government_income">
+<code class="descname">change_government_income</code><a class="headerlink" href="#etg.simulation.simulation.Simulation.change_government_income" title="Permalink to this definition">¶</a></dt>
+<dd><p>Difference in the income since the last election</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.change_greenness">
+<code class="descname">change_greenness</code><a class="headerlink" href="#etg.simulation.simulation.Simulation.change_greenness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Difference in the greenness of the energy consumed since the last election</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.days_until_election">
+<code class="descname">days_until_election</code><a class="headerlink" href="#etg.simulation.simulation.Simulation.days_until_election" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of days until the next election.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.simulation.Simulation.election">
+<code class="descname">election</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Simulation.election"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Simulation.election" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hold an election and put the party with most voters in power.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.greenness">
+<code class="descname">greenness</code><a class="headerlink" href="#etg.simulation.simulation.Simulation.greenness" title="Permalink to this definition">¶</a></dt>
+<dd><p>How green the energy consumed by the population is.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.one_day">
+<code class="descname">one_day</code><em class="property"> = datetime.timedelta(1)</em><a class="headerlink" href="#etg.simulation.simulation.Simulation.one_day" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.one_round">
+<code class="descname">one_round</code><em class="property"> = datetime.timedelta(730)</em><a class="headerlink" href="#etg.simulation.simulation.Simulation.one_round" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.simulation.Simulation.poll">
+<code class="descname">poll</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Simulation.poll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Simulation.poll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll the population and return the results of the poll.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.simulation.Simulation.tick">
+<code class="descname">tick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Simulation.tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Simulation.tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate the simulation by one tick.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.total_demand">
+<code class="descname">total_demand</code><a class="headerlink" href="#etg.simulation.simulation.Simulation.total_demand" title="Permalink to this definition">¶</a></dt>
+<dd><p>The grand total of energy consumed by the agents in the simulation</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.simulation.Simulation.total_production">
+<code class="descname">total_production</code><a class="headerlink" href="#etg.simulation.simulation.Simulation.total_production" title="Permalink to this definition">¶</a></dt>
+<dd><p>The grand total of the energy production, in kWh</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.simulation.Simulation.update_government_budget">
+<code class="descname">update_government_budget</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Simulation.update_government_budget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Simulation.update_government_budget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the government budget by inning taxes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.simulation.Simulation.update_weather">
+<code class="descname">update_weather</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/simulation.html#Simulation.update_weather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.simulation.Simulation.update_weather" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the weather in the simulation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="etg.simulation.party.html"
+                        title="previous chapter">etg.simulation.party module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.util.html"
+                        title="next chapter">etg.util package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/etg.simulation.simulation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.util.html" title="etg.util package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.party.html" title="etg.simulation.party module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.simulation.html" >etg.simulation package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

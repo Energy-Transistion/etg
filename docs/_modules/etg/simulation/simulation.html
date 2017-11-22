@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.simulation.simulation &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for etg.simulation.simulation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains the simulation and all otherwise related functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">choice</span><span class="p">,</span> <span class="n">randrange</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">etg.simulation.agent</span> <span class="k">import</span> <span class="n">Agent</span>
+<span class="kn">from</span> <span class="nn">etg.simulation.company</span> <span class="k">import</span> <span class="n">Company</span>
+<span class="kn">from</span> <span class="nn">etg.simulation.party</span> <span class="k">import</span> <span class="n">Party</span>
+<span class="kn">from</span> <span class="nn">etg.simulation.energy</span> <span class="k">import</span> <span class="n">EnergyType</span>
+<span class="kn">from</span> <span class="nn">etg.util.agentset</span> <span class="k">import</span> <span class="n">AgentSet</span>
+
+<div class="viewcode-block" id="Simulation"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Simulation">[docs]</a><span class="k">class</span> <span class="nc">Simulation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The actual simulation for the game.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+    <span class="n">one_day</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">one_round</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">730</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">options</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param tick_rate: The number of seconds in a tick.</span>
+<span class="sd">        :param refraction_ticks: The number of ticks between the decisions that an agent makes.</span>
+<span class="sd">        :param agent_options: The options for the generation of the agents</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">AgentSet</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parties</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">companies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tick_rate</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;tick_rate&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refraction_ticks</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;refraction_ticks&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_tick</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weather</span> <span class="o">=</span> <span class="s2">&quot;sunny&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_election</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_date</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_round</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_party</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">government_budget</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;government_budget&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_government_budget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">government_budget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">government_income</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_government_income</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">government_income</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_greenness</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">votes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_voters</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_seasons</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;season_file&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generate_agents</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;agents&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_energy_types</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;energy_types&#39;</span><span class="p">],</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;agents&#39;</span><span class="p">][</span><span class="s1">&#39;avg_energy_use&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="n">options</span>
+
+    <span class="k">def</span> <span class="nf">_setup_seasons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the information for all the different seasons</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">season_data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load_all</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">season_data</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Season</span><span class="p">(</span><span class="n">current_date</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_date</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">season_candidate</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">season</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">:</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="n">season</span><span class="o">.</span><span class="n">start_date</span>
+            <span class="n">old_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">start_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">start_date</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">old_start</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_date</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">season_candidate</span> <span class="ow">or</span> <span class="n">season_candidate</span><span class="o">.</span><span class="n">start_date</span> <span class="o">&lt;</span> <span class="n">season</span><span class="o">.</span><span class="n">start_date</span><span class="p">:</span>
+                    <span class="n">season_candidate</span> <span class="o">=</span> <span class="n">season</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_season</span> <span class="o">=</span> <span class="n">season_candidate</span>
+
+    <span class="k">def</span> <span class="nf">_generate_agents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_options</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param number_agents: The number of agents in this simulation.</span>
+<span class="sd">        :param seed_size: The size of the initial network of agents that is fully connected.</span>
+<span class="sd">        :param max_friends: The maximum number of friends that an agent makes when initialized.</span>
+<span class="sd">        :param chance_snd_friend: The chance that an agent does not make one, but two friends.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">number_agents</span> <span class="o">=</span> <span class="n">agent_options</span><span class="p">[</span><span class="s1">&#39;number_agents&#39;</span><span class="p">]</span>
+        <span class="n">seed_size</span> <span class="o">=</span> <span class="n">agent_options</span><span class="p">[</span><span class="s1">&#39;seed_size&#39;</span><span class="p">]</span>
+        <span class="n">avg_income</span> <span class="o">=</span> <span class="n">agent_options</span><span class="p">[</span><span class="s1">&#39;avg_income&#39;</span><span class="p">]</span>
+        <span class="n">std_income</span> <span class="o">=</span> <span class="n">agent_options</span><span class="p">[</span><span class="s1">&#39;std_income&#39;</span><span class="p">]</span>
+        <span class="n">avg_energy_use</span> <span class="o">=</span> <span class="n">agent_options</span><span class="p">[</span><span class="s1">&#39;avg_energy_use&#39;</span><span class="p">]</span>
+        <span class="n">std_energy_use</span> <span class="o">=</span> <span class="n">agent_options</span><span class="p">[</span><span class="s1">&#39;std_energy_use&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">seed_size</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_agent</span><span class="p">(</span><span class="n">Agent</span><span class="o">.</span><span class="n">generate_random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">avg_income</span><span class="p">,</span> <span class="n">std_income</span><span class="p">,</span>
+                                                        <span class="n">avg_energy_use</span><span class="p">,</span> <span class="n">std_energy_use</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">agent</span>
+            <span class="k">while</span> <span class="n">other</span> <span class="o">==</span> <span class="n">agent</span><span class="p">:</span>
+                <span class="n">other</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">one_of</span><span class="p">()</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">make_friend</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">income_difference</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="s2">&quot;Calculate the income difference between two agents, with randomness&quot;</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">income</span> <span class="o">-</span> <span class="n">agent</span><span class="o">.</span><span class="n">income</span> <span class="o">+</span> <span class="n">randrange</span><span class="p">(</span><span class="mi">8000</span><span class="p">)</span> <span class="o">-</span> <span class="mi">4000</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_agents</span> <span class="o">-</span> <span class="n">seed_size</span><span class="p">):</span>
+            <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="o">.</span><span class="n">generate_random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">avg_income</span><span class="p">,</span> <span class="n">std_income</span><span class="p">,</span>
+                                          <span class="n">avg_energy_use</span><span class="p">,</span> <span class="n">std_energy_use</span><span class="p">)</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">income_difference</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">make_friend</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+            <span class="n">num_friends</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">agent_options</span><span class="p">[</span><span class="s1">&#39;max_friends&#39;</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">friends</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">friend</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">friends</span><span class="o">.</span><span class="n">n_of</span><span class="p">(</span><span class="n">num_friends</span><span class="p">):</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">make_friend</span><span class="p">(</span><span class="n">friend</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_agent</span><span class="p">(</span><span class="n">agent</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_setup_energy_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">avg_energy_use</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method sets up all the necessary information for the different energy types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">energy_types_data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load_all</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">energy_types_data</span><span class="p">:</span>
+                <span class="n">initial_energy</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;initial_output&#39;</span><span class="p">]</span> <span class="o">/</span><span class="mi">100</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span> <span class="o">*</span> <span class="n">avg_energy_use</span>
+                <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;initial_output&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">energy_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EnergyType</span><span class="p">(</span><span class="n">simulation</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                                    <span class="n">initial_output</span><span class="o">=</span><span class="n">initial_energy</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the pickled simulation back to the original state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">energy_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_types</span><span class="p">:</span>
+            <span class="n">energy_type</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">party</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parties</span><span class="p">:</span>
+            <span class="n">party</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">company</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">companies</span><span class="p">:</span>
+            <span class="n">company</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="bp">self</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">days_until_election</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The number of days until the next election.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_election</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_date</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">approval_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The approval for the party that is currently in power. This is the percantage of voters that</span>
+<span class="sd">        would vote for that party.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_party</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">votes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_party</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> \
+                    <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">votes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">votes</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_voters</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">greenness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How green the energy consumed by the population is.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">companies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">etype</span><span class="o">.</span><span class="n">greenness</span> <span class="o">*</span>
+                       <span class="nb">sum</span><span class="p">(</span><span class="n">company</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="n">company</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                           <span class="k">for</span> <span class="n">company</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">companies</span><span class="p">)</span> <span class="o">/</span>
+                       <span class="nb">sum</span><span class="p">(</span><span class="n">company</span><span class="o">.</span><span class="n">output</span> <span class="k">for</span> <span class="n">company</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">companies</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">change_government_income</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Difference in the income since the last election&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">government_income</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_government_income</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">change_government_budget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Difference in the government budget since the last election&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">government_budget</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_government_budget</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">change_greenness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Difference in the greenness of the energy consumed since the last election&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">greenness</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_greenness</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_production</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;The grand total of the energy production, in kWh&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">company</span><span class="o">.</span><span class="n">output</span> <span class="k">for</span> <span class="n">company</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">companies</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_demand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;The grand total of energy consumed by the agents in the simulation&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">energy_consumed</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Simulation.add_party"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Simulation.add_party">[docs]</a>    <span class="k">def</span> <span class="nf">add_party</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">taxes</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new political party to the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">party</span> <span class="o">=</span> <span class="n">Party</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s1">&#39;party&#39;</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tax</span> <span class="ow">in</span> <span class="n">taxes</span><span class="p">:</span>
+            <span class="n">party</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">tax</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tax</span><span class="p">[</span><span class="s1">&#39;taxes&#39;</span><span class="p">]</span>
+        <span class="n">party</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parties</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">party</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Simulation.add_company"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Simulation.add_company">[docs]</a>    <span class="k">def</span> <span class="nf">add_company</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">unlocked_tiers</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new company to the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">company</span> <span class="o">=</span> <span class="n">Company</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s1">&#39;companies&#39;</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tiers</span> <span class="ow">in</span> <span class="n">unlocked_tiers</span><span class="p">:</span>
+            <span class="n">tier</span> <span class="o">=</span> <span class="n">tiers</span><span class="p">[</span><span class="s1">&#39;tier&#39;</span><span class="p">]</span>
+            <span class="k">while</span> <span class="n">tier</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">tier</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">company</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">tiers</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">upgrade</span><span class="p">()</span>
+        <span class="n">company</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="n">company</span><span class="o">.</span><span class="n">rawcost</span><span class="o">/</span><span class="n">company</span><span class="o">.</span><span class="n">output</span> <span class="o">*</span> <span class="mf">1.10</span>
+        <span class="n">company</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">companies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">company</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Simulation.tick"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Simulation.tick">[docs]</a>    <span class="k">def</span> <span class="nf">tick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate the simulation by one tick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">news</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">season</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">seasons</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">season</span><span class="o">.</span><span class="n">should_trigger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_date</span><span class="p">):</span>
+                <span class="n">season</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_date</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                <span class="n">news</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;It is now </span><span class="si">{season}</span><span class="s2">!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">season</span><span class="o">=</span><span class="n">season</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">tick</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">company</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">companies</span><span class="p">:</span>
+            <span class="n">news</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">company</span><span class="o">.</span><span class="n">tick</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">party</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parties</span><span class="p">:</span>
+            <span class="n">news</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">party</span><span class="o">.</span><span class="n">tick</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_date</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_election</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next_election</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_round</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">election</span><span class="p">()</span>
+            <span class="n">news</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> just got elected as the major party!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_party</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_government_budget</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_date</span><span class="o">.</span><span class="n">weekday</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1">#weather only updates on wednesdays</span>
+            <span class="n">news</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_weather</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_tick</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_date</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_day</span>
+        <span class="k">return</span> <span class="n">news</span></div>
+
+<div class="viewcode-block" id="Simulation.update_government_budget"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Simulation.update_government_budget">[docs]</a>    <span class="k">def</span> <span class="nf">update_government_budget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the government budget by inning taxes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">government_income</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">energy_consumed</span> <span class="o">*</span> <span class="n">agent</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">taxes</span>
+                                     <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">government_budget</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">government_income</span></div>
+
+<div class="viewcode-block" id="Simulation.update_weather"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Simulation.update_weather">[docs]</a>    <span class="k">def</span> <span class="nf">update_weather</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Update the weather in the simulation.&quot;</span>
+        <span class="n">news</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">weather</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_types</span><span class="p">:</span>
+            <span class="n">etype</span><span class="o">.</span><span class="n">failing</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">prob</span> <span class="o">=</span> <span class="n">randrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">prob</span> <span class="o">&gt;</span> <span class="n">etype</span><span class="o">.</span><span class="n">reliability</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_season</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span> <span class="c1"># This type will fail</span>
+                <span class="n">tmp_weather</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="n">etype</span><span class="o">.</span><span class="n">failure_weather</span><span class="p">)</span>
+                <span class="n">weather</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_weather</span><span class="p">)</span>
+                <span class="n">etype</span><span class="o">.</span><span class="n">failing</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">news</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;The weather is </span><span class="si">{weather}</span><span class="s2">! </span><span class="si">{type}</span><span class="s2"> power will not work tomorrow&quot;</span>\
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weather</span><span class="o">=</span><span class="n">tmp_weather</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weather</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weather</span> <span class="o">=</span> <span class="s2">&quot;sunny&quot;</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">weather</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weather</span> <span class="o">=</span> <span class="n">weather</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">weather</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weather</span> <span class="o">=</span> <span class="s1">&#39; and &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weather</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weather</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weather</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;, and &#39;</span> <span class="o">+</span> <span class="n">weather</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">news</span></div>
+
+<div class="viewcode-block" id="Simulation.poll"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Simulation.poll">[docs]</a>    <span class="k">def</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Poll the population and return the results of the poll.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">voters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">non_voters</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">party</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parties</span><span class="p">:</span>
+            <span class="n">voters</span><span class="p">[</span><span class="n">party</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">n_of</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">choose_best_party</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">party</span><span class="p">:</span>
+                <span class="n">voters</span><span class="p">[</span><span class="n">agent</span><span class="o">.</span><span class="n">party</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">non_voters</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">votes</span> <span class="o">=</span> <span class="n">voters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_voters</span> <span class="o">=</span> <span class="n">non_voters</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">voters</span><span class="p">,</span> <span class="n">non_voters</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Simulation.election"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Simulation.election">[docs]</a>    <span class="k">def</span> <span class="nf">election</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Hold an election and put the party with most voters in power.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">votes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">non_voters</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">party</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parties</span><span class="p">:</span>
+            <span class="n">votes</span><span class="p">[</span><span class="n">party</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">choose_best_party</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">party</span><span class="p">:</span>
+                <span class="n">votes</span><span class="p">[</span><span class="n">agent</span><span class="o">.</span><span class="n">party</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">non_voters</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_party</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parties</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">votes</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">votes</span> <span class="o">=</span> <span class="n">votes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_voters</span> <span class="o">=</span> <span class="n">non_voters</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_government_income</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">government_income</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_government_budget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">government_budget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_greenness</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">greenness</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">votes</span><span class="p">,</span> <span class="n">non_voters</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Season"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Season">[docs]</a><span class="k">class</span> <span class="nc">Season</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This class represents a single season for use within the game.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">current_date</span><span class="p">):</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="s2">&quot;%B </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">current_date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">start_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">start_date</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">current_date</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">current_date</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">start_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">start_date</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Make a nice string format of the season&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Season </span><span class="si">{name}</span><span class="s2"> starts on </span><span class="si">{date}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Season.should_trigger"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Season.should_trigger">[docs]</a>    <span class="k">def</span> <span class="nf">should_trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_date</span><span class="p">):</span>
+        <span class="s2">&quot;Returns if this next season should start&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">&lt;=</span> <span class="n">current_date</span></div>
+
+<div class="viewcode-block" id="Season.trigger"><a class="viewcode-back" href="../../../etg.simulation.simulation.html#etg.simulation.simulation.Season.trigger">[docs]</a>    <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_date</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
+        <span class="s2">&quot;Activate this new season if applicable.&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_trigger</span><span class="p">(</span><span class="n">current_date</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">simulation</span><span class="o">.</span><span class="n">current_season</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">month</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="o">.</span><span class="n">month</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="o">.</span><span class="n">day</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

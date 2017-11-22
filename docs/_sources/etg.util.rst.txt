@@ -1,0 +1,19 @@
+etg.util package
+================
+
+.. automodule:: etg.util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   etg.util.agentset
+   etg.util.dict
+   etg.util.json
+   etg.util.math
+   etg.util.proxylock
+

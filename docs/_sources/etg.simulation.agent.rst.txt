@@ -1,0 +1,7 @@
+etg.simulation.agent module
+===========================
+
+.. automodule:: etg.simulation.agent
+    :members:
+    :undoc-members:
+    :show-inheritance:

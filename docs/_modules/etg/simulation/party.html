@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.simulation.party &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for etg.simulation.party</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">All the classes and methods having to do with the political parties in the game.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">.entity</span> <span class="k">import</span> <span class="n">Entity</span>
+
+<div class="viewcode-block" id="Party"><a class="viewcode-back" href="../../../etg.simulation.party.html#etg.simulation.party.Party">[docs]</a><span class="k">class</span> <span class="nc">Party</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to represent the parties in the simulation. It contains</span>
+<span class="sd">    information about the state of the party (funds, policies, voters,</span>
+<span class="sd">    etc) and methods for updating the party and validating user input. The</span>
+<span class="sd">    parties are created when a player joins, and should not be created</span>
+<span class="sd">    manually.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Party</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">money</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;starting_money&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">taxes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">energy_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">energy_type</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">campaign_cost</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;campaign_cost&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_campaign</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">current_tick</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">voters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All the voters for this party, as an :class:`~etg.util.agentset.AgentSet`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">party</span> <span class="o">==</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">percentage_voters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The percentage of the population that would vote for this party in the last poll, as a</span>
+<span class="sd">        percentage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">votes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> \
+                <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">votes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">votes</span><span class="p">)</span> <span class="o">+</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">non_voters</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">greenness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The greenness of the policies of this party.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total_taxes</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">taxes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total_taxes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">total_taxes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">etype</span><span class="o">.</span><span class="n">greenness</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">/</span> <span class="n">total_taxes</span>
+                   <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">safety</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The safeness of the policies of this party.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total_taxes</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">taxes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total_taxes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">total_taxes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">etype</span><span class="o">.</span><span class="n">safety</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">/</span> <span class="n">total_taxes</span>
+                   <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">campaign_reach</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;What percentage of the population is affected by the campaigns of this party.&quot;</span>
+        <span class="k">return</span> <span class="mi">83</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_campaign</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">current_tick</span><span class="p">)</span><span class="o">/</span><span class="mi">30</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Party.campaign"><a class="viewcode-back" href="../../../etg.simulation.party.html#etg.simulation.party.Party.campaign">[docs]</a>    <span class="k">def</span> <span class="nf">campaign</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The party can campaign in order to get more voters to vote for them. It then does need the</span>
+<span class="sd">        required amount of money before it can start.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">money</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">campaign_cost</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">money</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">campaign_cost</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_campaign</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">current_tick</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Not enough money&quot;</span></div>
+
+<div class="viewcode-block" id="Party.receive_donation"><a class="viewcode-back" href="../../../etg.simulation.party.html#etg.simulation.party.Party.receive_donation">[docs]</a>    <span class="k">def</span> <span class="nf">receive_donation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The party received a donation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">money</span> <span class="o">+=</span> <span class="n">amount</span></div>
+
+<div class="viewcode-block" id="Party.tick"><a class="viewcode-back" href="../../../etg.simulation.party.html#etg.simulation.party.Party.tick">[docs]</a>    <span class="k">def</span> <span class="nf">tick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        In a turn, the party campaigns to get more voters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">news</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">percentage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">campaign_reach</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">n_of</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">percentage</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="p">))):</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">need_green</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">need_green</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">greenness</span> <span class="o">*</span> <span class="mf">0.10</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">need_safety</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">need_safety</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">safety</span> <span class="o">*</span> <span class="mf">0.10</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
+        <span class="k">return</span> <span class="n">news</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

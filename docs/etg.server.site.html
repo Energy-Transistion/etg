@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.server.site module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg.server.telnet module" href="etg.server.telnet.html" />
+    <link rel="prev" title="etg.server.session module" href="etg.server.session.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.server.telnet.html" title="etg.server.telnet module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="etg.server.session.html" title="etg.server.session module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.server.html" accesskey="U">etg.server package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-etg.server.site">
+<span id="etg-server-site-module"></span><h1>etg.server.site module<a class="headerlink" href="#module-etg.server.site" title="Permalink to this headline">¶</a></h1>
+<p>The code for generating the site.</p>
+<dl class="class">
+<dt id="etg.server.site.AdminResource">
+<em class="property">class </em><code class="descclassname">etg.server.site.</code><code class="descname">AdminResource</code><span class="sig-paren">(</span><em>service</em>, <em>env</em>, <em>template_name='admin'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#AdminResource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.AdminResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">twisted.web.resource.Resource</span></code></p>
+<p>A resource to render the Admin panel with start/stop buttons.</p>
+<dl class="attribute">
+<dt id="etg.server.site.AdminResource.isLeaf">
+<code class="descname">isLeaf</code><em class="property"> = True</em><a class="headerlink" href="#etg.server.site.AdminResource.isLeaf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.AdminResource.render_GET">
+<code class="descname">render_GET</code><span class="sig-paren">(</span><em>_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#AdminResource.render_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.AdminResource.render_GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the actual Admin Interface.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.site.CompanyCreationResource">
+<em class="property">class </em><code class="descclassname">etg.server.site.</code><code class="descname">CompanyCreationResource</code><span class="sig-paren">(</span><em>service</em>, <em>env</em>, <em>template_name='create_company'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#CompanyCreationResource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.CompanyCreationResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">twisted.web.resource.Resource</span></code></p>
+<p>This class is responsible for giving the players a way to create a new company.</p>
+<dl class="attribute">
+<dt id="etg.server.site.CompanyCreationResource.isLeaf">
+<code class="descname">isLeaf</code><em class="property"> = True</em><a class="headerlink" href="#etg.server.site.CompanyCreationResource.isLeaf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.CompanyCreationResource.render_GET">
+<code class="descname">render_GET</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#CompanyCreationResource.render_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.CompanyCreationResource.render_GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a random company and then presents it to the player.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.site.CompanyResource">
+<em class="property">class </em><code class="descclassname">etg.server.site.</code><code class="descname">CompanyResource</code><span class="sig-paren">(</span><em>service</em>, <em>env</em>, <em>template_name='company'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#CompanyResource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.CompanyResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">twisted.web.resource.Resource</span></code></p>
+<p>The class that builds the company interface.</p>
+<dl class="attribute">
+<dt id="etg.server.site.CompanyResource.isLeaf">
+<code class="descname">isLeaf</code><em class="property"> = True</em><a class="headerlink" href="#etg.server.site.CompanyResource.isLeaf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.CompanyResource.render_GET">
+<code class="descname">render_GET</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#CompanyResource.render_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.CompanyResource.render_GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the page for a party based on the session information from the request.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.CompanyResource.render_POST">
+<code class="descname">render_POST</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#CompanyResource.render_POST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.CompanyResource.render_POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the page after a post request, so we got a new name for the company.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.CompanyResource.render_interface">
+<code class="descname">render_interface</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#CompanyResource.render_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.CompanyResource.render_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the party interface.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.site.ETGSite">
+<em class="property">class </em><code class="descclassname">etg.server.site.</code><code class="descname">ETGSite</code><span class="sig-paren">(</span><em>options</em>, <em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#ETGSite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.ETGSite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">twisted.web.resource.Resource</span></code></p>
+<p>The class resposible for grabbing the correct pages from a resource.</p>
+<dl class="method">
+<dt id="etg.server.site.ETGSite.getChild">
+<code class="descname">getChild</code><span class="sig-paren">(</span><em>path</em>, <em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#ETGSite.getChild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.ETGSite.getChild" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.ETGSite.render_GET">
+<code class="descname">render_GET</code><span class="sig-paren">(</span><em>_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#ETGSite.render_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.ETGSite.render_GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the index page without keeping up the server.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.site.PartyCreationResource">
+<em class="property">class </em><code class="descclassname">etg.server.site.</code><code class="descname">PartyCreationResource</code><span class="sig-paren">(</span><em>service</em>, <em>env</em>, <em>template_name='create_party'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#PartyCreationResource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.PartyCreationResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">twisted.web.resource.Resource</span></code></p>
+<p>This class is responsible for creating the Parties from the webinterface and then redirecting
+the players to the party interface.</p>
+<dl class="attribute">
+<dt id="etg.server.site.PartyCreationResource.isLeaf">
+<code class="descname">isLeaf</code><em class="property"> = True</em><a class="headerlink" href="#etg.server.site.PartyCreationResource.isLeaf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.PartyCreationResource.render_GET">
+<code class="descname">render_GET</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#PartyCreationResource.render_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.PartyCreationResource.render_GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a page to show if we do not yet have all the necessary information for this party.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.site.PartyResource">
+<em class="property">class </em><code class="descclassname">etg.server.site.</code><code class="descname">PartyResource</code><span class="sig-paren">(</span><em>service</em>, <em>env</em>, <em>template_name='party'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#PartyResource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.PartyResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">twisted.web.resource.Resource</span></code></p>
+<p>The class that builds the party interface.</p>
+<dl class="attribute">
+<dt id="etg.server.site.PartyResource.isLeaf">
+<code class="descname">isLeaf</code><em class="property"> = True</em><a class="headerlink" href="#etg.server.site.PartyResource.isLeaf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.PartyResource.render_GET">
+<code class="descname">render_GET</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#PartyResource.render_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.PartyResource.render_GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the page for a party based on the session information from the request.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.PartyResource.render_POST">
+<code class="descname">render_POST</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#PartyResource.render_POST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.PartyResource.render_POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the page after a post request, so we got a new name for the party.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.site.PartyResource.render_interface">
+<code class="descname">render_interface</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/site.html#PartyResource.render_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.site.PartyResource.render_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the party interface.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="etg.server.session.html"
+                        title="previous chapter">etg.server.session module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.server.telnet.html"
+                        title="next chapter">etg.server.telnet module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/etg.server.site.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.server.telnet.html" title="etg.server.telnet module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="etg.server.session.html" title="etg.server.session module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.server.html" >etg.server package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

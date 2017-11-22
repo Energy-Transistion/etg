@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.server.handler module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg.server.protocol module" href="etg.server.protocol.html" />
+    <link rel="prev" title="etg.server package" href="etg.server.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.server.protocol.html" title="etg.server.protocol module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="etg.server.html" title="etg.server package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.server.html" accesskey="U">etg.server package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-etg.server.handler">
+<span id="etg-server-handler-module"></span><h1>etg.server.handler module<a class="headerlink" href="#module-etg.server.handler" title="Permalink to this headline">¶</a></h1>
+<p>This module contains all the code that is necessary to facilitate the updating
+of the simulation and other objects from the interface, and also for sending
+information back to the interface.</p>
+<dl class="class">
+<dt id="etg.server.handler.Attribute">
+<em class="property">class </em><code class="descclassname">etg.server.handler.</code><code class="descname">Attribute</code><span class="sig-paren">(</span><em>attr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#Attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.Attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class to represent one attribute on an object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attr</strong> &#8211; The attribute to get.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="etg.server.handler.Attribute.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#Attribute.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.Attribute.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value represented by this Attribute from an object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.server.handler.Attribute.key">
+<code class="descname">key</code><a class="headerlink" href="#etg.server.handler.Attribute.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>The property that this attribute is getting, so under which name it should be stored.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.handler.Attribute.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>obj</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#Attribute.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.Attribute.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value represetned by this attribute on an object to <cite>value</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.handler.DictAttribute">
+<em class="property">class </em><code class="descclassname">etg.server.handler.</code><code class="descname">DictAttribute</code><span class="sig-paren">(</span><em>attr</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#DictAttribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.DictAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#etg.server.handler.Attribute" title="etg.server.handler.Attribute"><code class="xref py py-class docutils literal"><span class="pre">etg.server.handler.Attribute</span></code></a></p>
+<p>A class to represent an attribute that we want for all elements of a dictionary.</p>
+<dl class="method">
+<dt id="etg.server.handler.DictAttribute.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#DictAttribute.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.DictAttribute.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.handler.DictAttribute.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>obj</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#DictAttribute.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.DictAttribute.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.handler.Handler">
+<em class="property">class </em><code class="descclassname">etg.server.handler.</code><code class="descname">Handler</code><span class="sig-paren">(</span><em>simulation</em>, <em>wrapee</em>, <em>view_simulation</em>, <em>view_wrapee</em>, <em>control_wrapee</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#Handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.Handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The <cite>Handler</cite> class makes sure that all the messages it recieves properly
+update the correspoding values in the wrapee and the simulation, in a
+threadsafe manner. It also gives convience methods for collection
+information that needs to be delivered to the interface.</p>
+<p>A new <cite>Handler</cite> has the following attributes:</p>
+<dl class="attribute">
+<dt id="etg.server.handler.Handler.simulation">
+<code class="descname">simulation</code><a class="headerlink" href="#etg.server.handler.Handler.simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>The simulation that the communication is about, as a
+<a class="reference internal" href="etg.util.proxylock.html#etg.util.proxylock.ProxyLock" title="etg.util.proxylock.ProxyLock"><code class="xref py py-class docutils literal"><span class="pre">etg.util.proxylock.ProxyLock</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.server.handler.Handler.wrapee">
+<code class="descname">wrapee</code><a class="headerlink" href="#etg.server.handler.Handler.wrapee" title="Permalink to this definition">¶</a></dt>
+<dd><p>The object that needs updating from this simulation, as a
+<a class="reference internal" href="etg.util.proxylock.html#etg.util.proxylock.ProxyLock" title="etg.util.proxylock.ProxyLock"><code class="xref py py-class docutils literal"><span class="pre">etg.util.proxylock.ProxyLock</span></code></a></p>
+</dd></dl>
+
+<p>To create a new handler, the simulation and the wrapee need to be
+specified. The initializer also needs a list with attributes that can
+be viewed on the simulation and the wrapee.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>simulation</strong> (<a class="reference internal" href="etg.util.proxylock.html#etg.util.proxylock.ProxyLock" title="etg.util.proxylock.ProxyLock"><em>ProxyLock</em></a>) &#8211; A ProxyLock for the simulation</li>
+<li><strong>wrapee</strong> (<a class="reference internal" href="etg.util.proxylock.html#etg.util.proxylock.ProxyLock" title="etg.util.proxylock.ProxyLock"><em>ProxyLock</em></a>) &#8211; A ProxyLock for the object to wrap over</li>
+<li><strong>view_simulation</strong> (<em>list</em>) &#8211; A list of attributes that are viewable on the simulation</li>
+<li><strong>view_wrapee</strong> (<em>list</em>) &#8211; A list of attributes that are viewable on the wrapee</li>
+<li><strong>control_wrapee</strong> (<em>list</em>) &#8211; A list with attributes that can be set on the wrapee</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="etg.server.handler.Handler.prepare_packet">
+<code class="descname">prepare_packet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#Handler.prepare_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.Handler.prepare_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect the values that the server needs to send to the client.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">All the values that have changed since the last call to this         function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.handler.Handler.process_packet">
+<code class="descname">process_packet</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#Handler.process_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.Handler.process_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the wrapee with all the values in the packet, if those values are controllable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>packet</strong> (<a class="reference internal" href="etg.util.dict.html#module-etg.util.dict" title="etg.util.dict"><em>dict</em></a>) &#8211; The values that need updating as a dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.handler.ListAttribute">
+<em class="property">class </em><code class="descclassname">etg.server.handler.</code><code class="descname">ListAttribute</code><span class="sig-paren">(</span><em>attr</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#ListAttribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.ListAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#etg.server.handler.Attribute" title="etg.server.handler.Attribute"><code class="xref py py-class docutils literal"><span class="pre">etg.server.handler.Attribute</span></code></a></p>
+<p>A class to represent an attribute that we want for all elements of a list.</p>
+<dl class="method">
+<dt id="etg.server.handler.ListAttribute.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#ListAttribute.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.ListAttribute.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.handler.ListAttribute.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>obj</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#ListAttribute.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.ListAttribute.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.handler.MultiAttribute">
+<em class="property">class </em><code class="descclassname">etg.server.handler.</code><code class="descname">MultiAttribute</code><span class="sig-paren">(</span><em>*attrs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#MultiAttribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.MultiAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#etg.server.handler.Attribute" title="etg.server.handler.Attribute"><code class="xref py py-class docutils literal"><span class="pre">etg.server.handler.Attribute</span></code></a></p>
+<p>Get multiple values from one object.</p>
+<dl class="method">
+<dt id="etg.server.handler.MultiAttribute.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#MultiAttribute.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.MultiAttribute.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.handler.MultiAttribute.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>obj</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#MultiAttribute.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.MultiAttribute.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.server.handler.ObjectAttribute">
+<em class="property">class </em><code class="descclassname">etg.server.handler.</code><code class="descname">ObjectAttribute</code><span class="sig-paren">(</span><em>attr</em>, <em>*attrs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#ObjectAttribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.ObjectAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#etg.server.handler.Attribute" title="etg.server.handler.Attribute"><code class="xref py py-class docutils literal"><span class="pre">etg.server.handler.Attribute</span></code></a></p>
+<p>A class to represent an object from which we want multiple variables.</p>
+<dl class="method">
+<dt id="etg.server.handler.ObjectAttribute.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#ObjectAttribute.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.ObjectAttribute.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.handler.ObjectAttribute.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>obj</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/handler.html#ObjectAttribute.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.handler.ObjectAttribute.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="etg.server.html"
+                        title="previous chapter">etg.server package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.server.protocol.html"
+                        title="next chapter">etg.server.protocol module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/etg.server.handler.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.server.protocol.html" title="etg.server.protocol module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="etg.server.html" title="etg.server package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.server.html" >etg.server package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

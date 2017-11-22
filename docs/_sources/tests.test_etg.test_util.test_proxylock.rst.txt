@@ -1,0 +1,7 @@
+tests.test_etg.test_util.test_proxylock module
+==============================================
+
+.. automodule:: tests.test_etg.test_util.test_proxylock
+    :members:
+    :undoc-members:
+    :show-inheritance:

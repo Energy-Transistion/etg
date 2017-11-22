@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.server.resources module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg.server.server module" href="etg.server.server.html" />
+    <link rel="prev" title="etg.server.protocol module" href="etg.server.protocol.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.server.server.html" title="etg.server.server module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="etg.server.protocol.html" title="etg.server.protocol module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.server.html" accesskey="U">etg.server package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-etg.server.resources">
+<span id="etg-server-resources-module"></span><h1>etg.server.resources module<a class="headerlink" href="#module-etg.server.resources" title="Permalink to this headline">¶</a></h1>
+<p>This module handles all the generation of the wegpages based on Jinja2 templates.</p>
+<dl class="class">
+<dt id="etg.server.resources.Assets">
+<em class="property">class </em><code class="descclassname">etg.server.resources.</code><code class="descname">Assets</code><span class="sig-paren">(</span><em>path='.'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/resources.html#Assets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.resources.Assets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class to generate all the assets in a common directory that is automatically generated each
+time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; The path where the assets should be generated, if necessary. Defaults to the</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="etg.server.resources.Assets.path">
+<code class="descname">path</code><a class="headerlink" href="#etg.server.resources.Assets.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path where the assets are generated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.resources.Assets.get_javascript_resource">
+<code class="descname">get_javascript_resource</code><span class="sig-paren">(</span><em>js_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/resources.html#Assets.get_javascript_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.resources.Assets.get_javascript_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function to create a resource that allows access to the javascript files. Takes the path
+to a directory with javascript files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.resources.Assets.get_static_html">
+<code class="descname">get_static_html</code><span class="sig-paren">(</span><em>templates</em>, <em>text_dir</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/resources.html#Assets.get_static_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.resources.Assets.get_static_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function to create a resource that allows access to the static html files. Takes the path
+to a template and a YAML file with values that should go into this template. The files in
+the returned resource have the same name as the files in text_dir, but with extension
+&#8216;.html&#8217;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>template</strong> &#8211; The template that the text should be rendered in. It can take any number of
+arguments.</li>
+<li><strong>text_dir</strong> &#8211; A folder of YAML files that give the information that the template needs.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.resources.Assets.get_styles_resource">
+<code class="descname">get_styles_resource</code><span class="sig-paren">(</span><em>style_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/resources.html#Assets.get_styles_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.resources.Assets.get_styles_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function to create a resource that allows acces to the styles. Takes the path to a
+directory with style files as either scss or css.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="etg.server.resources.get_yaml_frontmatter">
+<code class="descclassname">etg.server.resources.</code><code class="descname">get_yaml_frontmatter</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/resources.html#get_yaml_frontmatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.resources.get_yaml_frontmatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the yaml front matter and the contents of the given file-like object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="etg.server.resources.render_file">
+<code class="descclassname">etg.server.resources.</code><code class="descname">render_file</code><span class="sig-paren">(</span><em>file</em>, <em>templates</em>, <em>fall_back_template</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/resources.html#render_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.resources.render_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a given file-like object in the corresponding template. All the extra options are passed
+on to the template as well.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file</strong> &#8211; The file to render.</li>
+<li><strong>templates</strong> &#8211; The Jinja2 environment to get the template from.</li>
+<li><strong>fall_back_template</strong> &#8211; The name of the template to use if no template is specified in the
+file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="etg.server.protocol.html"
+                        title="previous chapter">etg.server.protocol module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.server.server.html"
+                        title="next chapter">etg.server.server module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/etg.server.resources.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.server.server.html" title="etg.server.server module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="etg.server.protocol.html" title="etg.server.protocol module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.server.html" >etg.server package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

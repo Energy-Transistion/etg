@@ -1,0 +1,7 @@
+etg.simulation.party module
+===========================
+
+.. automodule:: etg.simulation.party
+    :members:
+    :undoc-members:
+    :show-inheritance:

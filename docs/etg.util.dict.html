@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.util.dict module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg.util.json module" href="etg.util.json.html" />
+    <link rel="prev" title="etg.util.agentset module" href="etg.util.agentset.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.util.json.html" title="etg.util.json module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="etg.util.agentset.html" title="etg.util.agentset module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.util.html" accesskey="U">etg.util package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-etg.util.dict">
+<span id="etg-util-dict-module"></span><h1>etg.util.dict module<a class="headerlink" href="#module-etg.util.dict" title="Permalink to this headline">¶</a></h1>
+<p>A set of utility functions for working with dictionaries</p>
+<dl class="function">
+<dt id="etg.util.dict.difference">
+<code class="descclassname">etg.util.dict.</code><code class="descname">difference</code><span class="sig-paren">(</span><em>first</em>, <em>other</em>, <em>epsilon=0.005</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/util/dict.html#difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.util.dict.difference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the difference between two dictionaries. The difference is
+defined as all the values for the keys that are in both <code class="docutils literal"><span class="pre">dict</span></code> and
+<code class="docutils literal"><span class="pre">other</span></code> which differ. For floating point numbers, the value <code class="docutils literal"><span class="pre">epsilon</span></code>
+is used to define difference, so two floating point values are seen as
+different if their difference is larger than <code class="docutils literal"><span class="pre">epsilon</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>first</strong> (<a class="reference internal" href="#module-etg.util.dict" title="etg.util.dict"><em>dict</em></a>) &#8211; The first dictionary to calculate the difference for.</li>
+<li><strong>other</strong> (<a class="reference internal" href="#module-etg.util.dict" title="etg.util.dict"><em>dict</em></a>) &#8211; The other dictionary to calculate the difference for.</li>
+<li><strong>epsilon</strong> (<em>float</em>) &#8211; The smallest difference between two floating point     numbers that we differentiate between</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary where each key is a value where <code class="docutils literal"><span class="pre">dict</span></code> and <code class="docutils literal"><span class="pre">other</span></code>     differ and each value is the value from <code class="docutils literal"><span class="pre">other</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#module-etg.util.dict" title="etg.util.dict">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="etg.util.dict.merge">
+<code class="descclassname">etg.util.dict.</code><code class="descname">merge</code><span class="sig-paren">(</span><em>one</em>, <em>two</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/util/dict.html#merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.util.dict.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge two dictionaries with dictionaries in them. Keys that occur in both are taken from the
+second argument.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="etg.util.agentset.html"
+                        title="previous chapter">etg.util.agentset module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.util.json.html"
+                        title="next chapter">etg.util.json module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/etg.util.dict.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.util.json.html" title="etg.util.json module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="etg.util.agentset.html" title="etg.util.agentset module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.util.html" >etg.util package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

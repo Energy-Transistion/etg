@@ -1,0 +1,20 @@
+etg.simulation package
+======================
+
+.. automodule:: etg.simulation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   etg.simulation.agent
+   etg.simulation.company
+   etg.simulation.energy
+   etg.simulation.entity
+   etg.simulation.party
+   etg.simulation.simulation
+

@@ -1,0 +1,7 @@
+etg.simulation.energy module
+============================
+
+.. automodule:: etg.simulation.energy
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tests.test_etg.test_util.test_proxylock module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="tests.test_etg.test_util.test_dict module" href="tests.test_etg.test_util.test_dict.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tests.test_etg.test_util.test_dict.html" title="tests.test_etg.test_util.test_dict module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tests.html" >tests package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="tests.test_etg.html" >tests.test_etg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="tests.test_etg.test_util.html" accesskey="U">tests.test_etg.test_util package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-tests.test_etg.test_util.test_proxylock">
+<span id="tests-test-etg-test-util-test-proxylock-module"></span><h1>tests.test_etg.test_util.test_proxylock module<a class="headerlink" href="#module-tests.test_etg.test_util.test_proxylock" title="Permalink to this headline">¶</a></h1>
+<p>Test to make sure that the proxylock works as it should.</p>
+<dl class="class">
+<dt id="tests.test_etg.test_util.test_proxylock.Foo">
+<em class="property">class </em><code class="descclassname">tests.test_etg.test_util.test_proxylock.</code><code class="descname">Foo</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_util/test_proxylock.html#Foo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_util.test_proxylock.Foo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A quick class for testing the ProxyLock</p>
+<dl class="method">
+<dt id="tests.test_etg.test_util.test_proxylock.Foo.foobar">
+<code class="descname">foobar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_util/test_proxylock.html#Foo.foobar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_util.test_proxylock.Foo.foobar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tests.test_etg.test_util.test_proxylock.ProxyTestCase">
+<em class="property">class </em><code class="descclassname">tests.test_etg.test_util.test_proxylock.</code><code class="descname">ProxyTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_util/test_proxylock.html#ProxyTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_util.test_proxylock.ProxyTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">twisted.trial._asynctest.TestCase</span></code></p>
+<p>Testing functions for the proxy lock.</p>
+<p>Construct an asynchronous test case for C{methodName}.</p>
+<p>&#64;param methodName: The name of a method on C{self}. This method should
+be a unit test. That is, it should be a short method that calls some of
+the assert* methods. If C{methodName} is unspecified,
+L{SynchronousTestCase.runTest} will be used as the test method. This is
+mostly useful for testing Trial.</p>
+<dl class="method">
+<dt id="tests.test_etg.test_util.test_proxylock.ProxyTestCase.test_context_manager">
+<code class="descname">test_context_manager</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_util/test_proxylock.html#ProxyTestCase.test_context_manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_util.test_proxylock.ProxyTestCase.test_context_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if the proxy works properly as a context manager</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tests.test_etg.test_util.test_proxylock.ProxyTestCase.test_proxy">
+<code class="descname">test_proxy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_util/test_proxylock.html#ProxyTestCase.test_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_util.test_proxylock.ProxyTestCase.test_proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if the proxy allows acces to values, but does not allow us to set them</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tests.test_etg.test_util.test_dict.html"
+                        title="previous chapter">tests.test_etg.test_util.test_dict module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tests.test_etg.test_util.test_proxylock.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tests.test_etg.test_util.test_dict.html" title="tests.test_etg.test_util.test_dict module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tests.html" >tests package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="tests.test_etg.html" >tests.test_etg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="tests.test_etg.test_util.html" >tests.test_etg.test_util package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+etg.simulation.entity module
+============================
+
+.. automodule:: etg.simulation.entity
+    :members:
+    :undoc-members:
+    :show-inheritance:

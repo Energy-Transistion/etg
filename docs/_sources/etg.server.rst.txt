@@ -1,0 +1,22 @@
+etg.server package
+==================
+
+.. automodule:: etg.server
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   etg.server.handler
+   etg.server.protocol
+   etg.server.resources
+   etg.server.server
+   etg.server.session
+   etg.server.site
+   etg.server.telnet
+   etg.server.websocket
+

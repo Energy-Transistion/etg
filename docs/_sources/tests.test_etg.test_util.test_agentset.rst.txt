@@ -1,0 +1,7 @@
+tests.test_etg.test_util.test_agentset module
+=============================================
+
+.. automodule:: tests.test_etg.test_util.test_agentset
+    :members:
+    :undoc-members:
+    :show-inheritance:

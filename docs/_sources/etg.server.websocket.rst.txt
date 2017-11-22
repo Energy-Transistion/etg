@@ -1,0 +1,7 @@
+etg.server.websocket module
+===========================
+
+.. automodule:: etg.server.websocket
+    :members:
+    :undoc-members:
+    :show-inheritance:

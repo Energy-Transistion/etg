@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.server.protocol &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for etg.server.protocol</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module implements the Protocol that is used by the server to communicate with the clients. This</span>
+<span class="sd">code is independent of the actual networking code, so it can be used by multiple types of</span>
+<span class="sd">connections.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">twisted.logger</span> <span class="k">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">etg.util.proxylock</span> <span class="k">import</span> <span class="n">ProxyLock</span>
+<span class="kn">from</span> <span class="nn">.handler</span> <span class="k">import</span> <span class="p">(</span><span class="n">Handler</span><span class="p">,</span> <span class="n">Attribute</span><span class="p">,</span> <span class="n">ObjectAttribute</span><span class="p">,</span> <span class="n">ListAttribute</span><span class="p">,</span>
+                      <span class="n">MultiAttribute</span><span class="p">,</span> <span class="n">DictAttribute</span><span class="p">)</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ETGProtocol"><a class="viewcode-back" href="../../../etg.server.protocol.html#etg.server.protocol.ETGProtocol">[docs]</a><span class="k">class</span> <span class="nc">ETGProtocol</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The actual protocol class. Every new connection should create one of these to handle all the</span>
+<span class="sd">    communication logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">party_watchers</span> <span class="o">=</span> <span class="p">([</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;current_date&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;days_until_election&quot;</span><span class="p">),</span>
+                       <span class="n">ObjectAttribute</span><span class="p">(</span><span class="s2">&quot;active_party&quot;</span><span class="p">,</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)),</span>
+                       <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;government_budget&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;change_government_budget&quot;</span><span class="p">),</span>
+                       <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;government_income&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;change_government_income&quot;</span><span class="p">),</span>
+                       <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;total_production&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;total_demand&quot;</span><span class="p">),</span>
+                       <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;greenness&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;change_greenness&quot;</span><span class="p">),</span>
+                       <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;non_voters&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;weather&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;approval_rate&quot;</span><span class="p">),</span>
+                       <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;energy_types&quot;</span><span class="p">,</span>
+                                     <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;raw_price&quot;</span><span class="p">),</span>
+                                                    <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;percentage_use&quot;</span><span class="p">),</span>
+                                                    <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">))),</span>
+                       <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;parties&quot;</span><span class="p">,</span> <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+                                                               <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">),</span>
+                                                               <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;percentage_voters&quot;</span><span class="p">))),</span>
+                       <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;companies&quot;</span><span class="p">,</span> <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)))],</span>
+                      <span class="p">[</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;money&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;campaign_cost&quot;</span><span class="p">),</span>
+                       <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;campaign_reach&quot;</span><span class="p">)],</span>
+                      <span class="p">[</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;taxes&quot;</span><span class="p">)])</span>
+
+    <span class="n">company_watchers</span> <span class="o">=</span> <span class="p">([</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;current_date&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;days_until_election&quot;</span><span class="p">),</span>
+                         <span class="n">ObjectAttribute</span><span class="p">(</span><span class="s2">&quot;active_party&quot;</span><span class="p">,</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)),</span>
+                         <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;weather&quot;</span><span class="p">),</span>
+                         <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;parties&quot;</span><span class="p">,</span>
+                                       <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;taxes&quot;</span><span class="p">))),</span>
+                         <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;companies&quot;</span><span class="p">,</span> <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+                                                                   <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;income&quot;</span><span class="p">),</span>
+                                                                   <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">),</span>
+                                                                   <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;market_share&quot;</span><span class="p">),</span>
+                                                                   <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;product_green&quot;</span><span class="p">)))],</span>
+                        <span class="p">[</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;budget&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;income&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">),</span>
+                         <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;demand&quot;</span><span class="p">),</span>
+                         <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;total_output&quot;</span><span class="p">,</span> <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+                                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">),</span>
+                                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">))),</span>
+                         <span class="n">DictAttribute</span><span class="p">(</span><span class="s2">&quot;producers&quot;</span><span class="p">,</span>
+                                       <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;tier&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">),</span>
+                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">),</span>
+                                                      <span class="n">ObjectAttribute</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span>
+                                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;market_price&quot;</span><span class="p">)),</span>
+                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;max_tier&quot;</span><span class="p">),</span>
+                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;upgrade_price&quot;</span><span class="p">),</span>
+                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;next_output&quot;</span><span class="p">),</span>
+                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">),</span>
+                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;next_price&quot;</span><span class="p">),</span>
+                                                      <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;sell_price&quot;</span><span class="p">)))],</span>
+                        <span class="p">[</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;marketing&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;market&quot;</span><span class="p">),</span>
+                         <span class="n">DictAttribute</span><span class="p">(</span><span class="s2">&quot;producers&quot;</span><span class="p">,</span> <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;production_level&quot;</span><span class="p">)))])</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param service: The service parent of this Protocol, most likely an instance of</span>
+<span class="sd">                        :class:`~etg.server.simulation`.</span>
+<span class="sd">        :param simulation: The simulation that this Protocol talks about.</span>
+<span class="sd">        :param connection: The &#39;connection&#39; that reply messages get send over. Needs a `sendMessage`</span>
+<span class="sd">                        method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="n">simulation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="ETGProtocol.on_connection"><a class="viewcode-back" href="../../../etg.server.protocol.html#etg.server.protocol.ETGProtocol.on_connection">[docs]</a>    <span class="k">def</span> <span class="nf">on_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method should be called whenever a new connection is made, and it should then be passed</span>
+<span class="sd">        the name of the client, which the client should send on its first connection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;admin&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;admin&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="p">,</span> <span class="n">ProxyLock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">),</span>
+                                   <span class="p">[</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;weather&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;current_date&quot;</span><span class="p">),</span>
+                                    <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;parties&quot;</span><span class="p">,</span>
+                                                  <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">))),</span>
+                                    <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;companies&quot;</span><span class="p">,</span>
+                                                  <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+                                                                 <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">),</span>
+                                                                 <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;market_share&quot;</span><span class="p">))),</span>
+                                    <span class="n">ListAttribute</span><span class="p">(</span><span class="s2">&quot;energy_types&quot;</span><span class="p">,</span>
+                                                  <span class="n">MultiAttribute</span><span class="p">(</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;percentage_use&quot;</span><span class="p">),</span>
+                                                                 <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+                                                                 <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)))],</span>
+                                   <span class="p">[</span><span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;paused&quot;</span><span class="p">),</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;is_setup&quot;</span><span class="p">)],</span> <span class="p">[])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_packet</span><span class="p">(</span><span class="n">msg_type</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="n">entity_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">parties</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">parties</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parties</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="p">,</span> <span class="n">ProxyLock</span><span class="p">(</span><span class="n">parties</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">party_watchers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">party_watchers</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">party_watchers</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">entity_type</span> <span class="o">=</span> <span class="s1">&#39;party&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">companies</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">companies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="p">,</span> <span class="n">ProxyLock</span><span class="p">(</span><span class="n">companies</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">company_watchers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">company_watchers</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">company_watchers</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">entity_type</span> <span class="o">=</span> <span class="s1">&#39;company&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No company/party with name </span><span class="si">{}</span><span class="s2">!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_packet</span><span class="p">(</span><span class="n">msg_type</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">protocol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">protocols</span><span class="p">:</span>
+            <span class="n">protocol</span><span class="o">.</span><span class="n">send_packet</span><span class="p">()</span>
+            <span class="n">protocol</span><span class="o">.</span><span class="n">send_news</span><span class="p">(</span><span class="s2">&quot;New </span><span class="si">{type}</span><span class="s2"> named </span><span class="si">{name}</span><span class="s2"> created!&quot;</span>\
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ETGProtocol.on_message"><a class="viewcode-back" href="../../../etg.server.protocol.html#etg.server.protocol.ETGProtocol.on_message">[docs]</a>    <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method should be called whenever a message is received. this methods will then make</span>
+<span class="sd">        sure that the message is handled properly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Protocol got message </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;change&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">process_packet</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;packet&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_packet</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;chat&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_chat_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;action&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_action</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unrecognized message type </span><span class="si">{type}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="ETGProtocol.on_chat_message"><a class="viewcode-back" href="../../../etg.server.protocol.html#etg.server.protocol.ETGProtocol.on_chat_message">[docs]</a>    <span class="k">def</span> <span class="nf">on_chat_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This message makes sure that the correct respondent gets the chat message if it is recieved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">chat_all</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">protocols</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">send_chat</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">whisper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">send_chat</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">whisper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Trying to chat player </span><span class="si">{name}</span><span class="s2">, but this player is not found!&quot;</span><span class="p">,</span>
+                         <span class="n">name</span><span class="o">=</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="ETGProtocol.send_chat"><a class="viewcode-back" href="../../../etg.server.protocol.html#etg.server.protocol.ETGProtocol.send_chat">[docs]</a>    <span class="k">def</span> <span class="nf">send_chat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">whisper</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a chat message to this client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">send</span><span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;chat&#39;</span><span class="p">,</span> <span class="s1">&#39;sender&#39;</span><span class="p">:</span> <span class="n">sender</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
+                              <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span> <span class="s1">&#39;whisper&#39;</span><span class="p">:</span> <span class="n">whisper</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="ETGProtocol.on_action"><a class="viewcode-back" href="../../../etg.server.protocol.html#etg.server.protocol.ETGProtocol.on_action">[docs]</a>    <span class="k">def</span> <span class="nf">on_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method deals with new and income information and calls the corresponding method on the</span>
+<span class="sd">        object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">wrapee</span> <span class="k">as</span> <span class="n">wrapee</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Calling </span><span class="si">{method}</span><span class="s2"> on </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">wrapee</span><span class="p">,</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Trying to call a method </span><span class="si">{method}</span><span class="s2"> that does not exsist!&quot;</span><span class="p">,</span>
+                         <span class="n">method</span><span class="o">=</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">return</span>
+            <span class="n">res</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Error while calling </span><span class="si">{method}</span><span class="s2">: </span><span class="si">{msg}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span>
+                     <span class="n">method</span><span class="o">=</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Called method succesfully&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">protocol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">protocols</span><span class="p">:</span>
+                <span class="n">protocol</span><span class="o">.</span><span class="n">send_packet</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">msg</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="n">protocol</span><span class="o">.</span><span class="n">send_news</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ETGProtocol.send_news"><a class="viewcode-back" href="../../../etg.server.protocol.html#etg.server.protocol.ETGProtocol.send_news">[docs]</a>    <span class="k">def</span> <span class="nf">send_news</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a news message to the accompanying client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending news: </span><span class="si">{news}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">news</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">send</span><span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;news&#39;</span><span class="p">,</span> <span class="s1">&#39;news&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">)})</span></div>
+
+<div class="viewcode-block" id="ETGProtocol.send_packet"><a class="viewcode-back" href="../../../etg.server.protocol.html#etg.server.protocol.ETGProtocol.send_packet">[docs]</a>    <span class="k">def</span> <span class="nf">send_packet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg_type</span><span class="o">=</span><span class="s1">&#39;change&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare and send a packet to the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">packet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">prepare_packet</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Preparing to send packet for </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">packet</span> <span class="ow">and</span> <span class="n">packet</span> <span class="o">!=</span> <span class="p">{}:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending packet: </span><span class="si">{packet}</span><span class="s2"> to: </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">packet</span><span class="o">=</span><span class="n">packet</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">send</span><span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">msg_type</span><span class="p">,</span> <span class="s1">&#39;packet&#39;</span><span class="p">:</span> <span class="n">packet</span><span class="p">})</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+tests.test_etg.test_util.test_dict module
+=========================================
+
+.. automodule:: tests.test_etg.test_util.test_dict
+    :members:
+    :undoc-members:
+    :show-inheritance:

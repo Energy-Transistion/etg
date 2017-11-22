@@ -1,0 +1,7 @@
+etg.util.dict module
+====================
+
+.. automodule:: etg.util.dict
+    :members:
+    :undoc-members:
+    :show-inheritance:

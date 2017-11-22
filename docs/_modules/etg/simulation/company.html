@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.simulation.company &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for etg.simulation.company</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">All the classes and methods having to do with the companies in the game.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.entity</span> <span class="k">import</span> <span class="n">Entity</span>
+<span class="kn">from</span> <span class="nn">.energy</span> <span class="k">import</span> <span class="n">Producer</span>
+
+<div class="viewcode-block" id="Company"><a class="viewcode-back" href="../../../etg.simulation.company.html#etg.simulation.company.Company">[docs]</a><span class="k">class</span> <span class="nc">Company</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to represent the companies in the simulation. It contains</span>
+<span class="sd">    information about the state of the company (funds, suppliers, consumers,</span>
+<span class="sd">    etc) and methods for updating the company and validating user input. The</span>
+<span class="sd">    companies are created when a player joins, and should not be created</span>
+<span class="sd">    manually.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Company</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+<div class="viewcode-block" id="Company.set_values"><a class="viewcode-back" href="../../../etg.simulation.company.html#etg.simulation.company.Company.set_values">[docs]</a>    <span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set all the values on this company by coping them from the config dict</span>
+<span class="sd">        from the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;starting_money&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">producers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">(</span><span class="n">etype</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marketing</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rawcost</span> <span class="o">*</span> <span class="mf">1.10</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All the users of this comapny, as an :class:`~etg.util.agentset.AgentSet`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">company</span> <span class="o">==</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">buyers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The number of users of this company.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">demand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;The amount of energy that the consumers of this company require&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">energy_consumed</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">market_share</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;The percentage of the population that buys their energy here.&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">buyers</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">profit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How much profit the company makes each tick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">energy_consumed</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rawcost</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">income</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How much money the company earned this tick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profit</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profit</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">marketing</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profit</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rawcost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How much the product of the company costs the company itself.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">*</span> <span class="n">etype</span><span class="o">.</span><span class="n">market_price</span> <span class="o">+</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span>
+                   <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The output of this company on the current tick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                   <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;The output and market per producer.&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Output</span><span class="p">(</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">etype</span><span class="o">.</span><span class="n">color</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">product_green</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How green the product of this company is.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">etype</span><span class="o">.</span><span class="n">greenness</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">*</span>
+                       <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">product_safety</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How safe the product of this company is.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">etype</span><span class="o">.</span><span class="n">safety</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">*</span>
+                       <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">taxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The amount of taxation that goes over this product, calculated by taking the proportions for</span>
+<span class="sd">        all the energy types in the output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(((</span><span class="mi">100</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">active_party</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">])</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">*</span>
+                       <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="p">[</span><span class="n">etype</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">product_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How much the product from this company costs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">taxes</span>
+
+<div class="viewcode-block" id="Company.donate"><a class="viewcode-back" href="../../../etg.simulation.company.html#etg.simulation.company.Company.donate">[docs]</a>    <span class="k">def</span> <span class="nf">donate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">party_name</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Donate the `amount` to the party with `party_name`. Returns `True` if succesful, `False`</span>
+<span class="sd">        with an error message otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parties</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">party_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">parties</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parties</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;No or multiple parties with name </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">party_name</span><span class="p">)</span>
+        <span class="n">party</span> <span class="o">=</span> <span class="n">parties</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="o">&lt;</span> <span class="n">amount</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Not enough budget&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="o">-=</span> <span class="n">amount</span>
+        <span class="n">party</span><span class="o">.</span><span class="n">money</span> <span class="o">+=</span> <span class="n">amount</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> donated €</span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">party</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Company.upgrade"><a class="viewcode-back" href="../../../etg.simulation.company.html#etg.simulation.company.Company.upgrade">[docs]</a>    <span class="k">def</span> <span class="nf">upgrade</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">producer_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Upgrade the producer with `producer_name`, if the budget for that is available. Return</span>
+<span class="sd">        `True` on success, `False` with an error message otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">producer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">producer_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">producer</span><span class="o">.</span><span class="n">upgrade_price</span><span class="p">:</span> <span class="c1"># Already at highest tier</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Already at highest tier&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="o">&gt;=</span> <span class="n">producer</span><span class="o">.</span><span class="n">upgrade_price</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="o">-=</span> <span class="n">producer</span><span class="o">.</span><span class="n">upgrade_price</span>
+            <span class="n">producer</span><span class="o">.</span><span class="n">upgrade</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Not enough budget&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="Company.sell"><a class="viewcode-back" href="../../../etg.simulation.company.html#etg.simulation.company.Company.sell">[docs]</a>    <span class="k">def</span> <span class="nf">sell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">producer_name</span><span class="p">):</span>
+        <span class="s2">&quot;Sell the producer with `producer_name` for half of the money of the tier that it is at&quot;</span>
+        <span class="n">producer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">producer_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">producer_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Producer</span><span class="p">(</span><span class="n">producer</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">producers</span><span class="p">[</span><span class="n">producer_name</span><span class="p">]</span><span class="o">.</span><span class="n">production_level</span> <span class="o">=</span> <span class="n">producer</span><span class="o">.</span><span class="n">production_level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">producer</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">tier_costs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">producer</span><span class="o">.</span><span class="n">tier</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="Company.tick"><a class="viewcode-back" href="../../../etg.simulation.company.html#etg.simulation.company.Company.tick">[docs]</a>    <span class="k">def</span> <span class="nf">tick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        In a tick, the companies do their marketing, by updating the needs of the agents to mimic</span>
+<span class="sd">        their product.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">news</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">income</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">demand</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">buyer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">:</span>
+                <span class="n">buyer</span><span class="o">.</span><span class="n">days_with_blackout</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profit</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">need_green</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">need_green</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> \
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">product_green</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">marketing</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">need_safety</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">need_safety</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> \
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">product_safety</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">marketing</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
+        <span class="k">return</span> <span class="n">news</span></div></div>
+
+<div class="viewcode-block" id="Output"><a class="viewcode-back" href="../../../etg.simulation.company.html#etg.simulation.company.Output">[docs]</a><span class="k">class</span> <span class="nc">Output</span><span class="p">:</span>
+    <span class="s2">&quot;A class to represent the output of the company in the interface&quot;</span>
+    <span class="c1"># pylint: disable=too-few-public-methods</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

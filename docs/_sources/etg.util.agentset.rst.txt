@@ -1,0 +1,7 @@
+etg.util.agentset module
+========================
+
+.. automodule:: etg.util.agentset
+    :members:
+    :undoc-members:
+    :show-inheritance:

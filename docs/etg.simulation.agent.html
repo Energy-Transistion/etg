@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.simulation.agent module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg.simulation.company module" href="etg.simulation.company.html" />
+    <link rel="prev" title="etg.simulation package" href="etg.simulation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.company.html" title="etg.simulation.company module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.html" title="etg.simulation package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.simulation.html" accesskey="U">etg.simulation package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-etg.simulation.agent">
+<span id="etg-simulation-agent-module"></span><h1>etg.simulation.agent module<a class="headerlink" href="#module-etg.simulation.agent" title="Permalink to this headline">¶</a></h1>
+<p>All classes and methods having to do with agents</p>
+<dl class="class">
+<dt id="etg.simulation.agent.Agent">
+<em class="property">class </em><code class="descclassname">etg.simulation.agent.</code><code class="descname">Agent</code><span class="sig-paren">(</span><em>simulation</em>, <em>income</em>, <em>ambition</em>, <em>certainty</em>, <em>need_money</em>, <em>need_green</em>, <em>need_safety</em>, <em>need_government_money</em>, <em>energy_consumed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="etg.simulation.entity.html#etg.simulation.entity.Entity" title="etg.simulation.entity.Entity"><code class="xref py py-class docutils literal"><span class="pre">etg.simulation.entity.Entity</span></code></a></p>
+<p>A class to represent a single agent in the artificial population. It
+contains information about the state of the agent (income, certainness,
+friends, etc) and methods for updating the agent on each time step. The
+agents are created when the simulation is started, and do not have to be
+made manually.</p>
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.income">
+<code class="descname">income</code><a class="headerlink" href="#etg.simulation.agent.Agent.income" title="Permalink to this definition">¶</a></dt>
+<dd><p>The income of this agent</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.ambition">
+<code class="descname">ambition</code><a class="headerlink" href="#etg.simulation.agent.Agent.ambition" title="Permalink to this definition">¶</a></dt>
+<dd><p>How ambitious this agent is</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.certainty">
+<code class="descname">certainty</code><a class="headerlink" href="#etg.simulation.agent.Agent.certainty" title="Permalink to this definition">¶</a></dt>
+<dd><p>How certain this agents need to be before they are certain</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.need_money">
+<code class="descname">need_money</code><a class="headerlink" href="#etg.simulation.agent.Agent.need_money" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much this agent needs money</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.need_green">
+<code class="descname">need_green</code><a class="headerlink" href="#etg.simulation.agent.Agent.need_green" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much this agent wants green energy</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.need_safety">
+<code class="descname">need_safety</code><a class="headerlink" href="#etg.simulation.agent.Agent.need_safety" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much this agent prefers safe forms of energy</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.need_government_money">
+<code class="descname">need_government_money</code><a class="headerlink" href="#etg.simulation.agent.Agent.need_government_money" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much this agent prefers the government to have positive budget</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.energy_consumed">
+<code class="descname">energy_consumed</code><a class="headerlink" href="#etg.simulation.agent.Agent.energy_consumed" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much energy this agent consumes per tick</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.refraction">
+<code class="descname">refraction</code><a class="headerlink" href="#etg.simulation.agent.Agent.refraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>How long until this agent makes its next decision</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.friends">
+<code class="descname">friends</code><a class="headerlink" href="#etg.simulation.agent.Agent.friends" title="Permalink to this definition">¶</a></dt>
+<dd><p>All the friends that this agent has</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.agent.Agent.choose_best_party">
+<code class="descname">choose_best_party</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent.choose_best_party"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent.choose_best_party" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the best party for this agent.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="etg.simulation.agent.Agent.generate_random">
+<em class="property">classmethod </em><code class="descname">generate_random</code><span class="sig-paren">(</span><em>simulation</em>, <em>avg_income</em>, <em>std_income</em>, <em>avg_energy_use</em>, <em>std_energy_use</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent.generate_random"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent.generate_random" title="Permalink to this definition">¶</a></dt>
+<dd><p>This generates a random agent from a set of settings and returns it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>avg_income</strong> &#8211; The average income wanted for the population.</li>
+<li><strong>std_income</strong> &#8211; The standard deviation for the income.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.agent.Agent.make_friend">
+<code class="descname">make_friend</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent.make_friend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent.make_friend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give this agent a new friend.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.satisfaction">
+<code class="descname">satisfaction</code><a class="headerlink" href="#etg.simulation.agent.Agent.satisfaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>How satisfied this agent is as a percentage</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.agent.Agent.tick">
+<code class="descname">tick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent.tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent.tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a turn for this agent. In a turn, the agent will see if it has to make a decision
+about its energy provider and if so, pick a new one.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.uncertain">
+<code class="descname">uncertain</code><a class="headerlink" href="#etg.simulation.agent.Agent.uncertain" title="Permalink to this definition">¶</a></dt>
+<dd><p>If this agent is uncertain</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.agent.Agent.unsatisfied">
+<code class="descname">unsatisfied</code><a class="headerlink" href="#etg.simulation.agent.Agent.unsatisfied" title="Permalink to this definition">¶</a></dt>
+<dd><p>If this agent is unsatisfied</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.agent.Agent.use_comparison">
+<code class="descname">use_comparison</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent.use_comparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent.use_comparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the agent is unsatisfied and the agent is uncertain, then it will find the company that
+most of its friends are clients of.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.agent.Agent.use_deliberation">
+<code class="descname">use_deliberation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent.use_deliberation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent.use_deliberation" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the agent is certain about itself, but unsatisfied, it will find the best company and
+join that.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.agent.Agent.use_imitation">
+<code class="descname">use_imitation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent.use_imitation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent.use_imitation" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the agent is satisfied, but uncertain, it will pick the most common company among its
+friends.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.agent.Agent.use_repetition">
+<code class="descname">use_repetition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#Agent.use_repetition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.Agent.use_repetition" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the agent is satisfied and certain, it will just stay with its current provider.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="etg.simulation.agent.dist">
+<code class="descclassname">etg.simulation.agent.</code><code class="descname">dist</code><span class="sig-paren">(</span><em>agent</em>, <em>company</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/agent.html#dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.agent.dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the distance between an agent and a company.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="etg.simulation.agent.random">
+<code class="descclassname">etg.simulation.agent.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; x in the interval [0, 1).<a class="headerlink" href="#etg.simulation.agent.random" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="etg.simulation.html"
+                        title="previous chapter">etg.simulation package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.simulation.company.html"
+                        title="next chapter">etg.simulation.company module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/etg.simulation.agent.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.company.html" title="etg.simulation.company module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.html" title="etg.simulation package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.simulation.html" >etg.simulation package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

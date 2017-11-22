@@ -1,0 +1,331 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.simulation.agent &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for etg.simulation.agent</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">All classes and methods having to do with agents</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">choice</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="n">randrange</span><span class="p">,</span> <span class="n">normalvariate</span><span class="p">,</span> <span class="n">uniform</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">..util.agentset</span> <span class="k">import</span> <span class="n">AgentSet</span>
+<span class="kn">from</span> <span class="nn">..util.math</span> <span class="k">import</span> <span class="n">mean</span>
+<span class="kn">from</span> <span class="nn">.entity</span> <span class="k">import</span> <span class="n">Entity</span>
+
+<div class="viewcode-block" id="Agent"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent">[docs]</a><span class="k">class</span> <span class="nc">Agent</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to represent a single agent in the artificial population. It</span>
+<span class="sd">    contains information about the state of the agent (income, certainness,</span>
+<span class="sd">    friends, etc) and methods for updating the agent on each time step. The</span>
+<span class="sd">    agents are created when the simulation is started, and do not have to be</span>
+<span class="sd">    made manually.</span>
+
+<span class="sd">    .. py:attribute:: income</span>
+
+<span class="sd">       The income of this agent</span>
+
+<span class="sd">    .. py:attribute:: ambition</span>
+
+<span class="sd">       How ambitious this agent is</span>
+
+<span class="sd">    .. py:attribute:: certainty</span>
+
+<span class="sd">       How certain this agents need to be before they are certain</span>
+
+<span class="sd">    .. py:attribute:: need_money</span>
+
+<span class="sd">       How much this agent needs money</span>
+
+<span class="sd">    .. py:attribute:: need_green</span>
+
+<span class="sd">       How much this agent wants green energy</span>
+
+<span class="sd">    .. py:attribute:: need_safety</span>
+
+<span class="sd">       How much this agent prefers safe forms of energy</span>
+
+<span class="sd">    .. py:attribute:: need_government_money</span>
+
+<span class="sd">       How much this agent prefers the government to have positive budget</span>
+
+<span class="sd">    .. py:attribute:: energy_consumed</span>
+
+<span class="sd">       How much energy this agent consumes per tick</span>
+
+<span class="sd">    .. py:attribute:: refraction</span>
+
+<span class="sd">       How long until this agent makes its next decision</span>
+
+<span class="sd">    .. py:attribute:: friends</span>
+
+<span class="sd">       All the friends that this agent has</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">simulation</span><span class="p">,</span>
+                 <span class="n">income</span><span class="p">,</span>
+                 <span class="n">ambition</span><span class="p">,</span>
+                 <span class="n">certainty</span><span class="p">,</span>
+                 <span class="n">need_money</span><span class="p">,</span>
+                 <span class="n">need_green</span><span class="p">,</span>
+                 <span class="n">need_safety</span><span class="p">,</span>
+                 <span class="n">need_government_money</span><span class="p">,</span>
+                 <span class="n">energy_consumed</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=too-many-arguments</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Agent</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">income</span> <span class="o">=</span> <span class="n">income</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ambition</span> <span class="o">=</span> <span class="n">ambition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">certainty</span> <span class="o">=</span> <span class="n">certainty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">need_money</span> <span class="o">=</span> <span class="n">need_money</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">need_green</span> <span class="o">=</span> <span class="n">need_green</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">need_safety</span> <span class="o">=</span> <span class="n">need_safety</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">need_government_money</span> <span class="o">=</span> <span class="n">need_government_money</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy_consumed</span> <span class="o">=</span> <span class="n">energy_consumed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">friends</span> <span class="o">=</span> <span class="n">AgentSet</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refraction</span> <span class="o">=</span> <span class="n">randrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">refraction_ticks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_satis</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_satis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">current_tick</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">days_with_blackout</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">company</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">party</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Agent.generate_random"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent.generate_random">[docs]</a>    <span class="k">def</span> <span class="nf">generate_random</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">avg_income</span><span class="p">,</span> <span class="n">std_income</span><span class="p">,</span> <span class="n">avg_energy_use</span><span class="p">,</span> <span class="n">std_energy_use</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This generates a random agent from a set of settings and returns it.</span>
+
+<span class="sd">        :param avg_income: The average income wanted for the population.</span>
+<span class="sd">        :param std_income: The standard deviation for the income.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">income</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">while</span> <span class="n">income</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="n">income</span> <span class="o">=</span> <span class="n">normalvariate</span><span class="p">(</span><span class="n">avg_income</span><span class="p">,</span> <span class="n">std_income</span><span class="p">)</span>
+        <span class="n">energy_use</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">while</span> <span class="n">energy_use</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
+            <span class="n">energy_use</span> <span class="o">=</span> <span class="n">normalvariate</span><span class="p">(</span><span class="n">avg_energy_use</span><span class="p">,</span> <span class="n">std_energy_use</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span>
+                   <span class="n">income</span><span class="o">=</span><span class="n">income</span><span class="p">,</span>
+                   <span class="n">energy_consumed</span><span class="o">=</span><span class="n">energy_use</span><span class="p">,</span>
+                   <span class="n">ambition</span><span class="o">=</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                   <span class="n">certainty</span><span class="o">=</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                   <span class="n">need_money</span><span class="o">=</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                   <span class="n">need_green</span><span class="o">=</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                   <span class="n">need_safety</span><span class="o">=</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                   <span class="n">need_government_money</span><span class="o">=</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uncertain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If this agent is uncertain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">friends</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">company</span> <span class="o">==</span> <span class="n">a</span><span class="o">.</span><span class="n">company</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">same</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">friends</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">certainty</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unsatisfied</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If this agent is unsatisfied</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfaction</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ambition</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">satisfaction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How satisfied this agent is as a percentage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_satis</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">current_tick</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_satis</span>
+        <span class="n">dist_money</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">product_cost</span>
+        <span class="k">if</span> <span class="n">dist_money</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_money</span><span class="p">:</span>
+            <span class="n">dist_money</span> <span class="o">*=</span> <span class="mi">2</span>
+        <span class="n">dist_green</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_green</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">product_green</span>
+        <span class="k">if</span> <span class="n">dist_green</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dist_green</span> <span class="o">/=</span> <span class="mi">2</span>
+        <span class="n">dist_safety</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_safety</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">product_safety</span>
+        <span class="k">if</span> <span class="n">dist_safety</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dist_safety</span> <span class="o">/=</span> <span class="mi">2</span>
+        <span class="n">company_dist</span> <span class="o">=</span> <span class="n">dist_money</span> <span class="o">+</span> <span class="n">dist_green</span> <span class="o">+</span> <span class="n">dist_safety</span>
+        <span class="k">if</span> <span class="n">company_dist</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">company_dist</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">company_dist</span> <span class="o">*=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">days_with_blackout</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_satis</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">100</span> <span class="o">-</span> <span class="n">company_dist</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_satis</span><span class="p">)</span> <span class="o">/</span> <span class="mi">20</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_satis</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_satis</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_satis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">current_tick</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_satis</span>
+
+<div class="viewcode-block" id="Agent.make_friend"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent.make_friend">[docs]</a>    <span class="k">def</span> <span class="nf">make_friend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give this agent a new friend.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">friends</span><span class="o">.</span><span class="n">add_agent</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="n">other</span><span class="o">.</span><span class="n">friends</span><span class="o">.</span><span class="n">add_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Agent.tick"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent.tick">[docs]</a>    <span class="k">def</span> <span class="nf">tick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a turn for this agent. In a turn, the agent will see if it has to make a decision</span>
+<span class="sd">        about its energy provider and if so, pick a new one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">company</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">company</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">)</span>
+        <span class="c1"># If the agent needs to make a decision, make that decision</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refraction</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">refraction</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">refraction_ticks</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfied</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertain</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_deliberation</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_comparison</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertain</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_imitation</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_repetition</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">days_with_blackout</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="Agent.choose_best_party"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent.choose_best_party">[docs]</a>    <span class="k">def</span> <span class="nf">choose_best_party</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the best party for this agent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">party_satisfaction</span><span class="p">(</span><span class="n">party</span><span class="p">):</span>
+            <span class="s2">&quot;Calculate how satisfied this agent is with a party.&quot;</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">energy</span><span class="o">.</span><span class="n">greenness</span> <span class="o">+</span> <span class="n">energy</span><span class="o">.</span><span class="n">greenness</span> <span class="o">*</span> <span class="n">party</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">energy</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span>
+                            <span class="k">for</span> <span class="n">energy</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_green</span><span class="p">)</span> <span class="o">+</span> \
+                   <span class="nb">abs</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">energy</span><span class="o">.</span><span class="n">safety</span> <span class="o">+</span> <span class="n">energy</span><span class="o">.</span><span class="n">safety</span> <span class="o">*</span> <span class="n">party</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">energy</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span>
+                            <span class="k">for</span> <span class="n">energy</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_safety</span><span class="p">)</span> <span class="o">+</span> \
+                   <span class="nb">abs</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">energy</span><span class="o">.</span><span class="n">raw_price</span> <span class="o">+</span> <span class="n">energy</span><span class="o">.</span><span class="n">raw_price</span> <span class="o">*</span> <span class="n">party</span><span class="o">.</span><span class="n">taxes</span><span class="p">[</span><span class="n">energy</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span>
+                            <span class="k">for</span> <span class="n">energy</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">energy_types</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_money</span><span class="p">)</span> <span class="o">+</span> \
+                   <span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">-</span> <span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">party</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">parties</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">party_satisfaction</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">party_satisfaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">party</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span> <span class="c1"># Non-voter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">party</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Agent.use_deliberation"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent.use_deliberation">[docs]</a>    <span class="k">def</span> <span class="nf">use_deliberation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the agent is certain about itself, but unsatisfied, it will find the best company and</span>
+<span class="sd">        join that.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">company</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Agent.use_comparison"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent.use_comparison">[docs]</a>    <span class="k">def</span> <span class="nf">use_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the agent is unsatisfied and the agent is uncertain, then it will find the company that</span>
+<span class="sd">        most of its friends are clients of.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">friends_companies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">friend</span><span class="o">.</span><span class="n">company</span> <span class="k">for</span> <span class="n">friend</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">friends</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">company</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">friends_companies</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">),</span>
+                           <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Agent.use_imitation"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent.use_imitation">[docs]</a>    <span class="k">def</span> <span class="nf">use_imitation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the agent is satisfied, but uncertain, it will pick the most common company among its</span>
+<span class="sd">        friends.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">company</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">:</span>
+            <span class="n">users</span><span class="p">[</span><span class="n">company</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">friend</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">friends</span><span class="p">:</span>
+            <span class="n">users</span><span class="p">[</span><span class="n">friend</span><span class="o">.</span><span class="n">company</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">company</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">users</span><span class="p">[</span><span class="n">c</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Agent.use_repetition"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.Agent.use_repetition">[docs]</a>    <span class="k">def</span> <span class="nf">use_repetition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the agent is satisfied and certain, it will just stay with its current provider.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+<div class="viewcode-block" id="dist"><a class="viewcode-back" href="../../../etg.simulation.agent.html#etg.simulation.agent.dist">[docs]</a><span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">company</span><span class="p">):</span>
+    <span class="s2">&quot;Calculate the distance between an agent and a company.&quot;</span>
+    <span class="n">_dist</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">agent</span><span class="o">.</span><span class="n">need_money</span> <span class="o">-</span> <span class="n">company</span><span class="o">.</span><span class="n">product_cost</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span>
+                      <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">need_green</span> <span class="o">-</span> <span class="n">company</span><span class="o">.</span><span class="n">product_green</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span>
+                      <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">need_safety</span> <span class="o">-</span> <span class="n">company</span><span class="o">.</span><span class="n">product_safety</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">company</span> <span class="o">==</span> <span class="n">agent</span><span class="o">.</span><span class="n">company</span><span class="p">:</span>
+        <span class="n">_dist</span> <span class="o">*=</span> <span class="p">((</span><span class="n">agent</span><span class="o">.</span><span class="n">days_with_blackout</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+    <span class="k">return</span> <span class="n">_dist</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

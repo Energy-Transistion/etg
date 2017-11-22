@@ -1,0 +1,7 @@
+tests.test_etg.test_server.test_handler module
+==============================================
+
+.. automodule:: tests.test_etg.test_server.test_handler
+    :members:
+    :undoc-members:
+    :show-inheritance:

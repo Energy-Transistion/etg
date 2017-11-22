@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.server.server &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for etg.server.server</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The code for the server.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">etg.server.site</span> <span class="k">import</span> <span class="n">ETGSite</span>
+<span class="kn">from</span> <span class="nn">etg.server.websocket</span> <span class="k">import</span> <span class="n">WebSocketConnection</span>
+<span class="kn">from</span> <span class="nn">autobahn.twisted.websocket</span> <span class="k">import</span> <span class="n">WebSocketServerFactory</span>
+<span class="kn">from</span> <span class="nn">autobahn.twisted.resource</span> <span class="k">import</span> <span class="n">WebSocketResource</span>
+<span class="kn">from</span> <span class="nn">twisted.application</span> <span class="k">import</span> <span class="n">service</span><span class="p">,</span> <span class="n">strports</span>
+<span class="kn">from</span> <span class="nn">twisted.internet</span> <span class="k">import</span> <span class="n">task</span>
+<span class="kn">from</span> <span class="nn">twisted.logger</span> <span class="k">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">twisted.web.server</span> <span class="k">import</span> <span class="n">Site</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="s2">&quot;etg.service&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SimulationService"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService">[docs]</a><span class="k">class</span> <span class="nc">SimulationService</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">Service</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Service that runs and keeps track of the simulation. It takes care of</span>
+<span class="sd">    stepping through the simulation and handling all the new connections.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simulation</span> <span class="o">=</span> <span class="n">simulation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_setup</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocols</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The simulation that this simulation is about.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulation</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A list with all the parties in the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulation</span><span class="o">.</span><span class="n">parties</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">companies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A list with all the companies in the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulation</span><span class="o">.</span><span class="n">companies</span>
+
+<div class="viewcode-block" id="SimulationService.add_protocol"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.add_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">add_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new protocol to the service.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulationService.remove_protocol"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.remove_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">remove_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a protocol from the service.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulationService.get_websocket_factory"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.get_websocket_factory">[docs]</a>    <span class="k">def</span> <span class="nf">get_websocket_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a factory to be used for WebSocket connections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">factory</span> <span class="o">=</span> <span class="n">WebSocketServerFactory</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;ws://127.0.0.1:8080&quot;</span><span class="p">)</span>
+        <span class="n">factory</span><span class="o">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="n">WebSocketConnection</span>
+        <span class="n">factory</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">factory</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span>
+        <span class="k">return</span> <span class="n">factory</span></div>
+
+<div class="viewcode-block" id="SimulationService.get_telnet_factory"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.get_telnet_factory">[docs]</a>    <span class="k">def</span> <span class="nf">get_telnet_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a factory to be used for telnet connections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SimulationService.make_site"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.make_site">[docs]</a>    <span class="k">def</span> <span class="nf">make_site</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets up the site and returns it as a :class:`etg.server..site.ETGSite`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">site</span> <span class="o">=</span> <span class="n">ETGSite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;site&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">site</span><span class="o">.</span><span class="n">putChild</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="n">WebSocketResource</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_websocket_factory</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">site</span></div>
+
+<div class="viewcode-block" id="SimulationService.chat_all"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.chat_all">[docs]</a>    <span class="k">def</span> <span class="nf">chat_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a chat message to all connected clients.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">prot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocols</span><span class="p">:</span>
+            <span class="n">prot</span><span class="o">.</span><span class="n">send_chat</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">prot</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulationService.start"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unpauze the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Started the simulation&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="SimulationService.pause"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pauze the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Paused the simulation&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="SimulationService.toggle_pause"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.toggle_pause">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This methods toggles wether the simulation, and thus the server, is paused.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Toggled the running state&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulationService.setup"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets up the simulation to make sure we can run.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">parties</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not enough parties connected&#39;</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">companies</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Not enough companies connected&#39;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span> <span class="k">as</span> <span class="n">simulation</span><span class="p">:</span>
+            <span class="n">simulation</span><span class="o">.</span><span class="n">election</span><span class="p">()</span>
+            <span class="n">simulation</span><span class="o">.</span><span class="n">active_party</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">parties</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">use_deliberation</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_setup</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="SimulationService.loop"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.SimulationService.loop">[docs]</a>    <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run every step for the server once. Meant to be called repeatedly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span> <span class="k">as</span> <span class="n">simulation</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">active_party</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">simulation</span><span class="o">.</span><span class="n">election</span><span class="p">()</span>
+                <span class="n">news</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">tick</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">current_date</span><span class="o">.</span><span class="n">weekday</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">voters</span><span class="p">,</span> <span class="n">non_voters</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Poll results in: % non voters: </span><span class="si">{non_voters}</span><span class="s2">, votes: </span><span class="si">{votes}</span><span class="s2">&quot;</span><span class="p">,</span>
+                             <span class="n">non_voters</span><span class="o">=</span><span class="n">non_voters</span><span class="p">,</span> <span class="n">voters</span><span class="o">=</span><span class="n">voters</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">protocol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocols</span><span class="p">:</span>
+                <span class="n">protocol</span><span class="o">.</span><span class="n">send_packet</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">news</span><span class="p">:</span>
+                    <span class="n">protocol</span><span class="o">.</span><span class="n">send_news</span><span class="p">(</span><span class="n">new</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="make_errback"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.make_errback">[docs]</a><span class="k">def</span> <span class="nf">make_errback</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">_log</span><span class="o">=</span><span class="n">log</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define an errback function to use for this service.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">errback</span><span class="p">(</span><span class="n">failure</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The function that gets called on errors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Got a failure of type </span><span class="si">{type}</span><span class="s2">.</span><span class="se">\n</span><span class="si">{traceback}</span><span class="s2">&quot;</span><span class="p">,</span>
+                   <span class="nb">type</span><span class="o">=</span><span class="n">failure</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">traceback</span><span class="o">=</span><span class="n">failure</span><span class="o">.</span><span class="n">getTraceback</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">errback</span></div>
+
+<div class="viewcode-block" id="make_application"><a class="viewcode-back" href="../../../etg.server.server.html#etg.server.server.make_application">[docs]</a><span class="k">def</span> <span class="nf">make_application</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Setup the server so it can be started with twistd.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">Application</span><span class="p">(</span><span class="s1">&#39;etg&#39;</span><span class="p">)</span>
+    <span class="n">service_collection</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">IServiceCollection</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">SimulationService</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">setServiceParent</span><span class="p">(</span><span class="n">service_collection</span><span class="p">)</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">make_site</span><span class="p">()</span>
+    <span class="n">strports</span><span class="o">.</span><span class="n">service</span><span class="p">(</span><span class="s2">&quot;tcp:8080&quot;</span><span class="p">,</span> <span class="n">Site</span><span class="p">(</span><span class="n">site</span><span class="p">))</span><span class="o">.</span><span class="n">setServiceParent</span><span class="p">(</span><span class="n">service_collection</span><span class="p">)</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">LoopingCall</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+    <span class="n">loop_deferred</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">tick_rate</span><span class="p">)</span>
+    <span class="n">loop_deferred</span><span class="o">.</span><span class="n">addErrback</span><span class="p">(</span><span class="n">make_errback</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">log</span><span class="p">))</span>
+
+    <span class="kn">import</span> <span class="nn">socket</span>
+    <span class="n">ip_addr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ask players to go to the following URL: http://</span><span class="si">{}</span><span class="s2">:8080&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ip_addr</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You can find the Admin interface at http://</span><span class="si">{}</span><span class="s2">:8080/admin.html&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ip_addr</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">application</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tests.test_etg.test_server.test_handler module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tests.test_etg.test_util package" href="tests.test_etg.test_util.html" />
+    <link rel="prev" title="tests.test_etg.test_server package" href="tests.test_etg.test_server.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tests.test_etg.test_util.html" title="tests.test_etg.test_util package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tests.test_etg.test_server.html" title="tests.test_etg.test_server package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tests.html" >tests package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="tests.test_etg.html" >tests.test_etg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="tests.test_etg.test_server.html" accesskey="U">tests.test_etg.test_server package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-tests.test_etg.test_server.test_handler">
+<span id="tests-test-etg-test-server-test-handler-module"></span><h1>tests.test_etg.test_server.test_handler module<a class="headerlink" href="#module-tests.test_etg.test_server.test_handler" title="Permalink to this headline">¶</a></h1>
+<p>A module for testing to make sure that the Handler collects the correct information.</p>
+<dl class="class">
+<dt id="tests.test_etg.test_server.test_handler.Foo">
+<em class="property">class </em><code class="descclassname">tests.test_etg.test_server.test_handler.</code><code class="descname">Foo</code><span class="sig-paren">(</span><em>simulation</em>, <em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_server/test_handler.html#Foo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_server.test_handler.Foo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class to test the Handler correctly updating the wrapee</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tests.test_etg.test_server.test_handler.FooSimulation">
+<em class="property">class </em><code class="descclassname">tests.test_etg.test_server.test_handler.</code><code class="descname">FooSimulation</code><span class="sig-paren">(</span><em>count=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_server/test_handler.html#FooSimulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_server.test_handler.FooSimulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class to test if the <a class="reference internal" href="etg.server.handler.html#etg.server.handler.Handler" title="etg.server.handler.Handler"><code class="xref py py-class docutils literal"><span class="pre">Handler</span></code></a> correctly gets the correct
+information from the simulation.</p>
+<dl class="method">
+<dt id="tests.test_etg.test_server.test_handler.FooSimulation.tick">
+<code class="descname">tick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_server/test_handler.html#FooSimulation.tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_server.test_handler.FooSimulation.tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>A small test method for ticking.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tests.test_etg.test_server.test_handler.HandlerTestCase">
+<em class="property">class </em><code class="descclassname">tests.test_etg.test_server.test_handler.</code><code class="descname">HandlerTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_server/test_handler.html#HandlerTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_server.test_handler.HandlerTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">twisted.trial._asynctest.TestCase</span></code></p>
+<p>A class to test the handler.</p>
+<p>Construct an asynchronous test case for C{methodName}.</p>
+<p>&#64;param methodName: The name of a method on C{self}. This method should
+be a unit test. That is, it should be a short method that calls some of
+the assert* methods. If C{methodName} is unspecified,
+L{SynchronousTestCase.runTest} will be used as the test method. This is
+mostly useful for testing Trial.</p>
+<dl class="method">
+<dt id="tests.test_etg.test_server.test_handler.HandlerTestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_server/test_handler.html#HandlerTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_server.test_handler.HandlerTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to make all the objects necessary for testing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tests.test_etg.test_server.test_handler.HandlerTestCase.test_prepare_packet">
+<code class="descname">test_prepare_packet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_server/test_handler.html#HandlerTestCase.test_prepare_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_server.test_handler.HandlerTestCase.test_prepare_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>A test to make sure that the handler collects the right information.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tests.test_etg.test_server.test_handler.HandlerTestCase.test_process_packet">
+<code class="descname">test_process_packet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_etg/test_server/test_handler.html#HandlerTestCase.test_process_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tests.test_etg.test_server.test_handler.HandlerTestCase.test_process_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>A test to see if the packets get processed correctly.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tests.test_etg.test_server.html"
+                        title="previous chapter">tests.test_etg.test_server package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tests.test_etg.test_util.html"
+                        title="next chapter">tests.test_etg.test_util package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tests.test_etg.test_server.test_handler.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tests.test_etg.test_util.html" title="tests.test_etg.test_util package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tests.test_etg.test_server.html" title="tests.test_etg.test_server package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tests.html" >tests package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="tests.test_etg.html" >tests.test_etg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="tests.test_etg.test_server.html" >tests.test_etg.test_server package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

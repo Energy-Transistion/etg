@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Running instructions &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg package" href="etg.html" />
+    <link rel="prev" title="Installation instructions" href="install.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.html" title="etg package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation instructions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="running-instructions">
+<h1>Running instructions<a class="headerlink" href="#running-instructions" title="Permalink to this headline">¶</a></h1>
+<p>These are the instructions for running the Energy Transition Game. Please make
+sure you have <a class="reference internal" href="install.html"><span class="doc">installed the etg</span></a> first. Please make sure you
+pick the same techincal level as you did when installing.</p>
+<div class="section" id="i-want-to-run-the-game-and-do-not-know-what-i-am-doing">
+<h2>I want to run the game and do not know what I am doing<a class="headerlink" href="#i-want-to-run-the-game-and-do-not-know-what-i-am-doing" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Launch the python file <cite>bin/start.py</cite> by opening it with Python.</li>
+<li>The game is now running!</li>
+</ol>
+</div>
+<div class="section" id="i-want-to-run-the-game-and-know-that-i-am-doing">
+<h2>I want to run the game and know that I am doing<a class="headerlink" href="#i-want-to-run-the-game-and-know-that-i-am-doing" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Open a terminal and change to the directory where you installed the game.</p>
+</li>
+<li><p class="first">If you work with a virtual environment, activate it first:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the following command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;.:$PYTHONPATH&quot;</span> <span class="n">twistd</span> <span class="o">-</span><span class="n">ny</span> <span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">-</span><span class="n">server</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">The game is now running!</p>
+</li>
+</ol>
+</div>
+<div class="section" id="i-want-to-work-on-the-game-and-know-what-i-am-doing">
+<h2>I want to work on the game and know what I am doing<a class="headerlink" href="#i-want-to-work-on-the-game-and-know-what-i-am-doing" title="Permalink to this headline">¶</a></h2>
+<p>See the instructions for running the game above.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Running instructions</a><ul>
+<li><a class="reference internal" href="#i-want-to-run-the-game-and-do-not-know-what-i-am-doing">I want to run the game and do not know what I am doing</a></li>
+<li><a class="reference internal" href="#i-want-to-run-the-game-and-know-that-i-am-doing">I want to run the game and know that I am doing</a></li>
+<li><a class="reference internal" href="#i-want-to-work-on-the-game-and-know-what-i-am-doing">I want to work on the game and know what I am doing</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation instructions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.html"
+                        title="next chapter">etg package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/running.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.html" title="etg package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation instructions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+etg.server.resources module
+===========================
+
+.. automodule:: etg.server.resources
+    :members:
+    :undoc-members:
+    :show-inheritance:

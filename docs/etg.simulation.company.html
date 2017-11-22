@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.simulation.company module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg.simulation.energy module" href="etg.simulation.energy.html" />
+    <link rel="prev" title="etg.simulation.agent module" href="etg.simulation.agent.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.energy.html" title="etg.simulation.energy module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.agent.html" title="etg.simulation.agent module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.simulation.html" accesskey="U">etg.simulation package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-etg.simulation.company">
+<span id="etg-simulation-company-module"></span><h1>etg.simulation.company module<a class="headerlink" href="#module-etg.simulation.company" title="Permalink to this headline">¶</a></h1>
+<p>All the classes and methods having to do with the companies in the game.</p>
+<dl class="class">
+<dt id="etg.simulation.company.Company">
+<em class="property">class </em><code class="descclassname">etg.simulation.company.</code><code class="descname">Company</code><span class="sig-paren">(</span><em>simulation</em>, <em>options</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/company.html#Company"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.company.Company" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="etg.simulation.entity.html#etg.simulation.entity.Entity" title="etg.simulation.entity.Entity"><code class="xref py py-class docutils literal"><span class="pre">etg.simulation.entity.Entity</span></code></a></p>
+<p>A class to represent the companies in the simulation. It contains
+information about the state of the company (funds, suppliers, consumers,
+etc) and methods for updating the company and validating user input. The
+companies are created when a player joins, and should not be created
+manually.</p>
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.buyers">
+<code class="descname">buyers</code><a class="headerlink" href="#etg.simulation.company.Company.buyers" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of users of this company.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.demand">
+<code class="descname">demand</code><a class="headerlink" href="#etg.simulation.company.Company.demand" title="Permalink to this definition">¶</a></dt>
+<dd><p>The amount of energy that the consumers of this company require</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.company.Company.donate">
+<code class="descname">donate</code><span class="sig-paren">(</span><em>party_name</em>, <em>amount</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/company.html#Company.donate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.company.Company.donate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Donate the <cite>amount</cite> to the party with <cite>party_name</cite>. Returns <cite>True</cite> if succesful, <cite>False</cite>
+with an error message otherwise.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.income">
+<code class="descname">income</code><a class="headerlink" href="#etg.simulation.company.Company.income" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much money the company earned this tick.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.market_share">
+<code class="descname">market_share</code><a class="headerlink" href="#etg.simulation.company.Company.market_share" title="Permalink to this definition">¶</a></dt>
+<dd><p>The percentage of the population that buys their energy here.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.output">
+<code class="descname">output</code><a class="headerlink" href="#etg.simulation.company.Company.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output of this company on the current tick.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.product_cost">
+<code class="descname">product_cost</code><a class="headerlink" href="#etg.simulation.company.Company.product_cost" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much the product from this company costs.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.product_green">
+<code class="descname">product_green</code><a class="headerlink" href="#etg.simulation.company.Company.product_green" title="Permalink to this definition">¶</a></dt>
+<dd><p>How green the product of this company is.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.product_safety">
+<code class="descname">product_safety</code><a class="headerlink" href="#etg.simulation.company.Company.product_safety" title="Permalink to this definition">¶</a></dt>
+<dd><p>How safe the product of this company is.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.profit">
+<code class="descname">profit</code><a class="headerlink" href="#etg.simulation.company.Company.profit" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much profit the company makes each tick.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.rawcost">
+<code class="descname">rawcost</code><a class="headerlink" href="#etg.simulation.company.Company.rawcost" title="Permalink to this definition">¶</a></dt>
+<dd><p>How much the product of the company costs the company itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.company.Company.sell">
+<code class="descname">sell</code><span class="sig-paren">(</span><em>producer_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/company.html#Company.sell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.company.Company.sell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sell the producer with <cite>producer_name</cite> for half of the money of the tier that it is at</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.company.Company.set_values">
+<code class="descname">set_values</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/company.html#Company.set_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.company.Company.set_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all the values on this company by coping them from the config dict
+from the simulation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.taxes">
+<code class="descname">taxes</code><a class="headerlink" href="#etg.simulation.company.Company.taxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>The amount of taxation that goes over this product, calculated by taking the proportions for
+all the energy types in the output.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.company.Company.tick">
+<code class="descname">tick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/company.html#Company.tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.company.Company.tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>In a tick, the companies do their marketing, by updating the needs of the agents to mimic
+their product.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.total_output">
+<code class="descname">total_output</code><a class="headerlink" href="#etg.simulation.company.Company.total_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output and market per producer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.simulation.company.Company.upgrade">
+<code class="descname">upgrade</code><span class="sig-paren">(</span><em>producer_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/company.html#Company.upgrade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.company.Company.upgrade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upgrade the producer with <cite>producer_name</cite>, if the budget for that is available. Return
+<cite>True</cite> on success, <cite>False</cite> with an error message otherwise.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.simulation.company.Company.users">
+<code class="descname">users</code><a class="headerlink" href="#etg.simulation.company.Company.users" title="Permalink to this definition">¶</a></dt>
+<dd><p>All the users of this comapny, as an <a class="reference internal" href="etg.util.agentset.html#etg.util.agentset.AgentSet" title="etg.util.agentset.AgentSet"><code class="xref py py-class docutils literal"><span class="pre">AgentSet</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="etg.simulation.company.Output">
+<em class="property">class </em><code class="descclassname">etg.simulation.company.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>name</em>, <em>color</em>, <em>output</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/simulation/company.html#Output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.simulation.company.Output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class to represent the output of the company in the interface</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="etg.simulation.agent.html"
+                        title="previous chapter">etg.simulation.agent module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.simulation.energy.html"
+                        title="next chapter">etg.simulation.energy module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/etg.simulation.company.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.energy.html" title="etg.simulation.energy module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="etg.simulation.agent.html" title="etg.simulation.agent module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.simulation.html" >etg.simulation package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

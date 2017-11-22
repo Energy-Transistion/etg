@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>etg.server.protocol module &#8212; Energy Transition Game 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="etg.server.resources module" href="etg.server.resources.html" />
+    <link rel="prev" title="etg.server.handler module" href="etg.server.handler.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.server.resources.html" title="etg.server.resources module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="etg.server.handler.html" title="etg.server.handler module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.server.html" accesskey="U">etg.server package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-etg.server.protocol">
+<span id="etg-server-protocol-module"></span><h1>etg.server.protocol module<a class="headerlink" href="#module-etg.server.protocol" title="Permalink to this headline">¶</a></h1>
+<p>This module implements the Protocol that is used by the server to communicate with the clients. This
+code is independent of the actual networking code, so it can be used by multiple types of
+connections.</p>
+<dl class="class">
+<dt id="etg.server.protocol.ETGProtocol">
+<em class="property">class </em><code class="descclassname">etg.server.protocol.</code><code class="descname">ETGProtocol</code><span class="sig-paren">(</span><em>service</em>, <em>simulation</em>, <em>connection</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/protocol.html#ETGProtocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.protocol.ETGProtocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The actual protocol class. Every new connection should create one of these to handle all the
+communication logic.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>service</strong> &#8211; The service parent of this Protocol, most likely an instance of
+<code class="xref py py-class docutils literal"><span class="pre">simulation</span></code>.</li>
+<li><strong>simulation</strong> &#8211; The simulation that this Protocol talks about.</li>
+<li><strong>connection</strong> &#8211; The &#8216;connection&#8217; that reply messages get send over. Needs a <cite>sendMessage</cite>
+method.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="etg.server.protocol.ETGProtocol.company_watchers">
+<code class="descname">company_watchers</code><em class="property"> = ([&lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.ObjectAttribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.ListAttribute object&gt;, &lt;etg.server.handler.ListAttribute object&gt;], [&lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.ListAttribute object&gt;, &lt;etg.server.handler.DictAttribute object&gt;], [&lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.DictAttribute object&gt;])</em><a class="headerlink" href="#etg.server.protocol.ETGProtocol.company_watchers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.protocol.ETGProtocol.on_action">
+<code class="descname">on_action</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/protocol.html#ETGProtocol.on_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.protocol.ETGProtocol.on_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method deals with new and income information and calls the corresponding method on the
+object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.protocol.ETGProtocol.on_chat_message">
+<code class="descname">on_chat_message</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/protocol.html#ETGProtocol.on_chat_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.protocol.ETGProtocol.on_chat_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>This message makes sure that the correct respondent gets the chat message if it is recieved.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.protocol.ETGProtocol.on_connection">
+<code class="descname">on_connection</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/protocol.html#ETGProtocol.on_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.protocol.ETGProtocol.on_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be called whenever a new connection is made, and it should then be passed
+the name of the client, which the client should send on its first connection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.protocol.ETGProtocol.on_message">
+<code class="descname">on_message</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/protocol.html#ETGProtocol.on_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.protocol.ETGProtocol.on_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be called whenever a message is received. this methods will then make
+sure that the message is handled properly.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="etg.server.protocol.ETGProtocol.party_watchers">
+<code class="descname">party_watchers</code><em class="property"> = ([&lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.ObjectAttribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.ListAttribute object&gt;, &lt;etg.server.handler.ListAttribute object&gt;, &lt;etg.server.handler.ListAttribute object&gt;], [&lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;, &lt;etg.server.handler.Attribute object&gt;], [&lt;etg.server.handler.Attribute object&gt;])</em><a class="headerlink" href="#etg.server.protocol.ETGProtocol.party_watchers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="etg.server.protocol.ETGProtocol.send_chat">
+<code class="descname">send_chat</code><span class="sig-paren">(</span><em>text</em>, <em>sender</em>, <em>target</em>, <em>whisper=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/protocol.html#ETGProtocol.send_chat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.protocol.ETGProtocol.send_chat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a chat message to this client.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.protocol.ETGProtocol.send_news">
+<code class="descname">send_news</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/protocol.html#ETGProtocol.send_news"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.protocol.ETGProtocol.send_news" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a news message to the accompanying client.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="etg.server.protocol.ETGProtocol.send_packet">
+<code class="descname">send_packet</code><span class="sig-paren">(</span><em>msg_type='change'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etg/server/protocol.html#ETGProtocol.send_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#etg.server.protocol.ETGProtocol.send_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare and send a packet to the client.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="etg.server.handler.html"
+                        title="previous chapter">etg.server.handler module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="etg.server.resources.html"
+                        title="next chapter">etg.server.resources module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/etg.server.protocol.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="etg.server.resources.html" title="etg.server.resources module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="etg.server.handler.html" title="etg.server.handler module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Energy Transition Game 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="etg.html" >etg package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="etg.server.html" >etg.server package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Energy Transitions UCG.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

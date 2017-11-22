@@ -1,0 +1,7 @@
+etg.util.math module
+====================
+
+.. automodule:: etg.util.math
+    :members:
+    :undoc-members:
+    :show-inheritance:
