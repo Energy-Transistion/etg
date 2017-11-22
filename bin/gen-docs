@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 GIT_ROOT=`git rev-parse --show-toplevel`
 pushd $GIT_ROOT
-rm docs/etg.*rst
-rm docs/tests.*rst
-sphinx-apidoc -f -T -M -e -o docs etg
-sphinx-apidoc -f -T -M -e -o docs tests
-cd docs/
+rm documentation/etg.*rst
+rm documentation/tests.*rst
+sphinx-apidoc -f -T -M -e -o documentation etg
+sphinx-apidoc -f -T -M -e -o documentation tests
+cd documentation/
 make html
 popd
